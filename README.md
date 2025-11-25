@@ -272,6 +272,7 @@ Edit `config.py` to customize:
 This project is provided as an educational tool.
 
 ## 👨‍💼 Author
+Harold jey N. M., co. Francis jick O. Gabionza
 
 IT Laboratory Utilization Schedule System
 Developed as an enterprise-level Flask application
