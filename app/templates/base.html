@@ -29,6 +29,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/enterprise.css') }}">
     <!-- Visual Design CSS (Modern Aesthetics) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/visual-design.css') }}">
+    <!-- Modern Navbar Component -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
@@ -43,116 +45,128 @@
     <a href="#main-content" class="skip-to-content-link">Skip to main content</a>
     
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-lg" role="navigation" aria-label="Main navigation" style="background: linear-gradient(135deg, #0d6efd 0%, #0055cc 100%); border-bottom: 3px solid rgba(255,255,255,0.1);">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('student.dashboard') if current_user.role == 'Student' else url_for('instructor.dashboard') if current_user.role == 'Instructor' else url_for('admin.dashboard') }}" aria-label="IT Lab Schedule System Home" style="font-size: 1.4rem;">
-                <i class="fas fa-flask-vial me-2" aria-hidden="true" style="font-size: 1.6rem;"></i>
-                <span class="d-none d-sm-inline-block">Lab Schedule</span>
+    <nav class="navbar navbar-expand-lg navbar-dark" role="navigation" aria-label="Main navigation">
+        <div class="container-fluid px-3 px-md-4">
+            <!-- Brand -->
+            <a class="navbar-brand" href="{{ url_for('student.dashboard') if current_user.role == 'Student' else url_for('instructor.dashboard') if current_user.role == 'Instructor' else url_for('admin.dashboard') }}" aria-label="IT Lab Schedule System Home">
+                <i class="fas fa-flask-vial" aria-hidden="true"></i>
+                <span>Lab Schedule</span>
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
+            <!-- Navbar Menu -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if current_user.role == 'Administrator' %}
+                    <!-- Admin Navigation -->
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.dashboard') }}" aria-label="Administrator Dashboard">
-                            <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Dashboard</span>
+                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}" aria-label="Administrator Dashboard">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                            <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.manage_labs') }}" aria-label="Manage Laboratory Rooms">
-                            <i class="fas fa-flask-vial me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Labs</span>
+                        <a class="nav-link" href="{{ url_for('admin.manage_labs') }}" aria-label="Manage Laboratory Rooms">
+                            <i class="fas fa-flask-vial" aria-hidden="true"></i>
+                            <span>Labs</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.manage_instructors') }}" aria-label="Manage Instructors">
-                            <i class="fas fa-chalkboard-user me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Instructors</span>
+                        <a class="nav-link" href="{{ url_for('admin.manage_instructors') }}" aria-label="Manage Instructors">
+                            <i class="fas fa-chalkboard-user" aria-hidden="true"></i>
+                            <span>Instructors</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center position-relative" href="{{ url_for('admin.approve_requests') }}" aria-label="Approve Reservation Requests">
-                            <i class="fas fa-check-circle me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Approvals</span>
+                        <a class="nav-link" href="{{ url_for('admin.approve_requests') }}" aria-label="Approve Reservation Requests">
+                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                            <span>Approvals</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.reports') }}" aria-label="View Reports and Analytics">
-                            <i class="fas fa-chart-bar me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Reports</span>
+                        <a class="nav-link" href="{{ url_for('admin.reports') }}" aria-label="View Reports and Analytics">
+                            <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                            <span>Reports</span>
                         </a>
                     </li>
+                    
                     {% elif current_user.role == 'Instructor' %}
+                    <!-- Instructor Navigation -->
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.dashboard') }}" aria-label="Instructor Dashboard">
-                            <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Dashboard</span>
+                        <a class="nav-link" href="{{ url_for('instructor.dashboard') }}" aria-label="Instructor Dashboard">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                            <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.submit_request') }}" aria-label="Submit New Lab Reservation Request">
-                            <i class="fas fa-plus-circle me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> New Request</span>
+                        <a class="nav-link" href="{{ url_for('instructor.submit_request') }}" aria-label="Submit New Lab Reservation Request">
+                            <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                            <span>New Request</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.my_requests') }}" aria-label="View My Reservation Requests">
-                            <i class="fas fa-list me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> My Requests</span>
+                        <a class="nav-link" href="{{ url_for('instructor.my_requests') }}" aria-label="View My Reservation Requests">
+                            <i class="fas fa-list" aria-hidden="true"></i>
+                            <span>My Requests</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.view_schedule') }}" aria-label="View Weekly Lab Schedule">
-                            <i class="fas fa-calendar me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Schedule</span>
+                        <a class="nav-link" href="{{ url_for('instructor.view_schedule') }}" aria-label="View Weekly Lab Schedule">
+                            <i class="fas fa-calendar" aria-hidden="true"></i>
+                            <span>Schedule</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center position-relative" href="{{ url_for('instructor.notifications') }}" aria-label="View Notifications">
-                            <i class="fas fa-bell me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Notifications</span>
-                            <span id="notif-badge" class="badge bg-danger position-absolute top-0 start-100 translate-middle d-none" aria-label="Unread notifications count">0</span>
+                        <a class="nav-link position-relative" href="{{ url_for('instructor.notifications') }}" aria-label="View Notifications">
+                            <i class="fas fa-bell" aria-hidden="true"></i>
+                            <span>Notifications</span>
+                            <span id="notif-badge" class="badge bg-danger d-none" aria-label="Unread notifications count">0</span>
                         </a>
                     </li>
+                    
                     {% elif current_user.role == 'Student' %}
+                    <!-- Student Navigation -->
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ url_for('student.dashboard') }}" aria-label="Student Dashboard">
-                            <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Dashboard</span>
+                        <a class="nav-link" href="{{ url_for('student.dashboard') }}" aria-label="Student Dashboard">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                            <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="scheduleDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="View Schedule Options">
-                            <i class="fas fa-calendar me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Schedule</span>
+                        <a class="nav-link dropdown-toggle" href="#" id="scheduleDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="View Schedule Options">
+                            <i class="fas fa-calendar" aria-hidden="true"></i>
+                            <span>Schedule</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="scheduleDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_lab') }}"><i class="fas fa-flask-vial me-2"></i>By Lab Room</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_instructor') }}"><i class="fas fa-chalkboard-user me-2"></i>By Instructor</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_section') }}"><i class="fas fa-book me-2"></i>By Section</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_lab') }}"><i class="fas fa-flask-vial me-2" aria-hidden="true"></i>By Lab Room</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_instructor') }}"><i class="fas fa-chalkboard-user me-2" aria-hidden="true"></i>By Instructor</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_section') }}"><i class="fas fa-book me-2" aria-hidden="true"></i>By Section</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center position-relative" href="{{ url_for('student.notifications') }}" aria-label="View Notifications">
-                            <i class="fas fa-bell me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none"> Notifications</span>
-                            <span id="notif-badge" class="badge bg-danger position-absolute top-0 start-100 translate-middle d-none" aria-label="Unread notifications count">0</span>
+                        <a class="nav-link position-relative" href="{{ url_for('student.notifications') }}" aria-label="View Notifications">
+                            <i class="fas fa-bell" aria-hidden="true"></i>
+                            <span>Notifications</span>
+                            <span id="notif-badge" class="badge bg-danger d-none" aria-label="Unread notifications count">0</span>
                         </a>
                     </li>
                     {% endif %}
+                    
+                    <!-- User Dropdown Menu -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
-                            <i class="fas fa-user-circle me-1" aria-hidden="true"></i>
-                            <span class="d-lg-none">{{ current_user.full_name }}</span>
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
+                            <i class="fas fa-user-circle" aria-hidden="true"></i>
+                            <span>{{ current_user.full_name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2" aria-hidden="true"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2" aria-hidden="true"></i>Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
