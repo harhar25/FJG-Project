@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Approve Requests - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2">
+                <i class="fas fa-check-circle"></i> Approve Reservation Requests
+            </h1>
+            <p class="text-muted">Review and approve/decline pending lab reservations</p>
+        </div>
+    </div>
+    
+    <!-- Requests Table -->
+    <div class="card shadow">
+        {% if requests.items %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Instructor</th>
+                        <th>Course</th>
+                        <th>Lab Room</th>
+                        <th>Date &amp; Time</th>
+                        <th>Reason</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in requests.items %}
+                    <tr>
+                        <td><span class="badge bg-primary">#{{ request.id }}</span></td>
+                        <td>{{ request.instructor.full_name }}</td>
+                        <td>
+                            <small>{{ request.course.course_code }}<br>{{ request.course.section }}</small>
+                        </td>
+                        <td>{{ request.lab.lab_code }}</td>
+                        <td>
+                            {{ request.requested_date.strftime('%Y-%m-%d') }}<br>
+                            <small>{{ request.start_time.strftime('%H:%M') }} - {{ request.end_time.strftime('%H:%M') }}</small>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ request.reason[:40] }}{% if request.reason|length > 40 %}...{% endif %}</small>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <form method="POST" action="{{ url_for('admin.approve_requests') }}" style="display:inline;">
+                                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit" class="btn btn-sm btn-success" title="Approve">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('admin.approve_requests') }}" style="display:inline;">
+                                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                                    <input type="hidden" name="action" value="decline">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Decline this request?')" title="Decline">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if requests.pages > 1 %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if requests.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('admin.approve_requests', page=requests.prev_num) }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in requests.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num == requests.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.approve_requests', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if requests.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('admin.approve_requests', page=requests.next_num) }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="card-body text-center text-muted py-5">
+            <i class="fas fa-check-circle fa-3x mb-3 opacity-50"></i>
+            <p>No pending requests to review</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

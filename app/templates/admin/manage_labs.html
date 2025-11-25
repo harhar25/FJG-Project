@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Labs - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2">
+                <i class="fas fa-flask-vial"></i> Manage Laboratory Rooms
+            </h1>
+        </div>
+        <div class="col-12 mt-3">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLabModal">
+                <i class="fas fa-plus"></i> Add New Lab
+            </button>
+        </div>
+    </div>
+    
+    <!-- Labs Table -->
+    <div class="card shadow">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Lab Code</th>
+                        <th>Lab Name</th>
+                        <th>Capacity</th>
+                        <th>Location</th>
+                        <th>Equipment</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if labs.items %}
+                        {% for lab in labs.items %}
+                        <tr>
+                            <td><span class="badge bg-primary">{{ lab.lab_code }}</span></td>
+                            <td>{{ lab.lab_name }}</td>
+                            <td>{{ lab.capacity }} students</td>
+                            <td>{{ lab.location }}</td>
+                            <td>
+                                <small class="text-muted">{{ lab.equipment[:30] }}{% if lab.equipment and lab.equipment|length > 30 %}...{% endif %}</small>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editLabModal{{ lab.id }}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <form method="POST" action="{{ url_for('admin.manage_labs') }}" style="display:inline;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="lab_id" value="{{ lab.id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No labs found</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    {% if labs.pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if labs.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('admin.manage_labs', page=labs.prev_num) }}">Previous</a>
+            </li>
+            {% endif %}
+            
+            {% for page_num in labs.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num == labs.page %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.manage_labs', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if labs.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('admin.manage_labs', page=labs.next_num) }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Add Lab Modal -->
+<div class="modal fade" id="addLabModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('admin.manage_labs') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Laboratory</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="add">
+                    
+                    <div class="mb-3">
+                        <label for="lab_name" class="form-label">Lab Name</label>
+                        <input type="text" class="form-control" id="lab_name" name="lab_name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="lab_code" class="form-label">Lab Code</label>
+                        <input type="text" class="form-control" id="lab_code" name="lab_code" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Capacity</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" value="30">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="equipment" class="form-label">Equipment (comma-separated)</label>
+                        <textarea class="form-control" id="equipment" name="equipment" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Lab</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Lab Modals (dynamic) -->
+{% for lab in labs.items %}
+<div class="modal fade" id="editLabModal{{ lab.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('admin.manage_labs') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Laboratory</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="lab_id" value="{{ lab.id }}">
+                    
+                    <div class="mb-3">
+                        <label for="lab_name_{{ lab.id }}" class="form-label">Lab Name</label>
+                        <input type="text" class="form-control" id="lab_name_{{ lab.id }}" name="lab_name" value="{{ lab.lab_name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Lab Code</label>
+                        <input type="text" class="form-control" value="{{ lab.lab_code }}" disabled>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="capacity_{{ lab.id }}" class="form-label">Capacity</label>
+                        <input type="number" class="form-control" id="capacity_{{ lab.id }}" name="capacity" value="{{ lab.capacity }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="location_{{ lab.id }}" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location_{{ lab.id }}" name="location" value="{{ lab.location or '' }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="equipment_{{ lab.id }}" class="form-label">Equipment</label>
+                        <textarea class="form-control" id="equipment_{{ lab.id }}" name="equipment" rows="3">{{ lab.equipment or '' }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Lab</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

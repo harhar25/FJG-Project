@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}View Schedule - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2">
+                <i class="fas fa-calendar"></i> Weekly Lab Schedule
+            </h1>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <a href="?week_start={{ (week_start - timedelta(days=7)).strftime('%Y-%m-%d') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-chevron-left"></i> Previous Week
+                </a>
+                <span class="btn btn-light" disabled>
+                    Week of {{ week_start.strftime('%B %d, %Y') }}
+                </span>
+                <a href="?week_start={{ (week_start + timedelta(days=7)).strftime('%Y-%m-%d') }}" class="btn btn-outline-primary">
+                    Next Week <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Weekly Grid -->
+    <div class="row">
+        {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+        {% for i in range(7) %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        {{ days[i] }}
+                        <br>
+                        <small>{{ (week_start + timedelta(days=i)).strftime('%b %d') }}</small>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% set current_date = (week_start + timedelta(days=i)) %}
+                        {% set day_schedules = schedules | selectattr('scheduled_date', 'equalto', current_date) | list %}
+                        {% if day_schedules %}
+                            {% for schedule in day_schedules %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-flask-vial"></i> {{ schedule.laboratory.lab_code }}
+                                        </small>
+                                        {% if schedule.course %}
+                                        <br>
+                                        <small class="text-muted">{{ schedule.course.course_code }}</small>
+                                        {% endif %}
+                                    </div>
+                                    <span class="badge bg-{% if schedule.status == 'Available' %}success{% elif schedule.status == 'Reserved' %}info{% elif schedule.status == 'Maintenance' %}danger{% else %}warning{% endif %}">
+                                        {{ schedule.status }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <div class="list-group-item text-center text-muted py-4">
+                            <small>No sessions</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

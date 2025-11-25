@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2">
+                <i class="fas fa-bell"></i> Notifications
+            </h1>
+        </div>
+    </div>
+    
+    <!-- Notifications List -->
+    <div class="card shadow">
+        {% if notifications.items %}
+        <div class="list-group list-group-flush">
+            {% for notification in notifications.items %}
+            <div class="list-group-item {% if not notification.is_read %}list-group-item-light{% endif %}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">
+                            <i class="fas fa-info-circle text-info"></i>
+                            {{ notification.title }}
+                        </h6>
+                        <p class="mb-1 text-muted">{{ notification.message }}</p>
+                        <small class="text-muted">
+                            {{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </small>
+                    </div>
+                    {% if not notification.is_read %}
+                    <span class="badge bg-primary">New</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if notifications.pages > 1 %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if notifications.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('student.notifications', page=notifications.prev_num) }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in notifications.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num == notifications.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('student.notifications', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if notifications.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('student.notifications', page=notifications.next_num) }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="card-body text-center text-muted py-5">
+            <i class="fas fa-bell fa-3x mb-3 opacity-50"></i>
+            <p>No notifications yet</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Schedule by Section - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2">
+                <i class="fas fa-book"></i> Schedule by Course Section
+            </h1>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Select Course</label>
+                    <select class="form-select" id="courseFilter" onchange="filterSchedule()">
+                        <option value="">All Courses</option>
+                        {% for course in courses %}
+                        <option value="{{ course.id }}" {% if selected_course_id == course.id %}selected{% endif %}>
+                            {{ course.course_code }} - {{ course.course_name }} (Section {{ course.section }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Week Starting</label>
+                    <input type="date" class="form-control" id="weekFilter" value="{{ week_start }}" onchange="filterSchedule()">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Weekly Schedule -->
+    <div class="row">
+        {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+        {% for i in range(7) %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        {{ days[i] }}
+                        <br>
+                        <small>{{ (week_start + timedelta(days=i)).strftime('%b %d') }}</small>
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% set current_date = (week_start + timedelta(days=i)) %}
+                        {% set day_schedules = schedules | selectattr('scheduled_date', 'equalto', current_date) | list %}
+                        {% if day_schedules %}
+                            {% for schedule in day_schedules %}
+                            <div class="list-group-item">
+                                <div>
+                                    <strong>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-flask-vial"></i> {{ schedule.laboratory.lab_name }} ({{ schedule.laboratory.lab_code }})
+                                    </small>
+                                    {% if schedule.course %}
+                                    <br>
+                                    <small class="text-muted">
+                                        Capacity: {{ schedule.laboratory.capacity }}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <div class="list-group-item text-center text-muted py-3">
+                            <small>No sessions</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function filterSchedule() {
+    const courseId = document.getElementById('courseFilter').value;
+    const weekStart = document.getElementById('weekFilter').value;
+    const params = new URLSearchParams();
+    if (courseId) params.append('course_id', courseId);
+    if (weekStart) params.append('week_start', weekStart);
+    window.location.href = "{{ url_for('student.schedule_by_section') }}" + (params.toString() ? '?' + params.toString() : '');
+}
+</script>
+{% endblock %}

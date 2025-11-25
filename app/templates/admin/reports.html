@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2">
+                <i class="fas fa-chart-bar"></i> Laboratory Usage Reports
+            </h1>
+        </div>
+        <div class="col-12 mt-3">
+            <div class="form-group">
+                <label for="reportMonth" class="form-label">Select Month</label>
+                <input type="month" id="reportMonth" class="form-control" style="max-width: 200px;" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reports Cards -->
+    <div class="row">
+        {% for stat in labs_stats %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-flask-vial"></i> {{ stat.lab.lab_name }}
+                        <br>
+                        <small>{{ stat.lab.lab_code }}</small>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 border-end">
+                            <h4 class="text-primary">{{ stat.sessions }}</h4>
+                            <small class="text-muted">Sessions</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">{{ stat.total_hours }}h</h4>
+                            <small class="text-muted">Total Hours</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Utilization Rate</small>
+                        <strong class="text-primary">{{ stat.utilization_rate }}%</strong>
+                    </div>
+                    <div class="progress mt-2">
+                        <div class="progress-bar" role="progressbar" id="progress-{{ stat.lab.id }}" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Summary Stats -->
+    {% if labs_stats %}
+    <div class="card shadow mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Monthly Summary</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center border-end">
+                    <h4 class="text-primary">{{ labs_stats|length }}</h4>
+                    <small class="text-muted">Total Labs</small>
+                </div>
+                <div class="col-md-3 text-center border-end">
+                    <h4 class="text-success">{{ labs_stats|map(attribute='sessions')|sum }}</h4>
+                    <small class="text-muted">Total Sessions</small>
+                </div>
+                <div class="col-md-3 text-center border-end">
+                    <h4 class="text-info">{{ "%.1f" | format(labs_stats|map(attribute='total_hours')|sum) }}h</h4>
+                    <small class="text-muted">Total Hours</small>
+                </div>
+                <div class="col-md-3 text-center">
+                    <h4 class="text-warning">{{ "%.1f" | format(labs_stats|map(attribute='utilization_rate')|sum / labs_stats|length) }}%</h4>
+                    <small class="text-muted">Avg Utilization</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function filterReport() {
+    const month = document.getElementById('reportMonth').value;
+    if (month) {
+        window.location.href = "{{ url_for('admin.reports') }}?month=" + month;
+    }
+}
+
+// Set progress bar widths after page load
+document.addEventListener('DOMContentLoaded', function() {
+    const rates = [{% for stat in labs_stats %}{{ stat.utilization_rate }},{% endfor %}];
+    const labs = [{% for stat in labs_stats %}'{{ stat.lab.id }}',{% endfor %}];
+    rates.forEach((rate, index) => {
+        const element = document.getElementById('progress-' + labs[index]);
+        if (element) element.style.width = rate + '%';
+    });
+});
+</script>
+{% endblock %}
