@@ -65,7 +65,74 @@ def forgot_password():
     
     return render_template('forgot_password.html')
 
-@auth_bp.route('/register', methods=['GET', 'POST'])
+@auth_bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    """User self-registration (public signup)"""
+    if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        role = request.form.get('role', 'Student')
+        terms = request.form.get('terms')
+        
+        # Validate input
+        if not all([full_name, email, password, confirm_password, role, terms]):
+            flash('All fields are required.', 'error')
+            return redirect(url_for('auth.signup'))
+        
+        if password != confirm_password:
+            flash('Passwords do not match.', 'error')
+            return redirect(url_for('auth.signup'))
+        
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long.', 'error')
+            return redirect(url_for('auth.signup'))
+        
+        # Check if email already exists
+        if User.query.filter_by(email=email).first():
+            flash('An account with this email already exists.', 'error')
+            return redirect(url_for('auth.signup'))
+        
+        # Generate unique username from email
+        base_username = email.split('@')[0].lower()
+        username = base_username
+        counter = 1
+        while User.query.filter_by(username=username).first():
+            username = f"{base_username}{counter}"
+            counter += 1
+        
+        try:
+            # Map role names
+            role_map = {
+                'student': 'Student',
+                'instructor': 'Instructor',
+                'admin': 'Administrator'
+            }
+            
+            # Create new user
+            user = User(
+                username=username,
+                email=email,
+                full_name=full_name,
+                role=role_map.get(role, 'Student'),
+                is_active=True
+            )
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            
+            flash('Account created successfully! You can now log in.', 'success')
+            return redirect(url_for('auth.login'))
+        
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred during registration. Please try again.', 'error')
+            return redirect(url_for('auth.signup'))
+    
+    return render_template('signup.html')
+
+
 def register():
     """User registration (admin only feature)"""
     if request.method == 'POST':

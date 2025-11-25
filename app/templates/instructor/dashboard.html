@@ -3,135 +3,183 @@
 {% block title %}Instructor Dashboard - IT Lab Schedule System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
+<div class="container-fluid py-4">
+    <!-- Hero Section -->
+    <div class="row mb-5">
         <div class="col-12">
-            <h1 class="h2">
-                <i class="fas fa-chalkboard-user"></i> Instructor Dashboard
-            </h1>
-            <p class="text-muted">Welcome back, {{ current_user.full_name }}!</p>
+            <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 16px;">
+                <div class="card-body p-5">
+                    <h1 class="card-title display-5 fw-bold mb-2">
+                        <i class="fas fa-chalkboard-user me-3" style="font-size: 2.5rem;"></i>
+                        Instructor Dashboard
+                    </h1>
+                    <p class="card-text lead mb-0" style="opacity: 0.95;">Welcome back, {{ current_user.full_name }}! Here's an overview of your lab sessions and requests.</p>
+                </div>
+            </div>
         </div>
     </div>
     
     <!-- Quick Stats -->
-    <div class="row mb-4">
-        <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="text-primary text-uppercase mb-1">Pending Requests</div>
-                    <div class="h3 mb-0 font-weight-bold">{{ pending_requests }}</div>
+    <div class="row mb-5">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="dashboard-card shadow-elevation-2 h-100" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);">
+                <div class="d-flex align-items-center mb-3">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-tasks fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Pending Requests</h6>
+                    </div>
                 </div>
-                <div class="card-footer bg-light">
-                    <a href="{{ url_for('instructor.my_requests') }}" class="small text-primary">
-                        View All <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
+                <div class="stat-value" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem; font-weight: 700;">{{ pending_requests }}</div>
+                <p class="text-muted small mb-0 mt-2"><i class="fas fa-arrow-right"></i> Awaiting approval</p>
+                <a href="{{ url_for('instructor.my_requests') }}" class="btn btn-sm btn-outline-primary mt-3 w-100">
+                    <i class="fas fa-eye"></i> View All
+                </a>
             </div>
         </div>
         
-        <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="text-success text-uppercase mb-1">Unread Notifications</div>
-                    <div class="h3 mb-0 font-weight-bold">{{ unread_notifications }}</div>
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="dashboard-card shadow-elevation-2 h-100" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);">
+                <div class="d-flex align-items-center mb-3">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #22c1c3 0%, #fdbb2d 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-bell fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Notifications</h6>
+                    </div>
                 </div>
-                <div class="card-footer bg-light">
-                    <a href="{{ url_for('instructor.notifications') }}" class="small text-success">
-                        View Notifications <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
+                <div class="stat-value" style="background: linear-gradient(135deg, #22c1c3 0%, #fdbb2d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem; font-weight: 700;">{{ unread_notifications }}</div>
+                <p class="text-muted small mb-0 mt-2"><i class="fas fa-arrow-right"></i> Unread messages</p>
+                <a href="{{ url_for('instructor.notifications') }}" class="btn btn-sm btn-outline-primary mt-3 w-100">
+                    <i class="fas fa-envelope"></i> Check Notifications
+                </a>
             </div>
         </div>
     </div>
     
     <!-- Upcoming Sessions -->
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-calendar"></i> Upcoming Lab Sessions (Next 7 Days)
-                    </h5>
-                </div>
-                <div class="card-body">
-                    {% if upcoming_sessions %}
-                    <div class="list-group">
-                        {% for session in upcoming_sessions %}
-                        <div class="list-group-item">
+            <h4 class="mb-4 fw-bold text-dark" style="font-size: 1.5rem;">Upcoming Lab Sessions (Next 7 Days)</h4>
+            {% if upcoming_sessions %}
+            <div class="row">
+                {% for session in upcoming_sessions %}
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="dashboard-card shadow-elevation-2 h-100" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); overflow: hidden;">
+                        <!-- Gradient Header -->
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 16px; margin-bottom: 16px;">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <h6 class="mb-1">
-                                        {{ session.scheduled_date.strftime('%A, %B %d, %Y') }}
-                                    </h6>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock"></i> {{ session.start_time.strftime('%H:%M') }} - {{ session.end_time.strftime('%H:%M') }}
-                                    </small>
-                                    <br>
-                                    <small class="text-muted">
-                                        <i class="fas fa-flask-vial"></i> {{ session.laboratory.lab_name }} ({{ session.laboratory.lab_code }})
-                                    </small>
-                                    {% if session.course %}
-                                    <br>
-                                    <small class="text-muted">
-                                        <i class="fas fa-book"></i> {{ session.course.course_code }} - {{ session.course.section }}
-                                    </small>
-                                    {% endif %}
+                                    <h6 class="mb-1" style="font-size: 0.95rem; font-weight: 600;">{{ session.scheduled_date.strftime('%a, %b %d') }}</h6>
+                                    <small style="opacity: 0.9;"><i class="fas fa-clock me-1"></i>{{ session.start_time.strftime('%H:%M') }} - {{ session.end_time.strftime('%H:%M') }}</small>
                                 </div>
-                                <span class="badge bg-info">{{ session.status }}</span>
+                                <span class="badge bg-white text-primary" style="font-size: 0.75rem;">{{ session.status }}</span>
                             </div>
                         </div>
-                        {% endfor %}
+                        <!-- Card Body -->
+                        <div style="padding: 16px;">
+                            <p class="mb-2" style="color: #1a1a2e; font-weight: 600;">
+                                <i class="fas fa-flask-vial me-2" style="color: #4facfe;"></i>{{ session.laboratory.lab_name }}
+                            </p>
+                            <small class="text-muted d-block mb-1">Code: {{ session.laboratory.lab_code }}</small>
+                            {% if session.course %}
+                            <small class="text-muted d-block mb-2">
+                                <i class="fas fa-book me-1"></i>{{ session.course.course_code }} - Section {{ session.course.section }}
+                            </small>
+                            {% endif %}
+                            <a href="{{ url_for('instructor.view_schedule') }}" class="btn btn-sm btn-outline-primary w-100 mt-3">
+                                <i class="fas fa-arrow-right"></i> View Details
+                            </a>
+                        </div>
                     </div>
-                    {% else %}
-                    <p class="text-muted text-center py-4">
-                        <i class="fas fa-info-circle"></i> No sessions scheduled for the next 7 days
-                    </p>
-                    {% endif %}
                 </div>
-                <div class="card-footer bg-light">
-                    <a href="{{ url_for('instructor.view_schedule') }}" class="btn btn-sm btn-primary">
-                        View Full Schedule
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info border-0 rounded-3" style="background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%); border-left: 4px solid #4facfe;">
+                <i class="fas fa-info-circle text-info me-2"></i>
+                <strong>No sessions scheduled</strong> for the next 7 days
+            </div>
+            {% endif %}
+            <div class="mt-3">
+                <a href="{{ url_for('instructor.view_schedule') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none;">
+                    <i class="fas fa-calendar"></i> View Full Schedule
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h4 class="mb-4 fw-bold text-dark" style="font-size: 1.5rem;">Quick Actions</h4>
+            <div class="row g-3">
+                <!-- Submit Request -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('instructor.submit_request') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(79, 172, 254, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-plus-circle fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">Submit Request</h6>
+                            <small class="text-muted">New lab session request</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- My Requests -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('instructor.my_requests') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(34, 193, 230, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #22c1c3 0%, #fdbb2d 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-list fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">My Requests</h6>
+                            <small class="text-muted">View your submissions</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- View Schedule -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('instructor.view_schedule') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(250, 112, 154, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-calendar-check fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">View Schedule</h6>
+                            <small class="text-muted">Lab sessions calendar</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notifications -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('instructor.notifications') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(102, 126, 234, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-bell fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">Notifications</h6>
+                            <small class="text-muted">Check your messages</small>
+                        </div>
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Quick Actions -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-bolt"></i> Quick Actions
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('instructor.submit_request') }}" class="btn btn-primary w-100">
-                                <i class="fas fa-plus-circle"></i> Submit Request
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('instructor.my_requests') }}" class="btn btn-info w-100">
-                                <i class="fas fa-list"></i> My Requests
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('instructor.view_schedule') }}" class="btn btn-success w-100">
-                                <i class="fas fa-calendar"></i> View Schedule
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('instructor.notifications') }}" class="btn btn-warning w-100">
-                                <i class="fas fa-bell"></i> Notifications
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+    <style>
+        .btn-action-card:hover {
+            transform: translateY(-6px) !important;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12) !important;
+            border-color: rgba(79, 172, 254, 0.5) !important;
+        }
+    </style>
 </div>
 {% endblock %}

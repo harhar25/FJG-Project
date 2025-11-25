@@ -3,96 +3,151 @@
 {% block title %}Admin Dashboard - IT Lab Schedule System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
+<div class="container-fluid py-4">
+    <!-- Hero Section -->
+    <div class="row mb-5">
         <div class="col-12">
-            <h1 class="h2">
-                <i class="fas fa-tachometer-alt"></i> Administrator Dashboard
-            </h1>
-            <p class="text-muted">System Overview and Quick Actions</p>
+            <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 16px;">
+                <div class="card-body p-5">
+                    <h1 class="card-title display-5 fw-bold mb-2">
+                        <i class="fas fa-shield-alt me-3" style="font-size: 2.5rem;"></i>
+                        Administrator Dashboard
+                    </h1>
+                    <p class="card-text lead mb-0" style="opacity: 0.95;">Welcome back! Here's your system overview and quick insights.</p>
+                </div>
+            </div>
         </div>
     </div>
-    
     <!-- Stats Row -->
-    <div class="row mb-4">
-        <div class="col-md-6 col-lg-4 mb-3 mb-lg-0">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="text-primary text-uppercase mb-1">Total Labs</div>
-                    <div class="h3 mb-0 font-weight-bold">{{ total_labs }}</div>
-                </div>
-                <div class="card-footer bg-light">
-                    <a href="{{ url_for('admin.manage_labs') }}" class="small text-primary">
-                        View Details <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-6 col-lg-4 mb-3 mb-lg-0">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="text-success text-uppercase mb-1">Scheduled Sessions</div>
-                    <div class="h3 mb-0 font-weight-bold">{{ total_sessions }}</div>
-                </div>
-                <div class="card-footer bg-light">
-                    <a href="{{ url_for('admin.view_schedule') }}" class="small text-success">
-                        View Schedule <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-6 col-lg-4 mb-3 mb-lg-0">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="text-warning text-uppercase mb-1">Pending Requests</div>
-                    <div class="h3 mb-0 font-weight-bold">{{ pending_requests }}</div>
-                </div>
-                <div class="card-footer bg-light">
-                    <a href="{{ url_for('admin.approve_requests') }}" class="small text-warning">
-                        Review Now <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-bolt"></i> Quick Actions
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('admin.manage_labs') }}" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-flask-vial"></i> Manage Labs
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('admin.manage_instructors') }}" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-chalkboard-user"></i> Manage Instructors
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('admin.view_schedule') }}" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-calendar"></i> View Schedule
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-lg-3 mb-2">
-                            <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-chart-bar"></i> View Reports
-                            </a>
-                        </div>
+    <div class="row mb-5">
+        <!-- Total Labs Card -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="dashboard-card shadow-elevation-2 h-100" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);">
+                <div class="d-flex align-items-center mb-3">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-flask-vial fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Total Labs</h6>
                     </div>
                 </div>
+                <div class="stat-value" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem; font-weight: 700;">{{ total_labs }}</div>
+                <p class="text-muted small mb-0 mt-2"><i class="fas fa-arrow-right"></i> Laboratory facilities available</p>
+                <a href="{{ url_for('admin.manage_labs') }}" class="btn btn-sm btn-outline-primary mt-3 w-100">
+                    <i class="fas fa-cog"></i> Manage Labs
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scheduled Sessions Card -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="dashboard-card shadow-elevation-2 h-100" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);">
+                <div class="d-flex align-items-center mb-3">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-calendar-check fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Sessions</h6>
+                    </div>
+                </div>
+                <div class="stat-value" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem; font-weight: 700;">{{ total_sessions }}</div>
+                <p class="text-muted small mb-0 mt-2"><i class="fas fa-arrow-right"></i> Scheduled lab sessions</p>
+                <a href="{{ url_for('admin.view_schedule') }}" class="btn btn-sm btn-outline-primary mt-3 w-100">
+                    <i class="fas fa-eye"></i> View Schedule
+                </a>
+            </div>
+        </div>
+        
+        <!-- Pending Requests Card -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="dashboard-card shadow-elevation-2 h-100" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);">
+                <div class="d-flex align-items-center mb-3">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-tasks fa-lg text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Pending</h6>
+                    </div>
+                </div>
+                <div class="stat-value" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem; font-weight: 700;">{{ pending_requests }}</div>
+                <p class="text-muted small mb-0 mt-2"><i class="fas fa-arrow-right"></i> Requests awaiting approval</p>
+                <a href="{{ url_for('admin.approve_requests') }}" class="btn btn-sm btn-outline-primary mt-3 w-100">
+                    <i class="fas fa-check-circle"></i> Review Now
+                </a>
             </div>
         </div>
     </div>
+    
+    <!-- Quick Actions Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h4 class="mb-4 fw-bold text-dark" style="font-size: 1.5rem;">Quick Actions</h4>
+            <div class="row g-3">
+                <!-- Manage Labs -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('admin.manage_labs') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(102, 126, 234, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-flask-vial fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">Manage Labs</h6>
+                            <small class="text-muted">Configure lab facilities</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Manage Instructors -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('admin.manage_instructors') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(79, 172, 254, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-chalkboard-user fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">Manage Instructors</h6>
+                            <small class="text-muted">Faculty management</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- View Schedule -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('admin.view_schedule') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(34, 193, 230, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #22c1c3 0%, #fdbb2d 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-calendar-check fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">View Schedule</h6>
+                            <small class="text-muted">Lab sessions timeline</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Reports -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="{{ url_for('admin.reports') }}" class="btn-action-card" 
+                       style="display: block; padding: 24px; border-radius: 14px; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid rgba(250, 112, 154, 0.2); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.08); height: 100%;">
+                        <div class="text-center">
+                            <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <i class="fas fa-chart-bar fa-lg text-white"></i>
+                            </div>
+                            <h6 class="mb-2 fw-600" style="color: #1a1a2e;">View Reports</h6>
+                            <small class="text-muted">Analytics & insights</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .btn-action-card:hover {
+            transform: translateY(-6px) !important;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12) !important;
+            border-color: rgba(102, 126, 234, 0.5) !important;
+        }
+    </style>
 </div>
 {% endblock %}

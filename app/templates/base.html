@@ -1,118 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
+    <!-- Meta Tags - SEO & Security -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self'">
+    <meta name="description" content="Enterprise-grade IT Laboratory Utilization Schedule Management System">
+    <meta name="keywords" content="laboratory, schedule, IT lab, reservation, management">
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="app-name" content="IT Lab Schedule System">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <title>{% block title %}IT Laboratory Utilization Schedule System{% endblock %}</title>
     
+    <!-- Preconnect to CDNs for performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://code.jquery.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUarbnLYV7BL0n8/4ePLpQBHXQnbc5PkaseX8L2iSTvao585z/z" crossorigin="anonymous">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6usKICT5enwQhdARiW3xQ52k5+ALBmP4lAR4DvMiZVWises+mpg69nPGEQrsPg==" crossorigin="anonymous">
+    <!-- Enterprise CSS Framework -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enterprise.css') }}">
+    <!-- Visual Design CSS (Modern Aesthetics) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/visual-design.css') }}">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' fill='%230d6efd'>⚗</text></svg>">
+    
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100" data-page-loaded="false">
     {% if current_user.is_authenticated %}
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-to-content-link">Skip to main content</a>
+    
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-lg" role="navigation" aria-label="Main navigation" style="background: linear-gradient(135deg, #0d6efd 0%, #0055cc 100%); border-bottom: 3px solid rgba(255,255,255,0.1);">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-flask"></i> IT Lab Schedule System
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('student.dashboard') if current_user.role == 'Student' else url_for('instructor.dashboard') if current_user.role == 'Instructor' else url_for('admin.dashboard') }}" aria-label="IT Lab Schedule System Home" style="font-size: 1.4rem;">
+                <i class="fas fa-flask-vial me-2" aria-hidden="true" style="font-size: 1.6rem;"></i>
+                <span class="d-none d-sm-inline-block">Lab Schedule</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if current_user.role == 'Administrator' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.dashboard') }}" aria-label="Administrator Dashboard">
+                            <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.manage_labs') }}">
-                            <i class="fas fa-flask-vial"></i> Manage Labs
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.manage_labs') }}" aria-label="Manage Laboratory Rooms">
+                            <i class="fas fa-flask-vial me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Labs</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.manage_instructors') }}">
-                            <i class="fas fa-chalkboard-user"></i> Instructors
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.manage_instructors') }}" aria-label="Manage Instructors">
+                            <i class="fas fa-chalkboard-user me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Instructors</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.approve_requests') }}">
-                            <i class="fas fa-check-circle"></i> Approve Requests
+                        <a class="nav-link d-flex align-items-center position-relative" href="{{ url_for('admin.approve_requests') }}" aria-label="Approve Reservation Requests">
+                            <i class="fas fa-check-circle me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Approvals</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.reports') }}">
-                            <i class="fas fa-chart-bar"></i> Reports
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('admin.reports') }}" aria-label="View Reports and Analytics">
+                            <i class="fas fa-chart-bar me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Reports</span>
                         </a>
                     </li>
                     {% elif current_user.role == 'Instructor' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('instructor.dashboard') }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.dashboard') }}" aria-label="Instructor Dashboard">
+                            <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('instructor.submit_request') }}">
-                            <i class="fas fa-plus-circle"></i> New Request
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.submit_request') }}" aria-label="Submit New Lab Reservation Request">
+                            <i class="fas fa-plus-circle me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> New Request</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('instructor.my_requests') }}">
-                            <i class="fas fa-list"></i> My Requests
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.my_requests') }}" aria-label="View My Reservation Requests">
+                            <i class="fas fa-list me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> My Requests</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('instructor.view_schedule') }}">
-                            <i class="fas fa-calendar"></i> Schedule
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('instructor.view_schedule') }}" aria-label="View Weekly Lab Schedule">
+                            <i class="fas fa-calendar me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Schedule</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('instructor.notifications') }}">
-                            <i class="fas fa-bell"></i> Notifications
-                            <span id="notif-badge" class="badge bg-danger d-none">0</span>
+                        <a class="nav-link d-flex align-items-center position-relative" href="{{ url_for('instructor.notifications') }}" aria-label="View Notifications">
+                            <i class="fas fa-bell me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Notifications</span>
+                            <span id="notif-badge" class="badge bg-danger position-absolute top-0 start-100 translate-middle d-none" aria-label="Unread notifications count">0</span>
                         </a>
                     </li>
                     {% elif current_user.role == 'Student' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('student.dashboard') }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        <a class="nav-link d-flex align-items-center" href="{{ url_for('student.dashboard') }}" aria-label="Student Dashboard">
+                            <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="scheduleDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-calendar"></i> View Schedule
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="scheduleDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="View Schedule Options">
+                            <i class="fas fa-calendar me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Schedule</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="scheduleDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_lab') }}">By Lab Room</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_instructor') }}">By Instructor</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_section') }}">By Section</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_lab') }}"><i class="fas fa-flask-vial me-2"></i>By Lab Room</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_instructor') }}"><i class="fas fa-chalkboard-user me-2"></i>By Instructor</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('student.schedule_by_section') }}"><i class="fas fa-book me-2"></i>By Section</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('student.notifications') }}">
-                            <i class="fas fa-bell"></i> Notifications
-                            <span id="notif-badge" class="badge bg-danger d-none">0</span>
+                        <a class="nav-link d-flex align-items-center position-relative" href="{{ url_for('student.notifications') }}" aria-label="View Notifications">
+                            <i class="fas fa-bell me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none"> Notifications</span>
+                            <span id="notif-badge" class="badge bg-danger position-absolute top-0 start-100 translate-middle d-none" aria-label="Unread notifications count">0</span>
                         </a>
                     </li>
                     {% endif %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> {{ current_user.full_name }}
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
+                            <i class="fas fa-user-circle me-1" aria-hidden="true"></i>
+                            <span class="d-lg-none">{{ current_user.full_name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -122,12 +162,13 @@
     {% endif %}
     
     <!-- Main Content -->
-    <div class="{% if current_user.is_authenticated %}container-fluid{% else %}container-fluid min-vh-100{% endif %} py-4">
+    <main id="main-content" class="flex-grow-1 {% if current_user.is_authenticated %}container-fluid{% else %}container-fluid min-vh-100{% endif %} py-4" style="background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);">
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 10px; border: none; animation: slideDown 0.4s ease;">
+                    <i class="fas fa-{{ 'exclamation-circle' if category == 'error' else 'check-circle' }} me-2"></i>
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -137,21 +178,57 @@
         
         <!-- Page Content -->
         {% block content %}{% endblock %}
-    </div>
+    </main>
     
     <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-4">
-        <div class="container-fluid text-center">
-            <p class="mb-0">&copy; 2025 IT Laboratory Utilization Schedule System. All rights reserved.</p>
+    <footer class="mt-auto py-4 border-top" role="contentinfo" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; border-color: rgba(255,255,255,0.1) !important;">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="mb-0"><strong><i class="fas fa-flask-vial me-2"></i>IT Laboratory Utilization Schedule System</strong></p>
+                    <small class="text-white-50">All rights reserved &copy; 2025</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-white-50">
+                        <i class="fas fa-code me-1"></i>Enterprise Edition v1.0.0 | 
+                        <i class="fas fa-shield-alt me-1"></i>Enterprise-Grade Security
+                    </small>
+                </div>
+            </div>
         </div>
     </footer>
     
+    <!-- Toast Container for Notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-white">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong class="me-auto" id="toast-title">Notification</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-message">
+                <!-- Content injected by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4DrDynFVt3oCG6QaO8-GyBtvScMOrScpm+V8ev7yHnzV8zzVfrSew3ClgFO" crossorigin="anonymous" defer></script>
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj3OJU5yExlq6GSYGSHk7tPFijkP835m5L8xAxjA=" crossorigin="anonymous" defer></script>
+    <!-- Enterprise App Framework -->
+    <script src="{{ url_for('static', filename='js/app-framework.js') }}" defer></script>
+    <!-- Enhanced Main Application Script -->
+    <script src="{{ url_for('static', filename='js/main-enhanced.js') }}" defer></script>
+    
+    <!-- Page Analytics Tracker -->
+    <script>
+        // Enterprise-grade page tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.setAttribute('data-page-loaded', 'true');
+            AppMonitor.init();
+        });
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>
