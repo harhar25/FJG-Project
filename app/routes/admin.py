@@ -285,3 +285,13 @@ def reports():
                          labs_stats=labs_stats,
                          report_month=month_start,
                          report_type=report_type)
+
+@admin_bp.route('/notifications')
+@login_required
+@admin_required
+def notifications():
+    """Admin notifications"""
+    page = request.args.get('page', 1, type=int)
+    notifications = Notification.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=20)
+    
+    return render_template('admin/notifications.html', notifications=notifications)

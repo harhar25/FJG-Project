@@ -61,6 +61,14 @@ def preferences():
     """User preferences/settings page"""
     return render_template('preferences.html', user=current_user)
 
+@auth_bp.route('/messages')
+@login_required
+def messages():
+    """User messages page"""
+    page = request.args.get('page', 1, type=int)
+    # Placeholder for messages functionality
+    return render_template('messages.html', page=page)
+
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     """Handle forgot password (simplified version)"""
