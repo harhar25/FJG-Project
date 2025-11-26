@@ -2019,16 +2019,24 @@
                 'Analytics': { icon: 'fa-chart-bar', action: 'loadAnalytics' },
                 'Reports': { icon: 'fa-chart-bar', action: 'loadReports' },
                 'Statistics': { icon: 'fa-chart-line', action: 'loadStatistics' },
-                'Profile Settings': { icon: 'fa-user', action: 'loadProfile' },
-                'Preferences': { icon: 'fa-cog', action: 'loadPreferences' },
-                'Logout': { icon: 'fa-sign-out-alt', action: 'handleLogout' }
+                'Profile Settings': { icon: 'fa-user', action: 'navigate' },
+                'Preferences': { icon: 'fa-cog', action: 'navigate' },
+                'Logout': { icon: 'fa-sign-out-alt', action: 'navigate' }
             };
 
             sidebarNavLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    e.preventDefault();
                     const text = this.textContent.trim();
                     const route = navRoutes[text];
+                    
+                    // For Profile, Preferences, and Logout - allow natural navigation
+                    if (route && route.action === 'navigate') {
+                        // Don't prevent default - let the href work
+                        return true;
+                    }
+                    
+                    // For other routes - prevent default and show UI feedback
+                    e.preventDefault();
                     
                     // Remove active class from all links
                     sidebarNavLinks.forEach(l => l.classList.remove('active'));
@@ -2038,19 +2046,10 @@
                     if (route) {
                         console.log(`🔗 Navigation: ${text} (${route.action})`);
                         // Execute corresponding action
-                        if (route.action === 'handleLogout') {
-                            if (confirm('Are you sure you want to logout?')) {
-                                console.log('✅ Logout initiated');
-                                // window.location.href = '/logout'; // Uncomment to enable
-                            } else {
-                                this.classList.add('active');
-                            }
-                        } else {
-                            console.log(`✅ Loading ${text}...`);
-                            // Add visual feedback
-                            this.style.opacity = '0.8';
-                            setTimeout(() => { this.style.opacity = '1'; }, 200);
-                        }
+                        console.log(`✅ Loading ${text}...`);
+                        // Add visual feedback
+                        this.style.opacity = '0.8';
+                        setTimeout(() => { this.style.opacity = '1'; }, 200);
                     }
                 });
 
