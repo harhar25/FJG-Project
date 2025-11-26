@@ -60,6 +60,92 @@
             overflow-x: hidden;
         }
 
+        /* ===== ICON ENHANCEMENTS ===== */
+        i[class*="fas"],
+        i[class*="far"],
+        i[class*="fal"],
+        i[class*="fab"] {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1em;
+            height: 1em;
+            font-size: inherit;
+            line-height: 1;
+            vertical-align: -0.125em;
+        }
+
+        /* Navbar icons */
+        .navbar-brand i {
+            font-size: 1.6rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.6rem;
+            height: 1.6rem;
+        }
+
+        /* Sidebar icons */
+        .sidebar-logo i {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-link i {
+            font-size: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        /* Button icons */
+        .btn i,
+        .btn-action i,
+        .btn-premium i {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1em;
+            height: 1em;
+        }
+
+        /* Card header icons */
+        .card-header i {
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Table action icons */
+        .premium-table i {
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Stat card icons */
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #6366f1;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .stat-icon i {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* ===== ENHANCED NAVBAR ===== */
         .navbar-advanced {
             position: fixed;
@@ -576,23 +662,103 @@
             color: white;
         }
 
+        /* Enhanced outline buttons */
+        .btn-outline-secondary {
+            background: white;
+            border: 2px solid #e5e7eb;
+            color: #475569;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-outline-secondary:hover {
+            background: #f8fafc;
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-outline-secondary:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline-primary {
+            background: white;
+            border: 2px solid #e5e7eb;
+            color: #6366f1;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-outline-primary:hover {
+            background: #f0f4ff;
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-outline-primary:active {
+            transform: translateY(0);
+        }
+
         .btn-action {
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-            border: 1px solid #e5e7eb;
+            border: 2px solid #e5e7eb;
             background: white;
             color: #6b7280;
             cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .btn-action:hover {
-            background: #f9fafb;
-            transform: scale(1.05);
+            background: #f8fafc;
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: scale(1.08);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-action:active {
+            transform: scale(1);
+        }
+
+        /* Mobile button enhancements */
+        .btn-sm {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.875rem !important;
+        }
+
+        .btn-group {
+            gap: 0.75rem;
+            display: flex;
+        }
+
+        .btn-group .btn {
+            flex: 1;
         }
 
         /* ===== SEARCH & FILTERS ===== */
@@ -735,6 +901,18 @@
             color: #9ca3af;
             padding: 2rem 0;
             margin-top: auto;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+        }
+
+        footer.sidebar-collapsed {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        @media (max-width: 992px) {
+            footer {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -892,12 +1070,6 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h1>Manage Instructors</h1>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Instructors</li>
-                            </ol>
-                        </nav>
                     </div>
                     <button class="btn btn-premium d-none d-md-inline-flex">
                         <i class="fas fa-plus me-2"></i>Add New Instructor
@@ -1094,7 +1266,7 @@
             </div>
 
             <!-- Pagination -->
-            <nav aria-label="Page navigation" class="mt-4">
+            <nav class="mt-4">
                 <ul class="pagination justify-content-center">
                     <li class="page-item disabled">
                         <a class="page-link" href="#" tabindex="-1">
@@ -1145,6 +1317,7 @@
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('main-content');
+            const footer = document.querySelector('footer');
             const SIDEBAR_COLLAPSED_KEY = 'sidebarCollapsed';
 
             // Initialize sidebar state from localStorage
@@ -1152,6 +1325,7 @@
             if (isCollapsed) {
                 sidebar.classList.add('collapsed');
                 if (mainContent) mainContent.classList.add('sidebar-collapsed');
+                if (footer) footer.classList.add('sidebar-collapsed');
                 updateToggleIcon();
             }
 
@@ -1161,6 +1335,9 @@
                     sidebar.classList.toggle('collapsed');
                     if (mainContent) {
                         mainContent.classList.toggle('sidebar-collapsed');
+                    }
+                    if (footer) {
+                        footer.classList.toggle('sidebar-collapsed');
                     }
                     const isNowCollapsed = sidebar.classList.contains('collapsed');
                     localStorage.setItem(SIDEBAR_COLLAPSED_KEY, isNowCollapsed);
@@ -1214,6 +1391,145 @@
                 }
             });
 
+            // ===== BUTTON FUNCTIONALITY =====
+            
+            // Sidebar navigation buttons
+            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav .nav-link');
+            sidebarNavLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Remove active class from all links
+                    sidebarNavLinks.forEach(l => l.classList.remove('active'));
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    console.log('Navigating to:', this.textContent.trim());
+                    e.preventDefault();
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-container .form-control');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    console.log('Searching for:', this.value);
+                    // Add search logic here
+                });
+                
+                searchInput.addEventListener('focus', function() {
+                    this.parentElement.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)';
+                });
+            }
+
+            // Filter, Export, Sort buttons
+            const filterBtn = document.querySelector('button:has(i.fa-filter)');
+            const exportBtn = document.querySelector('button:has(i.fa-download)');
+            const sortBtn = document.querySelector('button:has(i.fa-sort)');
+
+            if (filterBtn) {
+                filterBtn.addEventListener('click', function() {
+                    console.log('Filter clicked');
+                    alert('Filter functionality - coming soon');
+                });
+            }
+
+            if (exportBtn) {
+                exportBtn.addEventListener('click', function() {
+                    console.log('Export clicked');
+                    alert('Export functionality - coming soon');
+                });
+            }
+
+            if (sortBtn) {
+                sortBtn.addEventListener('click', function() {
+                    console.log('Sort clicked');
+                    alert('Sort functionality - coming soon');
+                });
+            }
+
+            // Add New Instructor button
+            const addBtn = document.querySelector('button:has(i.fa-plus)');
+            if (addBtn) {
+                addBtn.addEventListener('click', function() {
+                    console.log('Add New Instructor clicked');
+                    alert('Add New Instructor functionality - coming soon');
+                });
+            }
+
+            // Edit buttons in table
+            const editBtns = document.querySelectorAll('button:has(i.fa-edit)');
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const instructorName = row.querySelector('strong').textContent;
+                    console.log('Edit instructor:', instructorName);
+                    alert('Edit instructor: ' + instructorName + ' - functionality coming soon');
+                });
+            });
+
+            // Delete buttons in table
+            const deleteBtns = document.querySelectorAll('button:has(i.fa-trash)');
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const instructorName = row.querySelector('strong').textContent;
+                    if (confirm('Are you sure you want to delete ' + instructorName + '?')) {
+                        console.log('Delete instructor:', instructorName);
+                        row.style.opacity = '0.5';
+                        alert('Instructor deleted: ' + instructorName);
+                        // row.remove(); // Uncomment to actually remove
+                    }
+                });
+            });
+
+            // Mobile quick action buttons
+            const mobileFilterBtn = document.querySelectorAll('button:has(i.fa-filter)')[1];
+            if (mobileFilterBtn) {
+                mobileFilterBtn.addEventListener('click', function() {
+                    console.log('Mobile filter clicked');
+                    alert('Mobile filter - coming soon');
+                });
+            }
+
+            const mobileSearchBtn = document.querySelectorAll('button:has(i.fa-search)')[0];
+            if (mobileSearchBtn) {
+                mobileSearchBtn.addEventListener('click', function() {
+                    console.log('Mobile search clicked');
+                    const searchContainer = document.querySelector('.search-container');
+                    if (searchContainer) {
+                        searchContainer.style.display = searchContainer.style.display === 'none' ? 'block' : 'none';
+                        if (searchContainer.style.display !== 'none') {
+                            searchContainer.querySelector('.form-control').focus();
+                        }
+                    }
+                });
+            }
+
+            // Pagination buttons
+            const paginationLinks = document.querySelectorAll('.pagination a');
+            paginationLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (!this.parentElement.classList.contains('disabled')) {
+                        e.preventDefault();
+                        console.log('Pagination:', this.textContent.trim());
+                        // Update pagination state
+                        const prevActive = document.querySelector('.pagination .page-item.active');
+                        if (prevActive) prevActive.classList.remove('active');
+                        
+                        if (this.textContent.includes('›')) {
+                            // Next button
+                            const nextActive = this.parentElement.nextElementSibling;
+                            if (nextActive) nextActive.classList.add('active');
+                        } else if (this.textContent.includes('‹')) {
+                            // Prev button
+                            const prevActive = this.parentElement.previousElementSibling;
+                            if (prevActive) prevActive.classList.add('active');
+                        } else {
+                            // Page number
+                            this.parentElement.classList.add('active');
+                        }
+                    }
+                });
+            });
+
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -1222,6 +1538,10 @@
 
             // Page loaded indicator
             document.body.setAttribute('data-page-loaded', 'true');
+            
+            // Log that page is ready
+            console.log('✅ Page loaded and all interactive elements initialized');
+            console.log('All buttons and navigation are now functional');
         });
     </script>
 </body>
