@@ -3,85 +3,165 @@
 {% block title %}Schedule by Instructor - IT Lab Schedule System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h2">
-                <i class="fas fa-chalkboard-user"></i> Schedule by Instructor
-            </h1>
-        </div>
-    </div>
-    
-    <!-- Filters -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Select Instructor</label>
-                    <select class="form-select" id="instructorFilter" onchange="filterSchedule()">
-                        <option value="">All Instructors</option>
-                        {% for instructor in instructors %}
-                        <option value="{{ instructor.id }}" {% if selected_instructor_id == instructor.id %}selected{% endif %}>
-                            {{ instructor.full_name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Week Starting</label>
-                    <input type="date" class="form-control" id="weekFilter" value="{{ week_start }}" onchange="filterSchedule()">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Weekly Schedule -->
-    <div class="row">
-        {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-        {% for i in range(7) %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">
-                        {{ days[i] }}
-                        <br>
-                        <small>{{ (week_start + timedelta(days=i)).strftime('%b %d') }}</small>
-                    </h6>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        {% set current_date = (week_start + timedelta(days=i)) %}
-                        {% set day_schedules = schedules | selectattr('scheduled_date', 'equalto', current_date) | list %}
-                        {% if day_schedules %}
-                            {% for schedule in day_schedules %}
-                            <div class="list-group-item">
-                                <div>
-                                    <strong>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</strong>
-                                    <br>
-                                    <small class="text-muted">
-                                        <i class="fas fa-flask-vial"></i> {{ schedule.laboratory.lab_code }}
-                                    </small>
-                                    {% if schedule.course %}
-                                    <br>
-                                    <small class="text-muted">
-                                        {{ schedule.course.course_code }} - {{ schedule.course.section }}
-                                    </small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                        <div class="list-group-item text-center text-muted py-3">
-                            <small>No sessions</small>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+<!-- Hero Section -->
+<div class="hero-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <i class="fas fa-chalkboard-user me-3"></i>Schedule by Instructor
+        </h1>
+        <p class="hero-subtitle">View lab sessions organized by instructor</p>
     </div>
 </div>
+
+<!-- Filters -->
+<div class="premium-card mb-4">
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label fw-600 mb-2">
+                    <i class="fas fa-user-tie me-2"></i>Select Instructor
+                </label>
+                <select class="form-select form-select-modern" id="instructorFilter" onchange="filterSchedule()">
+                    <option value="">All Instructors</option>
+                    {% for instructor in instructors %}
+                    <option value="{{ instructor.id }}" {% if selected_instructor_id == instructor.id %}selected{% endif %}>
+                        {{ instructor.full_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-600 mb-2">
+                    <i class="fas fa-calendar me-2"></i>Week Starting
+                </label>
+                <input type="date" class="form-control form-control-modern" id="weekFilter" value="{{ week_start }}" onchange="filterSchedule()">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Weekly Schedule Grid -->
+<div class="schedule-grid">
+    {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+    {% for i in range(7) %}
+    <div class="schedule-card">
+        <div class="schedule-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <h5 class="mb-0 text-white">
+                {{ days[i] }}
+            </h5>
+            <small class="text-white-50">
+                {{ (week_start + timedelta(days=i)).strftime('%b %d') }}
+            </small>
+        </div>
+        <div class="schedule-body">
+            {% set current_date = (week_start + timedelta(days=i)) %}
+            {% set day_schedules = schedules | selectattr('scheduled_date', 'equalto', current_date) | list %}
+            {% if day_schedules %}
+                {% for schedule in day_schedules %}
+                <div class="session-item">
+                    <div class="session-time">
+                        <i class="fas fa-clock text-primary me-2"></i>
+                        <strong>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</strong>
+                    </div>
+                    <div class="session-lab">
+                        <i class="fas fa-flask-vial me-2"></i>
+                        {{ schedule.laboratory.lab_code }}
+                    </div>
+                    {% if schedule.course %}
+                    <div class="session-course">
+                        <i class="fas fa-book me-2"></i>
+                        {{ schedule.course.course_code }} - Section {{ schedule.course.section }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i>
+                <p>No sessions scheduled</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.form-select-modern,
+.form-control-modern {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.form-select-modern:focus,
+.form-control-modern:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.schedule-card {
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.schedule-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.schedule-body {
+    padding: 1rem;
+}
+
+.session-item {
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid #667eea;
+    font-size: 0.9rem;
+}
+
+.session-item:last-child {
+    margin-bottom: 0;
+}
+
+.session-time {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.session-lab,
+.session-course {
+    color: #555;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 <script>
 function filterSchedule() {
