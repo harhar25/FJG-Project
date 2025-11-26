@@ -1576,6 +1576,13 @@
 
         <!-- Enhanced Main Content -->
         <main class="main-content" id="main-content">
+            <!-- Back Button -->
+            <div class="mb-4" id="backButtonContainer" style="display: none;">
+                <button class="btn btn-outline-secondary btn-sm" onclick="window.history.back()" title="Go back to previous page">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </button>
+            </div>
+
             <!-- Jinja2 Block for child template content -->
             {% block content %}
             <!-- Default content if no child template overrides this block -->
@@ -2531,6 +2538,15 @@
             
             // Initialize edit/delete listeners
             attachEditDeleteListeners();
+            
+            // ===== BACK BUTTON FUNCTIONALITY =====
+            const backButtonContainer = document.getElementById('backButtonContainer');
+            if (backButtonContainer) {
+                // Show back button if there's history to go back to
+                if (window.history.length > 1) {
+                    backButtonContainer.style.display = 'block';
+                }
+            }
             
             // Log that page is ready
             console.log('✅ Page loaded and all interactive elements initialized');
