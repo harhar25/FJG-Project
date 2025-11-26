@@ -1343,7 +1343,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark navbar-advanced" role="navigation" aria-label="Main navigation" id="mainNavbar">
         <div class="container-fluid px-3 px-md-4">
             <!-- Brand -->
-            <a class="navbar-brand" href="#" aria-label="IT Lab Schedule System Home">
+            <a class="navbar-brand" href="{{ url_for('student.dashboard') if current_user.is_authenticated and current_user.role == 'Student' else (url_for('instructor.dashboard') if current_user.is_authenticated and current_user.role == 'Instructor' else (url_for('admin.dashboard') if current_user.is_authenticated and current_user.role == 'Administrator' else url_for('auth.login'))) }}" aria-label="IT Lab Schedule System Home">
                 <i class="fas fa-flask-vial" aria-hidden="true"></i>
                 <span class="d-none d-sm-inline">LabSchedule Pro</span>
             </a>
@@ -1546,11 +1546,11 @@
             <div class="nav-section mt-auto">
                 <h6 class="nav-section-title">User Account</h6>
                 <nav class="nav flex-column sidebar-nav">
-                    <a class="nav-link" href="#" data-tooltip="Profile Settings">
+                    <a class="nav-link" href="{{ url_for('auth.profile') }}" data-tooltip="Profile Settings">
                         <i class="fas fa-user me-3"></i>
                         Profile Settings
                     </a>
-                    <a class="nav-link" href="#" data-tooltip="Preferences">
+                    <a class="nav-link" href="{{ url_for('auth.preferences') }}" data-tooltip="Preferences">
                         <i class="fas fa-cog me-3"></i>
                         Preferences
                     </a>

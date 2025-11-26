@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Profile Header -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border-radius: 16px;">
+                <div class="card-body p-5">
+                    <div class="d-flex align-items-center">
+                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
+                            <i class="fas fa-user fa-3x"></i>
+                        </div>
+                        <div>
+                            <h1 class="mb-1">{{ current_user.full_name }}</h1>
+                            <p class="mb-0" style="opacity: 0.9;">
+                                <i class="fas fa-badge me-2"></i>{{ current_user.role }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Information -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-id-card me-2" style="color: #6366f1;"></i>Personal Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Full Name</label>
+                            <p class="fw-500">{{ current_user.full_name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Username</label>
+                            <p class="fw-500">{{ current_user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Email Address</label>
+                            <p class="fw-500">{{ current_user.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Role</label>
+                            <p class="fw-500">
+                                <span class="badge" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">{{ current_user.role }}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Account Status</label>
+                            <p class="fw-500">
+                                {% if current_user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small">Last Login</label>
+                            <p class="fw-500">
+                                {% if current_user.last_login %}
+                                {{ current_user.last_login.strftime('%b %d, %Y at %I:%M %p') }}
+                                {% else %}
+                                Never
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-edit me-2" style="color: #6366f1;"></i>Edit Profile
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="#">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label fw-600">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" value="{{ current_user.full_name }}" placeholder="Enter your full name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-600">Email Address</label>
+                            <input type="email" class="form-control" id="email" value="{{ current_user.email }}" placeholder="Enter your email">
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-outline-secondary me-2">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Info -->
+        <div class="col-lg-4">
+            <!-- Account Activity -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-history me-2" style="color: #6366f1;"></i>Account Activity
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Last Login</small>
+                        <p class="mb-0 fw-500">
+                            {% if current_user.last_login %}
+                            {{ current_user.last_login.strftime('%b %d, %Y') }}
+                            {% else %}
+                            Never
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Account Created</small>
+                        <p class="mb-0 fw-500">
+                            {% if current_user.created_at %}
+                            {{ current_user.created_at.strftime('%b %d, %Y') }}
+                            {% else %}
+                            Unknown
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <small class="text-muted">Total Sessions</small>
+                        <p class="mb-0 fw-500">N/A</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-shield-alt me-2" style="color: #6366f1;"></i>Security
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </a>
+                    <a href="#" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="fas fa-lock me-2"></i>Two-Factor Authentication
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

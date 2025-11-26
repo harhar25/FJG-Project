@@ -49,6 +49,18 @@ def logout():
     flash('You have been logged out successfully.', 'success')
     return redirect(url_for('auth.login'))
 
+@auth_bp.route('/profile')
+@login_required
+def profile():
+    """User profile page"""
+    return render_template('profile.html', user=current_user)
+
+@auth_bp.route('/preferences')
+@login_required
+def preferences():
+    """User preferences/settings page"""
+    return render_template('preferences.html', user=current_user)
+
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     """Handle forgot password (simplified version)"""
