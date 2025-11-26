@@ -51,6 +51,7 @@ def index():
             return redirect(url_for('instructor.dashboard'))
         else:
             return redirect(url_for('student.dashboard'))
+    # Not authenticated - go to login page
     return redirect(url_for('auth.login'))
 
 if __name__ == '__main__':
