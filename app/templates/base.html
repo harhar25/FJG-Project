@@ -637,54 +637,20 @@
                 <i class="fas fa-bars"></i>
             </button>
             
-            <!-- Desktop Navigation -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-tachometer-alt me-2"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-flask-vial me-2"></i>
-                            <span>Laboratories</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="fas fa-chalkboard-user me-2"></i>
-                            <span>Instructors</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-check-circle me-2"></i>
-                            <span>Approvals</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-chart-bar me-2"></i>
-                            <span>Analytics</span>
-                        </a>
-                    </li>
-                    
-                    <!-- User Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-2"></i>
-                            <span class="d-none d-md-inline">System Admin</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile Settings</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Preferences</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
+            <!-- User Profile (Desktop Only) -->
+            <div class="d-none d-lg-flex align-items-center ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <span>System Admin</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile Settings</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Preferences</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -703,10 +669,37 @@
                 <small class="text-muted">Enterprise Edition</small>
             </div>
 
+            <!-- Main Navigation (Desktop) -->
+            <div class="nav-section d-none d-lg-block">
+                <h6 class="nav-section-title">Main Navigation</h6>
+                <nav class="nav flex-column sidebar-nav">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-tachometer-alt me-3"></i>
+                        Dashboard
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-flask-vial me-3"></i>
+                        Laboratories
+                    </a>
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-chalkboard-user me-3"></i>
+                        Instructors
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-check-circle me-3"></i>
+                        Approvals
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-chart-bar me-3"></i>
+                        Analytics
+                    </a>
+                </nav>
+            </div>
+
             <div class="nav-section">
                 <h6 class="nav-section-title">Management</h6>
                 <nav class="nav flex-column sidebar-nav">
-                    <a class="nav-link active" href="#">
+                    <a class="nav-link" href="#">
                         <i class="fas fa-users me-3"></i>
                         Instructors
                     </a>
