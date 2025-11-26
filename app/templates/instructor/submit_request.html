@@ -3,84 +3,99 @@
 {% block title %}Submit Request - IT Lab Schedule System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-plus-circle"></i> Submit Lab Reservation Request
-                    </h4>
-                </div>
-                <div class="card-body p-4">
-                    <form method="POST" action="{{ url_for('instructor.submit_request') }}" id="requestForm">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="instructor_name" class="form-label">Instructor Name</label>
-                                <input type="text" class="form-control" id="instructor_name" value="{{ current_user.full_name }}" disabled>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="course_id" class="form-label">Course / Subject <span class="text-danger">*</span></label>
-                                <select class="form-select" id="course_id" name="course_id" required>
-                                    <option value="">-- Select Course --</option>
-                                    {% for course in courses %}
-                                    <option value="{{ course.id }}">{{ course.course_code }} - {{ course.course_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+<!-- Hero Section -->
+<div class="hero-section" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; padding: 3rem 0; margin: -2.5rem -2.5rem 2.5rem -2.5rem; border-radius: 0 0 16px 16px;">
+    <div style="padding: 2rem 2.5rem;">
+        <h1 class="hero-title" style="color: white; margin-bottom: 0.5rem;">
+            <i class="fas fa-plus-circle me-2"></i>Submit Lab Reservation Request
+        </h1>
+        <p class="hero-subtitle" style="color: rgba(255,255,255,0.9); margin-bottom: 0;">
+            Request access to laboratory facilities for your courses
+        </p>
+    </div>
+</div>
+
+<!-- Main Form Card -->
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="premium-card">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('instructor.submit_request') }}" id="requestForm">
+                    
+                    <!-- Instructor & Course Info Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="instructor_name" class="form-label"><strong>Instructor Name</strong></label>
+                            <input type="text" class="form-control form-control-lg" id="instructor_name" value="{{ current_user.full_name }}" disabled style="background-color: #f3f4f6;">
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="section" class="form-label">Section</label>
-                                <input type="text" class="form-control" id="section" placeholder="e.g., A1, B2" disabled>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="lab_id" class="form-label">Preferred Lab Room <span class="text-danger">*</span></label>
-                                <select class="form-select" id="lab_id" name="lab_id" required>
-                                    <option value="">-- Select Lab --</option>
-                                    {% for lab in labs %}
-                                    <option value="{{ lab.id }}">{{ lab.lab_code }} - {{ lab.lab_name }} (Cap: {{ lab.capacity }})</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                        <div class="col-md-6">
+                            <label for="course_id" class="form-label"><strong>Course / Subject <span class="text-danger">*</span></strong></label>
+                            <select class="form-select form-select-lg" id="course_id" name="course_id" required>
+                                <option value="">-- Select Course --</option>
+                                {% for course in courses %}
+                                <option value="{{ course.id }}">{{ course.course_code }} - {{ course.course_name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="requested_date" class="form-label">Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="requested_date" name="requested_date" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="start_time" class="form-label">Start Time <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control" id="start_time" name="start_time" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="end_time" class="form-label">End Time <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control" id="end_time" name="end_time" required>
-                            </div>
+                    </div>
+                    
+                    <!-- Lab & Section Selection -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="section" class="form-label"><strong>Section</strong></label>
+                            <input type="text" class="form-control form-control-lg" id="section" placeholder="Auto-filled from course" disabled style="background-color: #f3f4f6;">
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="reason" class="form-label">Reason / Notes <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="reason" name="reason" rows="4" required placeholder="Provide details about why this lab is needed..."></textarea>
-                            <small class="form-text text-muted">Maximum 500 characters</small>
+                        <div class="col-md-6">
+                            <label for="lab_id" class="form-label"><strong>Preferred Lab Room <span class="text-danger">*</span></strong></label>
+                            <select class="form-select form-select-lg" id="lab_id" name="lab_id" required>
+                                <option value="">-- Select Lab --</option>
+                                {% for lab in labs %}
+                                <option value="{{ lab.id }}">{{ lab.lab_code }} - {{ lab.lab_name }} (Cap: {{ lab.capacity }})</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        
-                        <div class="alert alert-info" role="alert">
-                            <i class="fas fa-info-circle"></i> <strong>Operating Hours:</strong> Lab facilities are available from 8:00 AM to 7:00 PM
+                    </div>
+                    
+                    <!-- Date & Time Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="requested_date" class="form-label"><strong>Date <span class="text-danger">*</span></strong></label>
+                            <input type="date" class="form-control form-control-lg" id="requested_date" name="requested_date" required>
                         </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i> Submit Request
-                            </button>
-                            <button type="reset" class="btn btn-secondary">
-                                <i class="fas fa-redo"></i> Reset Form
-                            </button>
+                        <div class="col-md-3">
+                            <label for="start_time" class="form-label"><strong>Start Time <span class="text-danger">*</span></strong></label>
+                            <input type="time" class="form-control form-control-lg" id="start_time" name="start_time" required>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-3">
+                            <label for="end_time" class="form-label"><strong>End Time <span class="text-danger">*</span></strong></label>
+                            <input type="time" class="form-control form-control-lg" id="end_time" name="end_time" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Reason / Notes -->
+                    <div class="mb-4">
+                        <label for="reason" class="form-label"><strong>Reason / Notes <span class="text-danger">*</span></strong></label>
+                        <textarea class="form-control form-control-lg" id="reason" name="reason" rows="4" required placeholder="Provide details about why this lab is needed..."></textarea>
+                        <small class="form-text text-muted">Maximum 500 characters</small>
+                    </div>
+                    
+                    <!-- Operating Hours Alert -->
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Operating Hours:</strong> Lab facilities are available from 8:00 AM to 7:00 PM, Monday to Friday.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn-modern btn-modern-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Request
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-redo me-2"></i>Reset Form
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -92,10 +107,22 @@ document.getElementById('course_id').addEventListener('change', function() {
     const courseId = this.value;
     const selectedOption = this.options[this.selectedIndex];
     const courseCode = selectedOption.text.split(' - ')[0];
-    document.getElementById('section').value = courseCode;
+    document.getElementById('section').value = courseCode || 'Auto-filled';
 });
 
 // Set minimum date to today
 document.getElementById('requested_date').min = new Date().toISOString().split('T')[0];
+
+// Form validation
+document.getElementById('requestForm').addEventListener('submit', function(e) {
+    const startTime = new Date('2000-01-01 ' + document.getElementById('start_time').value);
+    const endTime = new Date('2000-01-01 ' + document.getElementById('end_time').value);
+    
+    if (endTime <= startTime) {
+        e.preventDefault();
+        alert('End time must be after start time!');
+    }
+});
 </script>
+
 {% endblock %}

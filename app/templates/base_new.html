@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lab Schedule Management{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar-advanced.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/enterprise.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/visual-design.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main-content-modern.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">"
+
+    <!-- Additional Page Styles -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- ============================================
+         ADVANCED RESPONSIVE NAVBAR
+         ============================================ -->
+    <nav class="navbar-modern">
+        <!-- Brand Section -->
+        <a href="{{ url_for('main.home') }}" class="navbar-brand-modern">
+            <i class="fas fa-flask-vial"></i>
+            <span>Lab Management</span>
+        </a>
+
+        <!-- Horizontal Icon Navigation (Desktop) -->
+        <div class="navbar-horizontal-icons">
+            <!-- Dashboard -->
+            <a href="{{ url_for('main.home') }}" 
+               class="nav-icon-item {% if request.endpoint == 'main.home' %}active{% endif %}"
+               title="Dashboard">
+                <i class="fas fa-chart-line"></i>
+                <div class="nav-icon-tooltip">Dashboard</div>
+            </a>
+
+            <!-- Admin Section (Only for admins) -->
+            {% if current_user.is_authenticated and current_user.role == 'admin' %}
+            <div class="nav-icon-item nav-dropdown-trigger">
+                <i class="fas fa-cog"></i>
+                <div class="nav-icon-tooltip">Admin</div>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('admin.manage_labs') }}" class="dropdown-item-link">
+                        <i class="fas fa-flask"></i>
+                        <span>Manage Labs</span>
+                    </a>
+                    <a href="{{ url_for('admin.manage_instructors') }}" class="dropdown-item-link">
+                        <i class="fas fa-chalkboard-user"></i>
+                        <span>Manage Instructors</span>
+                    </a>
+                    <a href="{{ url_for('admin.approve_requests') }}" class="dropdown-item-link">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Approve Requests</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Instructor Section (Only for instructors) -->
+            {% if current_user.is_authenticated and current_user.role == 'instructor' %}
+            <div class="nav-icon-item nav-dropdown-trigger">
+                <i class="fas fa-book"></i>
+                <div class="nav-icon-tooltip">My Labs</div>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('instructor.my_labs') }}" class="dropdown-item-link">
+                        <i class="fas fa-list"></i>
+                        <span>My Labs</span>
+                    </a>
+                    <a href="{{ url_for('instructor.submit_request') }}" class="dropdown-item-link">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Submit Request</span>
+                    </a>
+                    <a href="{{ url_for('instructor.my_requests') }}" class="dropdown-item-link">
+                        <i class="fas fa-inbox"></i>
+                        <span>My Requests</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Student Section (Only for students) -->
+            {% if current_user.is_authenticated and current_user.role == 'student' %}
+            <a href="{{ url_for('student.schedule') }}" 
+               class="nav-icon-item"
+               title="Schedule">
+                <i class="fas fa-calendar"></i>
+                <div class="nav-icon-tooltip">Schedule</div>
+            </a>
+            {% endif %}
+
+            <!-- Calendar (All authenticated users) -->
+            {% if current_user.is_authenticated %}
+            <a href="#" 
+               class="nav-icon-item"
+               title="Calendar">
+                <i class="fas fa-calendar-alt"></i>
+                <div class="nav-icon-tooltip">Calendar</div>
+            </a>
+
+            <!-- Notifications -->
+            <div class="nav-icon-item" title="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="nav-badge">3</span>
+                <div class="nav-icon-tooltip">Notifications</div>
+            </div>
+            {% endif %}
+
+            <!-- Search -->
+            {% if current_user.is_authenticated %}
+            <a href="#" 
+               class="nav-icon-item"
+               title="Search">
+                <i class="fas fa-search"></i>
+                <div class="nav-icon-tooltip">Search</div>
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Right Side Actions -->
+        <div style="display: flex; align-items: center; gap: 1rem; margin-left: auto;">
+            <!-- Hamburger Menu (Mobile) -->
+            <button class="hamburger-btn" onclick="toggleMobileMenu()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <!-- User Profile Dropdown (Desktop Only) -->
+            {% if current_user.is_authenticated %}
+            <div class="profile-dropdown" style="display: none;" id="profileDropdownDesktop">
+                <button class="profile-trigger" onclick="event.stopPropagation()">
+                    <i class="fas fa-user"></i>
+                </button>
+                <div class="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="profile-name">{{ current_user.username }}</div>
+                        <div class="profile-role">{{ current_user.role.capitalize() }}</div>
+                    </div>
+                    <a href="{{ url_for('main.profile') }}" class="profile-menu-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="{{ url_for('main.settings') }}" class="profile-menu-item">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Settings</span>
+                    </a>
+                    <div class="profile-menu-divider"></div>
+                    <a href="{{ url_for('auth.logout') }}" class="profile-menu-item logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" style="color: white; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease;">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- ============================================
+         FULL-SCREEN MOBILE MENU OVERLAY
+         ============================================ -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-content">
+            <!-- User Profile Section (Mobile) -->
+            {% if current_user.is_authenticated %}
+            <div class="mobile-menu-section">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1.25rem; background: rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.15);">
+                    <div style="width: 45px; height: 45px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div style="color: white; font-weight: 600; font-size: 0.95rem;">{{ current_user.username }}</div>
+                        <div style="color: rgba(255,255,255,0.7); font-size: 0.8rem; margin-top: 0.25rem;">{{ current_user.role.capitalize() }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Navigation (Mobile) -->
+            <div class="mobile-menu-section">
+                <div class="mobile-menu-title">
+                    <i class="fas fa-compass"></i> Navigation
+                </div>
+                <a href="{{ url_for('main.home') }}" class="mobile-menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- Admin Menu Items (Mobile) -->
+                {% if current_user.role == 'admin' %}
+                <a href="{{ url_for('admin.manage_labs') }}" class="mobile-menu-item">
+                    <i class="fas fa-flask"></i>
+                    <span>Manage Labs</span>
+                </a>
+                <a href="{{ url_for('admin.manage_instructors') }}" class="mobile-menu-item">
+                    <i class="fas fa-chalkboard-user"></i>
+                    <span>Manage Instructors</span>
+                </a>
+                <a href="{{ url_for('admin.approve_requests') }}" class="mobile-menu-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Approve Requests</span>
+                </a>
+                {% endif %}
+
+                <!-- Instructor Menu Items (Mobile) -->
+                {% if current_user.role == 'instructor' %}
+                <a href="{{ url_for('instructor.my_labs') }}" class="mobile-menu-item">
+                    <i class="fas fa-list"></i>
+                    <span>My Labs</span>
+                </a>
+                <a href="{{ url_for('instructor.submit_request') }}" class="mobile-menu-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Submit Request</span>
+                </a>
+                <a href="{{ url_for('instructor.my_requests') }}" class="mobile-menu-item">
+                    <i class="fas fa-inbox"></i>
+                    <span>My Requests</span>
+                </a>
+                {% endif %}
+
+                <!-- Student Menu Items (Mobile) -->
+                {% if current_user.role == 'student' %}
+                <a href="{{ url_for('student.schedule') }}" class="mobile-menu-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>Schedule</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Additional Options (Mobile) -->
+            <div class="mobile-menu-section">
+                <div class="mobile-menu-title">
+                    <i class="fas fa-ellipsis-h"></i> More
+                </div>
+                <a href="{{ url_for('main.profile') }}" class="mobile-menu-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="{{ url_for('main.settings') }}" class="mobile-menu-item">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="{{ url_for('auth.logout') }}" class="mobile-menu-item" style="color: #fca5a5; border-color: rgba(252, 165, 165, 0.3); background: rgba(252, 165, 165, 0.1);">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+            {% else %}
+
+            <!-- Login Prompt (Mobile - Not Authenticated) -->
+            <div class="mobile-menu-section">
+                <div style="text-align: center; padding: 2rem 1rem;">
+                    <div style="font-size: 2.5rem; color: white; margin-bottom: 1rem;">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div style="color: white; font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem;">
+                        Sign in to continue
+                    </div>
+                    <a href="{{ url_for('auth.login') }}" style="display: inline-block; padding: 0.875rem 1.75rem; background: white; color: #6366f1; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease;">
+                        Go to Login
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ============================================
+         MAIN CONTENT AREA
+         ============================================ -->
+    <main class="main-content-modern">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show m-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer style="margin-top: 4rem; padding: 2rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%); border-top: 1px solid rgba(99, 102, 241, 0.1);">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 style="color: #6366f1; font-weight: 600;">Lab Management</h5>
+                    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0;">Manage your lab schedules efficiently with our modern platform.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6 style="color: #1e293b; font-weight: 600; margin-bottom: 1rem;">Quick Links</h6>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><a href="{{ url_for('main.home') }}" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">Dashboard</a></li>
+                        <li><a href="#" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">Documentation</a></li>
+                        <li><a href="#" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">Support</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 style="color: #1e293b; font-weight: 600; margin-bottom: 1rem;">Follow Us</h6>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="#" style="color: #6366f1; font-size: 1.25rem;"><i class="fab fa-facebook"></i></a>
+                        <a href="#" style="color: #6366f1; font-size: 1.25rem;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: #6366f1; font-size: 1.25rem;"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 2rem 0; border-color: rgba(99, 102, 241, 0.1);">
+            <div style="text-align: center; color: #64748b; font-size: 0.85rem;">
+                <p>&copy; 2024 Lab Schedule Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         BOOTSTRAP & DEPENDENCIES
+         ============================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Custom JavaScript Files -->
+    <script src="{{ url_for('static', filename='js/app-framework.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main-enhanced.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/enhancements.js') }}"></script>
+
+    <!-- Navbar Mobile Menu Script -->
+    <script>
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const hamburgerBtn = document.querySelector('.hamburger-btn');
+            
+            overlay.classList.toggle('active');
+            hamburgerBtn.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.mobile-menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.getElementById('mobileMenuOverlay').classList.remove('active');
+                document.querySelector('.hamburger-btn').classList.remove('active');
+            });
+        });
+
+        // Show profile dropdown on desktop when window is wide enough
+        function checkScreenSize() {
+            const profileDropdown = document.getElementById('profileDropdownDesktop');
+            if (window.innerWidth > 991) {
+                profileDropdown.style.display = 'block';
+            } else {
+                profileDropdown.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const hamburgerBtn = document.querySelector('.hamburger-btn');
+            if (!overlay.contains(event.target) && !hamburgerBtn.contains(event.target) && overlay.classList.contains('active')) {
+                overlay.classList.remove('active');
+                hamburgerBtn.classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- Additional Scripts -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

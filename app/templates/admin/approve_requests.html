@@ -3,22 +3,55 @@
 {% block title %}Approve Requests - IT Lab Schedule System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h2">
-                <i class="fas fa-check-circle"></i> Approve Reservation Requests
-            </h1>
-            <p class="text-muted">Review and approve/decline pending lab reservations</p>
-        </div>
+<!-- Content Header -->
+<div class="content-header">
+    <div>
+        <h1><i class="fas fa-check-circle me-2"></i>Approve Reservation Requests</h1>
+        <p class="text-muted">Review and approve/decline pending lab reservations</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">Approvals</li>
+            </ol>
+        </nav>
     </div>
-    
-    <!-- Requests Table -->
-    <div class="card shadow">
-        {% if requests.items %}
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="stat-number" id="pendingCount">0</div>
+        <div class="stat-label">Pending Requests</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="stat-number" id="approvedCount">0</div>
+        <div class="stat-label">Approved Today</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="stat-number" id="declinedCount">0</div>
+        <div class="stat-label">Declined Today</div>
+    </div>
+</div>
+
+<!-- Requests Table -->
+{% if requests.items %}
+<div class="premium-card">
+    <div class="card-header">
+        <h3><i class="fas fa-list-check"></i>Pending Requests</h3>
+    </div>
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+            <table class="table premium-table">
+                <thead>
                     <tr>
                         <th>Request ID</th>
                         <th>Instructor</th>
@@ -33,31 +66,34 @@
                     {% for request in requests.items %}
                     <tr>
                         <td><span class="badge bg-primary">#{{ request.id }}</span></td>
-                        <td>{{ request.instructor.full_name }}</td>
+                        <td><strong>{{ request.instructor.full_name }}</strong></td>
                         <td>
-                            <small>{{ request.course.course_code }}<br>{{ request.course.section }}</small>
-                        </td>
-                        <td>{{ request.lab.lab_code }}</td>
-                        <td>
-                            {{ request.requested_date.strftime('%Y-%m-%d') }}<br>
-                            <small>{{ request.start_time.strftime('%H:%M') }} - {{ request.end_time.strftime('%H:%M') }}</small>
+                            <span class="badge bg-secondary">{{ request.course.course_code }}</span><br>
+                            <small class="text-muted">{{ request.course.section }}</small>
                         </td>
                         <td>
-                            <small class="text-muted">{{ request.reason[:40] }}{% if request.reason|length > 40 %}...{% endif %}</small>
+                            <i class="fas fa-flask text-primary me-1"></i>{{ request.lab.lab_code }}
+                        </td>
+                        <td>
+                            <strong>{{ request.requested_date.strftime('%m/%d/%Y') }}</strong><br>
+                            <small class="text-muted">{{ request.start_time.strftime('%H:%M') }} - {{ request.end_time.strftime('%H:%M') }}</small>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ request.reason[:45] }}{% if request.reason|length > 45 %}...{% endif %}</small>
                         </td>
                         <td class="text-center">
-                            <div class="btn-group" role="group">
+                            <div class="d-flex gap-2 justify-content-center">
                                 <form method="POST" action="{{ url_for('admin.approve_requests') }}" style="display:inline;">
                                     <input type="hidden" name="request_id" value="{{ request.id }}">
                                     <input type="hidden" name="action" value="approve">
-                                    <button type="submit" class="btn btn-sm btn-success" title="Approve">
+                                    <button type="submit" class="btn btn-action btn-outline-success" title="Approve Request">
                                         <i class="fas fa-check"></i>
                                     </button>
                                 </form>
                                 <form method="POST" action="{{ url_for('admin.approve_requests') }}" style="display:inline;">
                                     <input type="hidden" name="request_id" value="{{ request.id }}">
                                     <input type="hidden" name="action" value="decline">
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Decline this request?')" title="Decline">
+                                    <button type="submit" class="btn btn-action btn-outline-danger" onclick="return confirm('Decline this request?')" title="Decline Request">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </form>
@@ -68,45 +104,64 @@
                 </tbody>
             </table>
         </div>
-        
-        <!-- Pagination -->
-        {% if requests.pages > 1 %}
-        <nav aria-label="Page navigation" class="mt-4">
-            <ul class="pagination justify-content-center">
-                {% if requests.has_prev %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('admin.approve_requests', page=requests.prev_num) }}">Previous</a>
-                </li>
-                {% endif %}
-                
-                {% for page_num in requests.iter_pages() %}
-                    {% if page_num %}
-                        {% if page_num == requests.page %}
-                        <li class="page-item active">
-                            <span class="page-link">{{ page_num }}</span>
-                        </li>
-                        {% else %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ url_for('admin.approve_requests', page=page_num) }}">{{ page_num }}</a>
-                        </li>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-                
-                {% if requests.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('admin.approve_requests', page=requests.next_num) }}">Next</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
-        {% else %}
-        <div class="card-body text-center text-muted py-5">
-            <i class="fas fa-check-circle fa-3x mb-3 opacity-50"></i>
-            <p>No pending requests to review</p>
-        </div>
-        {% endif %}
     </div>
 </div>
+
+<!-- Pagination -->
+{% if requests.pages > 1 %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if requests.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.approve_requests', page=requests.prev_num) }}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in requests.iter_pages() %}
+            {% if page_num %}
+                {% if page_num == requests.page %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('admin.approve_requests', page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if requests.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.approve_requests', page=requests.next_num) }}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% else %}
+<div class="premium-card">
+    <div class="card-body text-center py-5">
+        <i class="fas fa-check-circle fa-4x mb-3" style="color: #10b981; opacity: 0.5;"></i>
+        <h4>No Pending Requests</h4>
+        <p class="text-muted mb-0">All reservation requests have been reviewed!</p>
+    </div>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pendingRows = document.querySelectorAll('table tbody tr');
+    document.getElementById('pendingCount').textContent = pendingRows.length;
+    
+    // You can update these counts from server data or database
+    document.getElementById('approvedCount').textContent = '0';
+    document.getElementById('declinedCount').textContent = '0';
+});
+</script>
+
 {% endblock %}

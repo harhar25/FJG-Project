@@ -3,88 +3,102 @@
 {% block title %}Reports - IT Lab Schedule System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h2">
-                <i class="fas fa-chart-bar"></i> Laboratory Usage Reports
-            </h1>
-        </div>
-        <div class="col-12 mt-3">
-            <div class="form-group">
-                <label for="reportMonth" class="form-label">Select Month</label>
-                <input type="month" id="reportMonth" class="form-control" style="max-width: 200px;" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()">
-            </div>
-        </div>
+<!-- Content Header -->
+<div class="content-header">
+    <div>
+        <h1><i class="fas fa-chart-bar me-2"></i>Laboratory Usage Reports</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">Reports</li>
+            </ol>
+        </nav>
     </div>
-    
-    <!-- Reports Cards -->
-    <div class="row">
-        {% for stat in labs_stats %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card shadow h-100">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">
-                        <i class="fas fa-flask-vial"></i> {{ stat.lab.lab_name }}
-                        <br>
-                        <small>{{ stat.lab.lab_code }}</small>
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-6 border-end">
-                            <h4 class="text-primary">{{ stat.sessions }}</h4>
-                            <small class="text-muted">Sessions</small>
-                        </div>
-                        <div class="col-6">
-                            <h4 class="text-success">{{ stat.total_hours }}h</h4>
-                            <small class="text-muted">Total Hours</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer bg-light">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Utilization Rate</small>
-                        <strong class="text-primary">{{ stat.utilization_rate }}%</strong>
-                    </div>
-                    <div class="progress mt-2">
-                        <div class="progress-bar" role="progressbar" id="progress-{{ stat.lab.id }}" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    
-    <!-- Summary Stats -->
-    {% if labs_stats %}
-    <div class="card shadow mt-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Monthly Summary</h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3 text-center border-end">
-                    <h4 class="text-primary">{{ labs_stats|length }}</h4>
-                    <small class="text-muted">Total Labs</small>
-                </div>
-                <div class="col-md-3 text-center border-end">
-                    <h4 class="text-success">{{ labs_stats|map(attribute='sessions')|sum }}</h4>
-                    <small class="text-muted">Total Sessions</small>
-                </div>
-                <div class="col-md-3 text-center border-end">
-                    <h4 class="text-info">{{ "%.1f" | format(labs_stats|map(attribute='total_hours')|sum) }}h</h4>
-                    <small class="text-muted">Total Hours</small>
-                </div>
-                <div class="col-md-3 text-center">
-                    <h4 class="text-warning">{{ "%.1f" | format(labs_stats|map(attribute='utilization_rate')|sum / labs_stats|length) }}%</h4>
-                    <small class="text-muted">Avg Utilization</small>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 </div>
+
+<!-- Filter Section -->
+<div class="premium-card mb-4">
+    <div class="card-body">
+        <div class="row align-items-end">
+            <div class="col-md-6">
+                <label for="reportMonth" class="form-label"><strong>Select Month</strong></label>
+                <input type="month" id="reportMonth" class="form-control form-control-lg" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()" style="max-width: 300px;">
+            </div>
+            <div class="col-md-6 text-end">
+                <button class="btn-modern btn-modern-secondary" onclick="downloadReport()">
+                    <i class="fas fa-download me-2"></i>Download Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reports Cards Grid -->
+<div class="row">
+    {% for stat in labs_stats %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="premium-card h-100">
+            <div class="card-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white;">
+                <h6 class="mb-0">
+                    <i class="fas fa-flask-vial"></i> {{ stat.lab.lab_name }}
+                    <br>
+                    <small style="opacity: 0.9;">{{ stat.lab.lab_code }}</small>
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 border-end" style="border-color: #e5e7eb;">
+                        <h4 class="text-primary mb-1">{{ stat.sessions }}</h4>
+                        <small class="text-muted">Sessions</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success mb-1">{{ stat.total_hours }}h</h4>
+                        <small class="text-muted">Total Hours</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer" style="background: #f8fafc; border-top: 1px solid #e5e7eb;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted"><strong>Utilization Rate</strong></small>
+                    <strong class="text-primary">{{ stat.utilization_rate }}%</strong>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-primary" role="progressbar" id="progress-{{ stat.lab.id }}" style="width: 0%; border-radius: 4px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Summary Stats -->
+{% if labs_stats %}
+<div class="premium-card mt-4">
+    <div class="card-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+        <h3 class="mb-0"><i class="fas fa-chart-line me-2"></i>Monthly Summary</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 text-center" style="padding: 2rem; border-right: 1px solid #e5e7eb;">
+                <h4 class="text-primary mb-1">{{ labs_stats|length }}</h4>
+                <small class="text-muted"><strong>Total Labs</strong></small>
+            </div>
+            <div class="col-md-3 text-center" style="padding: 2rem; border-right: 1px solid #e5e7eb;">
+                <h4 class="text-success mb-1">{{ labs_stats|map(attribute='sessions')|sum }}</h4>
+                <small class="text-muted"><strong>Total Sessions</strong></small>
+            </div>
+            <div class="col-md-3 text-center" style="padding: 2rem; border-right: 1px solid #e5e7eb;">
+                <h4 class="text-info mb-1">{{ "%.1f" | format(labs_stats|map(attribute='total_hours')|sum) }}h</h4>
+                <small class="text-muted"><strong>Total Hours</strong></small>
+            </div>
+            <div class="col-md-3 text-center" style="padding: 2rem;">
+                <h4 class="text-warning mb-1">{{ "%.1f" | format(labs_stats|map(attribute='utilization_rate')|sum / labs_stats|length) }}%</h4>
+                <small class="text-muted"><strong>Avg Utilization</strong></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <script>
 function filterReport() {
@@ -92,6 +106,11 @@ function filterReport() {
     if (month) {
         window.location.href = "{{ url_for('admin.reports') }}?month=" + month;
     }
+}
+
+function downloadReport() {
+    alert('Download report feature coming soon!');
+    // Implement PDF/CSV download functionality here
 }
 
 // Set progress bar widths after page load
@@ -104,4 +123,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
 {% endblock %}
