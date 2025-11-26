@@ -3,84 +3,101 @@
 {% block title %}Schedule by Lab Room - IT Lab Schedule System{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h2">
-                <i class="fas fa-flask-vial"></i> Schedule by Lab Room
-            </h1>
-        </div>
+<!-- Content Header -->
+<div class="content-header">
+    <div>
+        <h1><i class="fas fa-flask-vial me-2"></i>Schedule by Lab Room</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">Schedule</li>
+            </ol>
+        </nav>
     </div>
-    
-    <!-- Filters -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Select Lab Room</label>
-                    <select class="form-select" id="labFilter" onchange="filterSchedule()">
-                        <option value="">All Labs</option>
-                        {% for lab in labs %}
-                        <option value="{{ lab.id }}" {% if selected_lab_id == lab.id %}selected{% endif %}>
-                            {{ lab.lab_code }} - {{ lab.lab_name }} (Capacity: {{ lab.capacity }})
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Week Starting</label>
-                    <input type="date" class="form-control" id="weekFilter" value="{{ week_start }}" onchange="filterSchedule()">
-                </div>
+</div>
+
+<!-- Filter Section -->
+<div class="premium-card mb-4">
+    <div class="card-header">
+        <h3><i class="fas fa-filter me-2"></i>Filter Schedule</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label"><strong>Select Lab Room</strong></label>
+                <select class="form-select form-select-lg" id="labFilter" onchange="filterSchedule()">
+                    <option value="">📚 All Labs</option>
+                    {% for lab in labs %}
+                    <option value="{{ lab.id }}" {% if selected_lab_id == lab.id %}selected{% endif %}>
+                        {{ lab.lab_code }} - {{ lab.lab_name }} (Capacity: {{ lab.capacity }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label"><strong>Week Starting</strong></label>
+                <input type="date" class="form-control form-control-lg" id="weekFilter" value="{{ week_start }}" onchange="filterSchedule()">
             </div>
         </div>
     </div>
-    
-    <!-- Weekly Schedule -->
-    <div class="row">
-        {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-        {% for i in range(7) %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h6 class="mb-0">
-                        {{ days[i] }}
-                        <br>
-                        <small>{{ (week_start + timedelta(days=i)).strftime('%b %d') }}</small>
-                    </h6>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        {% set current_date = (week_start + timedelta(days=i)) %}
-                        {% set day_schedules = schedules | selectattr('scheduled_date', 'equalto', current_date) | list %}
-                        {% if day_schedules %}
-                            {% for schedule in day_schedules %}
-                            <div class="list-group-item">
-                                <div>
-                                    <strong>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</strong>
-                                    <br>
-                                    <small class="text-muted">
-                                        <i class="fas fa-book"></i> {{ schedule.course.course_code if schedule.course else 'N/A' }}
-                                    </small>
-                                    {% if schedule.course %}
-                                    <br>
-                                    <small class="text-muted">
-                                        Section: {{ schedule.course.section }}
-                                    </small>
-                                    {% endif %}
+</div>
+
+<!-- Weekly Schedule Grid -->
+<div class="row">
+    {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+    {% for i in range(7) %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="premium-card h-100">
+            <div class="card-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                <h6 class="mb-0">
+                    <i class="fas fa-calendar-day me-2"></i>{{ days[i] }}
+                    <br>
+                    <small style="opacity: 0.9;">{{ (week_start + timedelta(days=i)).strftime('%b %d, %Y') }}</small>
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% set current_date = (week_start + timedelta(days=i)) %}
+                    {% set day_schedules = schedules | selectattr('scheduled_date', 'equalto', current_date) | list %}
+                    {% if day_schedules %}
+                        {% for schedule in day_schedules %}
+                        <div class="list-group-item" style="border-bottom: 1px solid #e5e7eb; padding: 1.25rem;">
+                            <div style="flex: 1;">
+                                <strong style="color: #1e293b; font-size: 1.1rem;">
+                                    <i class="fas fa-clock text-primary me-1"></i>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}
+                                </strong>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="fas fa-book text-primary me-1"></i>
+                                    <strong>{{ schedule.course.course_code if schedule.course else 'N/A' }}</strong>
+                                </small>
+                                {% if schedule.course %}
+                                <br>
+                                <small class="text-muted">
+                                    Section: <strong>{{ schedule.course.section }}</strong>
+                                </small>
+                                {% endif %}
+                                <br>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-success" title="Add to Calendar">
+                                        <i class="fas fa-plus me-1"></i>Add
+                                    </button>
                                 </div>
                             </div>
-                            {% endfor %}
-                        {% else %}
-                        <div class="list-group-item text-center text-muted py-3">
-                            <small>No sessions</small>
                         </div>
-                        {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    <div class="list-group-item text-center text-muted py-5">
+                        <i class="fas fa-inbox fa-2x mb-2" style="opacity: 0.3;"></i>
+                        <br>
+                        <small><strong>No sessions scheduled</strong></small>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 </div>
 
 <script>
