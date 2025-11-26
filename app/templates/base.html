@@ -1387,6 +1387,307 @@
         </main>
     </div>
     
+    <!-- ===== ADD INSTRUCTOR MODAL ===== -->
+    <div class="modal fade" id="addInstructorModal" tabindex="-1" aria-labelledby="addInstructorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none;">
+                    <h5 class="modal-title" id="addInstructorModalLabel">
+                        <i class="fas fa-plus-circle me-2"></i>Add New Instructor
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="addInstructorForm">
+                        <!-- Personal Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-user-circle me-2" style="color: #6366f1;"></i>Personal Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="instructorFirstName" class="form-label fw-600">First Name</label>
+                                    <input type="text" class="form-control" id="instructorFirstName" placeholder="Enter first name" required>
+                                    <small class="text-muted">Required field</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="instructorLastName" class="form-label fw-600">Last Name</label>
+                                    <input type="text" class="form-control" id="instructorLastName" placeholder="Enter last name" required>
+                                    <small class="text-muted">Required field</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-envelope me-2" style="color: #6366f1;"></i>Contact Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="instructorEmail" class="form-label fw-600">Email Address</label>
+                                    <input type="email" class="form-control" id="instructorEmail" placeholder="example@university.edu" required>
+                                    <small class="text-muted">Must be a valid email</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="instructorPhone" class="form-label fw-600">Phone Number</label>
+                                    <input type="tel" class="form-control" id="instructorPhone" placeholder="+1 (555) 123-4567">
+                                    <small class="text-muted">Optional - Include country code</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-briefcase me-2" style="color: #6366f1;"></i>Professional Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="instructorDepartment" class="form-label fw-600">Department</label>
+                                    <select class="form-select" id="instructorDepartment" required>
+                                        <option value="">Select a department</option>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Information Technology">Information Technology</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="Cybersecurity">Cybersecurity</option>
+                                        <option value="Network Administration">Network Administration</option>
+                                        <option value="Database Management">Database Management</option>
+                                        <option value="Web Development">Web Development</option>
+                                    </select>
+                                    <small class="text-muted">Required field</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="instructorSpecialization" class="form-label fw-600">Specialization</label>
+                                    <input type="text" class="form-control" id="instructorSpecialization" placeholder="e.g., Artificial Intelligence, Cloud Computing">
+                                    <small class="text-muted">Optional - Area of expertise</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-file-alt me-2" style="color: #6366f1;"></i>Additional Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="instructorBio" class="form-label fw-600">Biography</label>
+                                    <textarea class="form-control" id="instructorBio" rows="3" placeholder="Brief biography or professional background..."></textarea>
+                                    <small class="text-muted">Optional - Max 500 characters</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="instructorStatus" class="form-label fw-600">Status</label>
+                                    <select class="form-select" id="instructorStatus" required>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Pending">Pending Approval</option>
+                                        <option value="On Leave">On Leave</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="instructorOffice" class="form-label fw-600">Office Location</label>
+                                    <input type="text" class="form-control" id="instructorOffice" placeholder="e.g., Building A, Room 201">
+                                    <small class="text-muted">Optional</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Validation Alert -->
+                        <div id="formValidationAlert" class="alert alert-danger border-0 rounded-3 d-none mb-3" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span id="validationMessage"></span>
+                        </div>
+
+                        <!-- Form Success Alert -->
+                        <div id="formSuccessAlert" class="alert alert-success border-0 rounded-3 d-none mb-3" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Instructor has been successfully added!
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer p-4 border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-premium" id="submitInstructorForm">
+                        <i class="fas fa-save me-2"></i>Add Instructor
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== EDIT INSTRUCTOR MODAL ===== -->
+    <div class="modal fade" id="editInstructorModal" tabindex="-1" aria-labelledby="editInstructorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none;">
+                    <h5 class="modal-title" id="editInstructorModalLabel">
+                        <i class="fas fa-edit me-2"></i>Edit Instructor
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editInstructorForm">
+                        <input type="hidden" id="editInstructorId">
+                        
+                        <!-- Personal Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-user-circle me-2" style="color: #3b82f6;"></i>Personal Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editInstructorFirstName" class="form-label fw-600">First Name</label>
+                                    <input type="text" class="form-control" id="editInstructorFirstName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorLastName" class="form-label fw-600">Last Name</label>
+                                    <input type="text" class="form-control" id="editInstructorLastName" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-envelope me-2" style="color: #3b82f6;"></i>Contact Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editInstructorEmail" class="form-label fw-600">Email Address</label>
+                                    <input type="email" class="form-control" id="editInstructorEmail" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorPhone" class="form-label fw-600">Phone Number</label>
+                                    <input type="tel" class="form-control" id="editInstructorPhone">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-briefcase me-2" style="color: #3b82f6;"></i>Professional Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editInstructorDepartment" class="form-label fw-600">Department</label>
+                                    <select class="form-select" id="editInstructorDepartment" required>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Information Technology">Information Technology</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="Cybersecurity">Cybersecurity</option>
+                                        <option value="Network Administration">Network Administration</option>
+                                        <option value="Database Management">Database Management</option>
+                                        <option value="Web Development">Web Development</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorSpecialization" class="form-label fw-600">Specialization</label>
+                                    <input type="text" class="form-control" id="editInstructorSpecialization">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-file-alt me-2" style="color: #3b82f6;"></i>Additional Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="editInstructorBio" class="form-label fw-600">Biography</label>
+                                    <textarea class="form-control" id="editInstructorBio" rows="3"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorStatus" class="form-label fw-600">Status</label>
+                                    <select class="form-select" id="editInstructorStatus" required>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Pending">Pending Approval</option>
+                                        <option value="On Leave">On Leave</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorOffice" class="form-label fw-600">Office Location</label>
+                                    <input type="text" class="form-control" id="editInstructorOffice">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Validation Alert -->
+                        <div id="editFormValidationAlert" class="alert alert-danger border-0 rounded-3 d-none mb-3" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span id="editValidationMessage"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer p-4 border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submitEditInstructorForm">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+    </div>
+
+    <!-- ===== FILTER MODAL ===== -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none;">
+                    <h5 class="modal-title" id="filterModalLabel">
+                        <i class="fas fa-filter me-2"></i>Filter Instructors
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="filterForm">
+                        <div class="mb-3">
+                            <label for="filterDepartment" class="form-label fw-600">Department</label>
+                            <select class="form-select" id="filterDepartment">
+                                <option value="">All Departments</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Software Engineering">Software Engineering</option>
+                                <option value="Data Science">Data Science</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="filterStatus" class="form-label fw-600">Status</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">All Statuses</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Pending">Pending Approval</option>
+                                <option value="On Leave">On Leave</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="filterSpecialization" class="form-label fw-600">Specialization</label>
+                            <input type="text" class="form-control" id="filterSpecialization" placeholder="Filter by specialization...">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer p-4 border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Clear
+                    </button>
+                    <button type="button" class="btn btn-premium" id="applyFilterBtn">
+                        <i class="fas fa-check me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Enhanced Footer -->
     <footer class="py-4 border-top mt-auto">
         <div class="container-fluid">
@@ -1572,32 +1873,6 @@
                 });
             }
 
-            // ===== FILTER BUTTON =====
-            const filterBtn = document.querySelector('button:has(i.fa-filter)');
-            if (filterBtn) {
-                filterBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🎯 Filter clicked');
-                    this.style.background = 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)';
-                    this.style.color = 'white';
-                    setTimeout(() => {
-                        this.style.background = '';
-                        this.style.color = '';
-                    }, 300);
-                });
-            }
-
-            // ===== EXPORT BUTTON =====
-            const exportBtn = document.querySelector('button:has(i.fa-download)');
-            if (exportBtn) {
-                exportBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('📥 Export data initiated');
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => { this.style.transform = ''; }, 150);
-                });
-            }
-
             // ===== SORT BUTTON (Mobile) =====
             const sortBtn = document.querySelector('button:has(i.fa-sort)');
             if (sortBtn) {
@@ -1614,56 +1889,341 @@
             if (addBtn) {
                 addBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('➕ Add New Instructor modal would open');
+                    console.log('➕ Opening Add New Instructor modal');
+                    
+                    // Reset form
+                    document.getElementById('addInstructorForm').reset();
+                    document.getElementById('formValidationAlert').classList.add('d-none');
+                    document.getElementById('formSuccessAlert').classList.add('d-none');
+                    
+                    // Open modal
+                    const modal = new bootstrap.Modal(document.getElementById('addInstructorModal'));
+                    modal.show();
+                    
                     this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
                     setTimeout(() => { this.style.background = ''; }, 300);
                 });
             }
 
-            // ===== EDIT BUTTONS IN TABLE =====
-            const editBtns = document.querySelectorAll('button:has(i.fa-edit)');
-            editBtns.forEach((btn, index) => {
-                btn.addEventListener('click', function(e) {
+            // ===== ADD INSTRUCTOR FORM SUBMISSION =====
+            const submitInstructorBtn = document.getElementById('submitInstructorForm');
+            if (submitInstructorBtn) {
+                submitInstructorBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const row = this.closest('tr');
-                    const instructorName = row.querySelector('strong').textContent;
-                    console.log(`✏️ Edit instructor #${index + 1}: ${instructorName}`);
                     
-                    // Visual feedback
-                    this.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+                    // Get form data
+                    const firstName = document.getElementById('instructorFirstName').value.trim();
+                    const lastName = document.getElementById('instructorLastName').value.trim();
+                    const email = document.getElementById('instructorEmail').value.trim();
+                    const phone = document.getElementById('instructorPhone').value.trim();
+                    const department = document.getElementById('instructorDepartment').value;
+                    const specialization = document.getElementById('instructorSpecialization').value.trim();
+                    const bio = document.getElementById('instructorBio').value.trim();
+                    const status = document.getElementById('instructorStatus').value;
+                    const office = document.getElementById('instructorOffice').value.trim();
+
+                    // Validation
+                    const validationAlert = document.getElementById('formValidationAlert');
+                    const validationMessage = document.getElementById('validationMessage');
+
+                    if (!firstName) {
+                        validationMessage.textContent = 'First name is required';
+                        validationAlert.classList.remove('d-none');
+                        return;
+                    }
+                    if (!lastName) {
+                        validationMessage.textContent = 'Last name is required';
+                        validationAlert.classList.remove('d-none');
+                        return;
+                    }
+                    if (!email) {
+                        validationMessage.textContent = 'Email is required';
+                        validationAlert.classList.remove('d-none');
+                        return;
+                    }
+                    if (!email.includes('@')) {
+                        validationMessage.textContent = 'Please enter a valid email address';
+                        validationAlert.classList.remove('d-none');
+                        return;
+                    }
+                    if (!department) {
+                        validationMessage.textContent = 'Please select a department';
+                        validationAlert.classList.remove('d-none');
+                        return;
+                    }
+
+                    // Hide validation alert
+                    validationAlert.classList.add('d-none');
+
+                    // Create instructor object
+                    const newInstructor = {
+                        firstName,
+                        lastName,
+                        email,
+                        phone,
+                        department,
+                        specialization,
+                        bio,
+                        status,
+                        office
+                    };
+
+                    console.log('✅ Adding new instructor:', newInstructor);
+                    console.log('📊 Instructor data ready for backend submission');
+
+                    // Show success message
+                    document.getElementById('formSuccessAlert').classList.remove('d-none');
+
+                    // Add to table (temporary - would be removed after backend integration)
+                    const tableBody = document.querySelector('.premium-table tbody');
+                    if (tableBody) {
+                        const newRow = document.createElement('tr');
+                        const statusColor = status === 'Active' ? 'success' : status === 'Pending' ? 'warning' : 'secondary';
+                        newRow.innerHTML = `
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-primary">${firstName.charAt(0)}${lastName.charAt(0)}</div>
+                                    <div>
+                                        <strong>${firstName} ${lastName}</strong>
+                                        <div class="text-muted small">@${firstName.toLowerCase()}${lastName.toLowerCase()}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>${email}</div>
+                                <div class="text-muted small">${phone || 'N/A'}</div>
+                            </td>
+                            <td>${department}</td>
+                            <td>
+                                <span class="badge bg-${statusColor}">${status}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-action btn-outline-primary" title="Edit instructor">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-action btn-outline-danger" title="Delete instructor">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        tableBody.insertBefore(newRow, tableBody.firstChild);
+                        console.log(`✅ New instructor ${firstName} ${lastName} added to table`);
+                        
+                        // Reattach event listeners to new buttons
+                        attachEditDeleteListeners();
+                    }
+
+                    // Disable button temporarily
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-check me-2"></i>Instructor Added';
+                    
+                    setTimeout(() => {
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addInstructorModal'));
+                        if (modal) modal.hide();
+                        
+                        // Reset button
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-save me-2"></i>Add Instructor';
+                    }, 1500);
+                });
+            }
+
+            // ===== FILTER BUTTON =====
+            const filterBtn = document.querySelector('button:has(i.fa-filter)');
+            if (filterBtn) {
+                filterBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎯 Opening Filter Modal');
+                    const modal = new bootstrap.Modal(document.getElementById('filterModal'));
+                    modal.show();
+                    
+                    this.style.background = 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)';
                     this.style.color = 'white';
-                    this.style.borderColor = '#3b82f6';
                     setTimeout(() => {
                         this.style.background = '';
                         this.style.color = '';
-                        this.style.borderColor = '';
                     }, 300);
                 });
-            });
+            }
 
-            // ===== DELETE BUTTONS IN TABLE =====
-            const deleteBtns = document.querySelectorAll('button:has(i.fa-trash)');
-            deleteBtns.forEach((btn, index) => {
-                btn.addEventListener('click', function(e) {
+            // ===== APPLY FILTER BUTTON =====
+            const applyFilterBtn = document.getElementById('applyFilterBtn');
+            if (applyFilterBtn) {
+                applyFilterBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const row = this.closest('tr');
-                    const instructorName = row.querySelector('strong').textContent;
-                    if (confirm(`🗑️ Are you sure you want to delete ${instructorName}?`)) {
-                        console.log(`🗑️ Deleting instructor #${index + 1}: ${instructorName}`);
-                        row.style.opacity = '0.5';
-                        row.style.textDecoration = 'line-through';
-                        
-                        // Simulate deletion
-                        setTimeout(() => {
-                            console.log(`✅ ${instructorName} has been deleted successfully`);
-                            row.style.opacity = '1';
-                            row.style.textDecoration = '';
-                        }, 500);
-                    } else {
-                        console.log(`❌ Deletion of ${instructorName} cancelled`);
-                    }
+                    const department = document.getElementById('filterDepartment').value;
+                    const status = document.getElementById('filterStatus').value;
+                    const specialization = document.getElementById('filterSpecialization').value.trim();
+
+                    console.log('🔍 Applying filters:', {
+                        department: department || 'All',
+                        status: status || 'All',
+                        specialization: specialization || 'All'
+                    });
+
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('filterModal'));
+                    if (modal) modal.hide();
                 });
-            });
+            }
+
+            // ===== EXPORT BUTTON =====
+            const exportBtn = document.querySelector('button:has(i.fa-download)');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📥 Export data initiated');
+                    
+                    // Get table data
+                    const table = document.querySelector('.premium-table');
+                    const rows = table.querySelectorAll('tbody tr');
+                    const data = [];
+
+                    rows.forEach((row, index) => {
+                        const cells = row.querySelectorAll('td');
+                        const instructorName = cells[0].querySelector('strong').textContent;
+                        const email = cells[1].textContent.split('\n')[0].trim();
+                        const department = cells[2].textContent.trim();
+                        const status = cells[3].textContent.trim();
+
+                        data.push({
+                            id: index + 1,
+                            name: instructorName,
+                            email: email,
+                            department: department,
+                            status: status
+                        });
+                    });
+
+                    console.log('📊 Exporting instructors:', data);
+                    console.log('✅ Export ready for CSV/PDF generation');
+
+                    // Generate CSV
+                    const csv = 'ID,Name,Email,Department,Status\n' + 
+                        data.map(row => `${row.id},"${row.name}","${row.email}","${row.department}","${row.status}"`).join('\n');
+
+                    // Create download link
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `instructors_${new Date().toISOString().split('T')[0]}.csv`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => { this.style.transform = ''; }, 150);
+                });
+            }
+
+            // ===== EDIT AND DELETE HANDLER FUNCTION =====
+            function attachEditDeleteListeners() {
+                // ===== EDIT BUTTONS IN TABLE =====
+                const editBtns = document.querySelectorAll('button:has(i.fa-edit)');
+                editBtns.forEach((btn, index) => {
+                    // Remove old listeners
+                    btn.replaceWith(btn.cloneNode(true));
+                });
+
+                // Re-query after clone
+                document.querySelectorAll('button:has(i.fa-edit)').forEach((btn, index) => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const row = this.closest('tr');
+                        const cells = row.querySelectorAll('td');
+                        const fullName = cells[0].querySelector('strong').textContent;
+                        const email = cells[1].textContent.split('\n')[0].trim();
+                        const department = cells[2].textContent.trim();
+                        const status = cells[3].textContent.trim();
+
+                        console.log(`✏️ Edit instructor: ${fullName}`);
+                        
+                        // Pre-fill edit form
+                        const names = fullName.split(' ');
+                        document.getElementById('editInstructorFirstName').value = names[0] || '';
+                        document.getElementById('editInstructorLastName').value = names.slice(1).join(' ') || '';
+                        document.getElementById('editInstructorEmail').value = email;
+                        document.getElementById('editInstructorDepartment').value = department;
+                        document.getElementById('editInstructorStatus').value = status;
+
+                        // Open edit modal
+                        const modal = new bootstrap.Modal(document.getElementById('editInstructorModal'));
+                        modal.show();
+                        
+                        // Visual feedback
+                        this.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+                        this.style.color = 'white';
+                        this.style.borderColor = '#3b82f6';
+                        setTimeout(() => {
+                            this.style.background = '';
+                            this.style.color = '';
+                            this.style.borderColor = '';
+                        }, 300);
+                    });
+                });
+
+                // ===== DELETE BUTTONS IN TABLE =====
+                const deleteBtns = document.querySelectorAll('button:has(i.fa-trash)');
+                deleteBtns.forEach((btn, index) => {
+                    // Remove old listeners
+                    btn.replaceWith(btn.cloneNode(true));
+                });
+
+                // Re-query after clone
+                document.querySelectorAll('button:has(i.fa-trash)').forEach((btn, index) => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const row = this.closest('tr');
+                        const instructorName = row.querySelector('strong').textContent;
+                        if (confirm(`🗑️ Are you sure you want to delete ${instructorName}?`)) {
+                            console.log(`🗑️ Deleting instructor: ${instructorName}`);
+                            row.style.opacity = '0.5';
+                            row.style.textDecoration = 'line-through';
+                            
+                            // Simulate deletion
+                            setTimeout(() => {
+                                row.remove();
+                                console.log(`✅ ${instructorName} has been deleted successfully`);
+                            }, 500);
+                        } else {
+                            console.log(`❌ Deletion of ${instructorName} cancelled`);
+                        }
+                    });
+                });
+            }
+
+            // ===== EDIT INSTRUCTOR FORM SUBMISSION =====
+            const submitEditBtn = document.getElementById('submitEditInstructorForm');
+            if (submitEditBtn) {
+                submitEditBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const firstName = document.getElementById('editInstructorFirstName').value.trim();
+                    const lastName = document.getElementById('editInstructorLastName').value.trim();
+                    const email = document.getElementById('editInstructorEmail').value.trim();
+
+                    if (!firstName || !lastName || !email) {
+                        console.log('❌ Form validation failed');
+                        return;
+                    }
+
+                    console.log(`✅ Updating instructor: ${firstName} ${lastName}`);
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editInstructorModal'));
+                    if (modal) modal.hide();
+
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-check me-2"></i>Changes Saved';
+                    
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
+                    }, 1500);
+                });
+            }
 
             // ===== MOBILE QUICK ACTION BUTTONS =====
             const mobileQuickBtns = document.querySelectorAll('.d-md-none .btn-group button');
@@ -1761,6 +2321,9 @@
 
             // Page loaded indicator
             document.body.setAttribute('data-page-loaded', 'true');
+            
+            // Initialize edit/delete listeners
+            attachEditDeleteListeners();
             
             // Log that page is ready
             console.log('✅ Page loaded and all interactive elements initialized');
