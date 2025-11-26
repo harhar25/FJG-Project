@@ -1582,6 +1582,57 @@
                 <strong>Page not found</strong> - Please select a valid page from the navigation menu.
             </div>
             {% endblock %}
+            
+            <!-- ===== FILTER MODAL (Moved inside main-content to avoid sidebar overlap) ===== -->
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none;">
+                            <h5 class="modal-title" id="filterModalLabel">
+                                <i class="fas fa-filter me-2"></i>Filter Instructors
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <form id="filterForm">
+                                <div class="mb-3">
+                                    <label for="filterDepartment" class="form-label fw-600">Department</label>
+                                    <select class="form-select" id="filterDepartment">
+                                        <option value="">All Departments</option>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Information Technology">Information Technology</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="Cybersecurity">Cybersecurity</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="filterStatus" class="form-label fw-600">Status</label>
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">All Statuses</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Pending">Pending Approval</option>
+                                        <option value="On Leave">On Leave</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="filterSpecialization" class="form-label fw-600">Specialization</label>
+                                    <input type="text" class="form-control" id="filterSpecialization" placeholder="Filter by specialization...">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer p-4 border-top">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-2"></i>Clear
+                            </button>
+                            <button type="button" class="btn btn-premium" id="applyFilterBtn">
+                                <i class="fas fa-check me-2"></i>Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
     </div>
@@ -1841,57 +1892,6 @@
             </div>
     </div>
     {% endif %}
-
-    <!-- ===== FILTER MODAL ===== -->
-    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none;">
-                    <h5 class="modal-title" id="filterModalLabel">
-                        <i class="fas fa-filter me-2"></i>Filter Instructors
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="filterForm">
-                        <div class="mb-3">
-                            <label for="filterDepartment" class="form-label fw-600">Department</label>
-                            <select class="form-select" id="filterDepartment">
-                                <option value="">All Departments</option>
-                                <option value="Computer Science">Computer Science</option>
-                                <option value="Information Technology">Information Technology</option>
-                                <option value="Software Engineering">Software Engineering</option>
-                                <option value="Data Science">Data Science</option>
-                                <option value="Cybersecurity">Cybersecurity</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="filterStatus" class="form-label fw-600">Status</label>
-                            <select class="form-select" id="filterStatus">
-                                <option value="">All Statuses</option>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="Pending">Pending Approval</option>
-                                <option value="On Leave">On Leave</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="filterSpecialization" class="form-label fw-600">Specialization</label>
-                            <input type="text" class="form-control" id="filterSpecialization" placeholder="Filter by specialization...">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer p-4 border-top">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Clear
-                    </button>
-                    <button type="button" class="btn btn-premium" id="applyFilterBtn">
-                        <i class="fas fa-check me-2"></i>Apply Filters
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
     
     <!-- Enhanced Footer -->
     <footer class="py-4 border-top mt-auto">
