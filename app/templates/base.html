@@ -1587,6 +1587,8 @@
     </div>
     
     <!-- ===== ADD INSTRUCTOR MODAL ===== -->
+    <!-- Only visible and accessible to administrators -->
+    {% if current_user.is_authenticated and current_user.role == 'Administrator' %}
     <div class="modal fade" id="addInstructorModal" tabindex="-1" aria-labelledby="addInstructorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -1717,8 +1719,11 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <!-- ===== EDIT INSTRUCTOR MODAL ===== -->
+    <!-- Only visible and accessible to administrators -->
+    {% if current_user.is_authenticated and current_user.role == 'Administrator' %}
     <div class="modal fade" id="editInstructorModal" tabindex="-1" aria-labelledby="editInstructorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -1835,6 +1840,7 @@
                 </div>
             </div>
     </div>
+    {% endif %}
 
     <!-- ===== FILTER MODAL ===== -->
     <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
