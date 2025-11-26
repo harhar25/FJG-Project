@@ -1,54 +1,29 @@
-# 🚀 Quick Start Guide - Collapsible Sidebar
+# � IT LAB SYSTEM - QUICK START & BUILD GUIDE
 
 **Last Updated:** November 26, 2025  
-**Status:** ✅ Production Ready
+**Status:** Foundation Complete, Ready for Feature Development  
+**Documentation:** Complete planning and architectural guides created
 
 ---
 
-## ⚡ Quick Facts
+## ⚡ QUICK COMMANDS
 
-| Aspect | Details |
-|--------|---------|
-| **Feature** | Collapsible sidebar with icon-only view |
-| **Toggle Button** | Top-right corner of sidebar |
-| **Widths** | 280px (expanded) ↔ 80px (collapsed) |
-| **Animation** | 300ms smooth transitions |
-| **State** | Saved to localStorage |
-| **User Items** | Profile Settings, Preferences, Logout |
-| **Files Modified** | 1 file (base.html) |
-| **Total Changes** | 270 lines of code |
-| **Status** | ✅ Production Ready |
+```bash
+# 1. Enter project directory
+cd c:\Users\HarHar\New-sys
 
----
+# 2. Activate virtual environment
+.venv\Scripts\activate
 
-## 🎯 User Experience
+# 3. Seed database (NEEDS FIX - see below)
+python seed_db.py
 
-### For End Users
+# 4. Run application
+python run.py
 
-**How to Use:**
-1. Look for the **double chevron button** (top-right of sidebar)
-2. Click to collapse → Sidebar becomes icon-only
-3. Click again to expand → Full sidebar with labels
-4. Your preference is automatically saved
-
-**What Happens When Collapsed:**
-- Sidebar shrinks to icon-only view (80px)
-- Hover over any icon to see its name (tooltip)
-- User account items still visible (icons only)
-- Click toggle button to expand again
-
-**Profile Options (Now in Sidebar):**
-- **Profile Settings** - User profile icon
-- **Preferences** - Gear icon
-- **Logout** - Door icon (red)
-
-### For Developers
-
-**Key Files:**
-- `base.html` - Main implementation (look for `sidebar-toggle-btn` and `sidebar.collapsed` class)
-- `COLLAPSIBLE_SIDEBAR_UPDATE.md` - Technical details
-- `SIDEBAR_VISUAL_GUIDE.md` - Visual reference
-- `SIDEBAR_IMPLEMENTATION_SUMMARY.md` - Complete overview
+# 5. Access in browser
+# http://localhost:5000
+```
 
 **Main Components:**
 1. **Toggle Button** - HTML button with icon
