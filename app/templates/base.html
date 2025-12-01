@@ -1534,21 +1534,6 @@
                     </nav>
                 </div>
 
-                <!-- Mobile Student Navigation -->
-                <div class="nav-section d-lg-none">
-                    <h6 class="nav-section-title">Quick Menu</h6>
-                    <nav class="nav flex-column sidebar-nav">
-                        <a class="nav-link" href="{{ url_for('student.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="{{ url_for('student.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>
-                            Notifications
-                        </a>
-                    </nav>
-                </div>
-
                 {% endif %}
             {% endif %}
 
@@ -2022,13 +2007,16 @@
             // Sidebar navigation links - All functional
             const sidebarNavLinks = document.querySelectorAll('.sidebar-nav .nav-link');
             const navRoutes = {
-                'Dashboard': { icon: 'fa-tachometer-alt', action: 'loadDashboard' },
+                'Dashboard': { icon: 'fa-tachometer-alt', action: 'navigate' },
                 'Laboratories': { icon: 'fa-flask-vial', action: 'loadLaboratories' },
                 'Instructors': { icon: 'fa-chalkboard-user', action: 'loadInstructors' },
                 'Approvals': { icon: 'fa-check-circle', action: 'loadApprovals' },
                 'Analytics': { icon: 'fa-chart-bar', action: 'loadAnalytics' },
                 'Reports': { icon: 'fa-chart-bar', action: 'loadReports' },
                 'Statistics': { icon: 'fa-chart-line', action: 'loadStatistics' },
+                'Schedule by Lab': { icon: 'fa-calendar', action: 'navigate' },
+                'By Instructor': { icon: 'fa-user-tie', action: 'navigate' },
+                'By Course': { icon: 'fa-book', action: 'navigate' },
                 'Profile Settings': { icon: 'fa-user', action: 'navigate' },
                 'Preferences': { icon: 'fa-cog', action: 'navigate' },
                 'Logout': { icon: 'fa-sign-out-alt', action: 'navigate' },
