@@ -2130,25 +2130,29 @@
                 });
             }
 
-            // ===== ADD NEW BUTTON =====
-            const addBtn = document.querySelector('button:has(i.fa-plus)');
-            if (addBtn) {
-                addBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('➕ Opening Add New Instructor modal');
-                    
-                    // Reset form
-                    document.getElementById('addInstructorForm').reset();
-                    document.getElementById('formValidationAlert').classList.add('d-none');
-                    document.getElementById('formSuccessAlert').classList.add('d-none');
-                    
-                    // Open modal
-                    const modal = new bootstrap.Modal(document.getElementById('addInstructorModal'));
-                    modal.show();
-                    
-                    this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                    setTimeout(() => { this.style.background = ''; }, 300);
-                });
+            // ===== ADD NEW INSTRUCTOR BUTTON =====
+            // Only add event listener if we're on the manage instructors page AND addInstructorModal exists
+            const addInstructorModal = document.getElementById('addInstructorModal');
+            if (addInstructorModal && document.location.pathname.includes('manage-instructors')) {
+                const addBtn = document.querySelector('button[data-bs-target="#addInstructorModal"]');
+                if (addBtn) {
+                    addBtn.addEventListener('click', function(e) {
+                        console.log('➕ Opening Add New Instructor modal');
+                        
+                        // Reset form - with null safety check
+                        const instructorForm = document.getElementById('addInstructorForm');
+                        const validationAlert = document.getElementById('formValidationAlert');
+                        const successAlert = document.getElementById('formSuccessAlert');
+                        
+                        if (instructorForm) instructorForm.reset();
+                        if (validationAlert) validationAlert.classList.add('d-none');
+                        if (successAlert) successAlert.classList.add('d-none');
+                        
+                        // Visual feedback
+                        this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                        setTimeout(() => { this.style.background = ''; }, 300);
+                    });
+                }
             }
 
             // ===== ADD INSTRUCTOR FORM SUBMISSION =====

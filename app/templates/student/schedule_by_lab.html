@@ -22,6 +22,16 @@
         <h3><i class="fas fa-filter me-2"></i>Filter Schedule</h3>
     </div>
     <div class="card-body">
+        <!-- TEST: Simple select without Bootstrap classes -->
+        <div style="margin-bottom: 1rem; padding: 1rem; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
+            <p style="margin: 0; color: #856404;"><strong>DEBUG TEST SELECT:</strong> If you can click this, form-select is the issue</p>
+            <select id="testSelect" style="width: 100%; padding: 8px; margin-top: 0.5rem;">
+                <option>Test Option 1</option>
+                <option>Test Option 2</option>
+                <option>Test Option 3</option>
+            </select>
+        </div>
+        
         <form method="GET" id="filterForm" action="{{ url_for('student.schedule_by_lab') }}">
             <div class="row g-3">
                 <div class="col-md-6">

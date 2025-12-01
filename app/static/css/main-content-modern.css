@@ -287,6 +287,40 @@ h3 {
     text-decoration: none;
 }
 
+.btn-modern-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+/* Enhanced button for Add New actions */
+.btn-add-new {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-add-new::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: left 0.3s ease;
+}
+
+.btn-add-new:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(16, 185, 129, 0.35);
+    color: white;
+}
+
+.btn-add-new:hover::before {
+    left: 100%;
+}
+
 .btn-modern-secondary {
     background: white;
     color: #6366f1;
