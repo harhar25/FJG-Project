@@ -165,14 +165,29 @@
 
 <script>
 function filterSchedule() {
-    const instructorId = document.getElementById('instructorFilter').value;
-    const weekStart = document.getElementById('weekFilter').value;
+    console.log('filterSchedule() called');
+    const instructorFilter = document.getElementById('instructorFilter');
+    const weekFilter = document.getElementById('weekFilter');
+    
+    if (!instructorFilter) {
+        console.error('instructorFilter element not found');
+        return;
+    }
+    
+    const instructorId = instructorFilter.value;
+    const weekStart = weekFilter.value;
+    
+    console.log('Current values:', { instructorId, weekStart });
+    
     const params = new URLSearchParams();
     if (instructorId) params.append('instructor_id', instructorId);
     if (weekStart) params.append('week_start', weekStart);
     const url = "{{ url_for('student.schedule_by_instructor') }}" + (params.toString() ? '?' + params.toString() : '');
-    console.log('🧑‍🏫 Filtering by instructor:', { instructorId, weekStart });
+    console.log('Navigating to:', url);
     window.location.href = url;
 }
+
+// Ensure function is globally accessible
+window.filterSchedule = filterSchedule;
 </script>
 {% endblock %}
