@@ -168,3 +168,11 @@ def notifications():
     db.session.commit()
     
     return render_template('student/notifications.html', notifications=notifications)
+
+@student_bp.route('/test-form')
+@login_required
+@student_required
+def test_form():
+    """Test form for debugging dropdown issues"""
+    labs = Laboratory.query.filter_by(is_active=True).all()
+    return render_template('student/test_form.html', labs=labs)

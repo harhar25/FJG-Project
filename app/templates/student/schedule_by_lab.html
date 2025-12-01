@@ -22,7 +22,7 @@
         <h3><i class="fas fa-filter me-2"></i>Filter Schedule</h3>
     </div>
     <div class="card-body">
-        <form method="GET" id="filterForm">
+        <form method="GET" id="filterForm" action="{{ url_for('student.schedule_by_lab') }}">
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label"><strong>Select Lab Room</strong></label>
@@ -111,7 +111,42 @@
 </div>
 
 <script>
-// This is now a form submission - no need for complex JavaScript
 console.log('Schedule by lab page loaded');
+
+// Debug dropdown interaction
+const labFilter = document.getElementById('labFilter');
+if (labFilter) {
+    console.log('labFilter found:', labFilter);
+    
+    // Log all events on the select
+    labFilter.addEventListener('click', function(e) {
+        console.log('labFilter clicked', e);
+    });
+    
+    labFilter.addEventListener('change', function(e) {
+        console.log('labFilter changed to:', this.value, e);
+    });
+    
+    labFilter.addEventListener('focus', function(e) {
+        console.log('labFilter focused', e);
+    });
+    
+    labFilter.addEventListener('mousedown', function(e) {
+        console.log('labFilter mousedown', e);
+    });
+} else {
+    console.error('labFilter element NOT found');
+}
+
+// Check form
+const filterForm = document.getElementById('filterForm');
+if (filterForm) {
+    console.log('filterForm found:', filterForm);
+    filterForm.addEventListener('submit', function(e) {
+        console.log('Form submitting', e);
+    });
+} else {
+    console.error('filterForm element NOT found');
+}
 </script>
 {% endblock %}

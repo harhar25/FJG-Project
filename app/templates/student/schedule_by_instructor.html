@@ -16,7 +16,7 @@
 <!-- Filters -->
 <div class="premium-card mb-4">
     <div class="card-body">
-        <form method="GET" id="filterForm">
+        <form method="GET" id="filterForm" action="{{ url_for('student.schedule_by_instructor') }}">
             <div class="row g-3 align-items-end">
                 <div class="col-md-6">
                     <label class="form-label fw-600 mb-2">
@@ -176,7 +176,30 @@
 </style>
 
 <script>
-// This is now a form submission - no need for complex JavaScript
 console.log('Schedule by instructor page loaded');
+
+// Debug dropdown interaction
+const instructorFilter = document.getElementById('instructorFilter');
+if (instructorFilter) {
+    console.log('instructorFilter found:', instructorFilter);
+    instructorFilter.addEventListener('click', function(e) {
+        console.log('instructorFilter clicked', e);
+    });
+    instructorFilter.addEventListener('change', function(e) {
+        console.log('instructorFilter changed to:', this.value, e);
+    });
+    instructorFilter.addEventListener('focus', function(e) {
+        console.log('instructorFilter focused', e);
+    });
+} else {
+    console.error('instructorFilter element NOT found');
+}
+
+const filterForm = document.getElementById('filterForm');
+if (filterForm) {
+    console.log('filterForm found:', filterForm);
+} else {
+    console.error('filterForm NOT found');
+}
 </script>
 {% endblock %}
