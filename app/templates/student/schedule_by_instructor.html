@@ -16,13 +16,13 @@
 <!-- Filters -->
 <div class="premium-card mb-4">
     <div class="card-body">
-        <form method="GET" id="filterForm" action="{{ url_for('student.schedule_by_instructor') }}">
+        <form method="GET" id="filterForm" action="{{ url_for('student.schedule_by_instructor') }}" style="position: relative; z-index: 10;">
             <div class="row g-3 align-items-end">
                 <div class="col-md-6">
                     <label class="form-label fw-600 mb-2">
                         <i class="fas fa-user-tie me-2"></i>Select Instructor
                     </label>
-                    <select class="form-select" id="instructorFilter" name="instructor_id">
+                    <select id="instructorFilter" name="instructor_id" style="width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #667eea; border-radius: 6px; background: white; cursor: pointer; position: relative; z-index: 20;">
                         <option value="">All Instructors</option>
                         {% for instructor in instructors %}
                         <option value="{{ instructor.id }}" {% if selected_instructor_id == instructor.id %}selected{% endif %}>
@@ -35,12 +35,12 @@
                     <label class="form-label fw-600 mb-2">
                         <i class="fas fa-calendar me-2"></i>Week Starting
                     </label>
-                    <input type="date" class="form-control" id="weekFilter" name="week_start" value="{{ week_start }}">
+                    <input type="date" id="weekFilter" name="week_start" value="{{ week_start }}" style="width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #667eea; border-radius: 6px;">
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" style="cursor: pointer;">
                         <i class="fas fa-search me-2"></i>Apply Filter
                     </button>
                     <a href="{{ url_for('student.schedule_by_instructor') }}" class="btn btn-secondary">
