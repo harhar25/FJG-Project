@@ -174,7 +174,29 @@ function filterSchedule() {
     const params = new URLSearchParams();
     if (courseId) params.append('course_id', courseId);
     if (weekStart) params.append('week_start', weekStart);
-    window.location.href = "{{ url_for('student.schedule_by_section') }}" + (params.toString() ? '?' + params.toString() : '');
+    const url = "{{ url_for('student.schedule_by_section') }}" + (params.toString() ? '?' + params.toString() : '');
+    console.log('📖 Filtering by course:', { courseId, weekStart, url });
+    window.location.href = url;
 }
+
+// Ensure dropdown responds to changes
+document.addEventListener('DOMContentLoaded', function() {
+    const courseFilter = document.getElementById('courseFilter');
+    const weekFilter = document.getElementById('weekFilter');
+    
+    if (courseFilter) {
+        courseFilter.addEventListener('change', function(e) {
+            console.log('✓ Course filter changed to:', this.value);
+            filterSchedule();
+        });
+    }
+    
+    if (weekFilter) {
+        weekFilter.addEventListener('change', function(e) {
+            console.log('✓ Week filter changed to:', this.value);
+            filterSchedule();
+        });
+    }
+});
 </script>
 {% endblock %}

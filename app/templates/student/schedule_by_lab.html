@@ -107,7 +107,29 @@ function filterSchedule() {
     const params = new URLSearchParams();
     if (labId) params.append('lab_id', labId);
     if (weekStart) params.append('week_start', weekStart);
-    window.location.href = "{{ url_for('student.schedule_by_lab') }}" + (params.toString() ? '?' + params.toString() : '');
+    const url = "{{ url_for('student.schedule_by_lab') }}" + (params.toString() ? '?' + params.toString() : '');
+    console.log('📚 Filtering by lab:', { labId, weekStart, url });
+    window.location.href = url;
 }
+
+// Ensure dropdown responds to changes
+document.addEventListener('DOMContentLoaded', function() {
+    const labFilter = document.getElementById('labFilter');
+    const weekFilter = document.getElementById('weekFilter');
+    
+    if (labFilter) {
+        labFilter.addEventListener('change', function(e) {
+            console.log('✓ Lab filter changed to:', this.value);
+            filterSchedule();
+        });
+    }
+    
+    if (weekFilter) {
+        weekFilter.addEventListener('change', function(e) {
+            console.log('✓ Week filter changed to:', this.value);
+            filterSchedule();
+        });
+    }
+});
 </script>
 {% endblock %}

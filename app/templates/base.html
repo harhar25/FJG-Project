@@ -1333,6 +1333,32 @@
                 margin-left: 0;
             }
         }
+
+        /* ===== ICON FALLBACK STYLING ===== */
+        .fas, .fab, .far {
+            display: inline-block;
+            font-family: 'Font Awesome 6 Free', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 900;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            min-width: 1.25em;
+            text-align: center;
+        }
+
+        /* Fallback if Font Awesome fails to load */
+        .sidebar-nav .nav-link i {
+            min-width: 1.5em;
+            text-align: center;
+        }
+
+        /* Ensure icons in buttons display properly */
+        button i, a i {
+            vertical-align: middle;
+        }
+
+        /* Icon styling for various contexts */
+        .me-2 { margin-right: 0.5rem !important; }
+        .me-3 { margin-right: 1rem !important; }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100" data-page-loaded="false">
@@ -2547,8 +2573,49 @@
                 }
             }
             
+            // ===== THEME SWITCHING FUNCTIONALITY =====
+            const themeRadios = document.querySelectorAll('input[name="theme"]');
+            const htmlElement = document.documentElement;
+            
+            // Load saved theme from localStorage
+            const savedTheme = localStorage.getItem('app-theme') || 'light';
+            htmlElement.setAttribute('data-bs-theme', savedTheme);
+            const savedThemeRadio = document.querySelector(`input[name="theme"][value="${savedTheme}"]`);
+            if (savedThemeRadio) savedThemeRadio.checked = true;
+            
+            // Theme change event listeners
+            themeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const theme = this.value;
+                    if (theme === 'auto') {
+                        // Auto theme based on system preference
+                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        htmlElement.setAttribute('data-bs-theme', prefersDark ? 'dark' : 'light');
+                        localStorage.setItem('app-theme', 'auto');
+                        document.body.classList.toggle('dark-mode', prefersDark);
+                    } else {
+                        htmlElement.setAttribute('data-bs-theme', theme);
+                        localStorage.setItem('app-theme', theme);
+                        document.body.classList.toggle('dark-mode', theme === 'dark');
+                    }
+                    console.log('🎨 Theme changed to:', theme);
+                });
+            });
+            
+            // ===== DROPDOWN FIX: Ensure onchange events fire properly =====
+            const allSelects = document.querySelectorAll('select[onchange]');
+            allSelects.forEach(select => {
+                select.addEventListener('change', function(e) {
+                    if (this.onchange) {
+                        this.onchange.call(this);
+                    }
+                });
+            });
+            
             // Log that page is ready
             console.log('✅ Page loaded and all interactive elements initialized');
+            console.log('✅ Theme switching active');
+            console.log('✅ Dropdowns configured');
             console.log('All buttons and navigation are now functional');
         });
     </script>

@@ -214,11 +214,71 @@
     <!-- Save Button -->
     <div class="row mt-5">
         <div class="col-12 text-end">
-            <button type="button" class="btn btn-outline-secondary me-2">Discard Changes</button>
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-outline-secondary me-2" onclick="resetPreferences()">Discard Changes</button>
+            <button type="button" class="btn btn-primary" onclick="savePreferences()">
                 <i class="fas fa-save me-2"></i>Save All Changes
             </button>
         </div>
     </div>
 </div>
+
+<script>
+// Theme functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Load saved preferences
+    const savedTheme = localStorage.getItem('app-theme') || 'light';
+    const themeRadio = document.querySelector(`input[name="theme"][value="${savedTheme}"]`);
+    if (themeRadio) themeRadio.checked = true;
+    
+    // Theme change handlers
+    const themeRadios = document.querySelectorAll('input[name="theme"]');
+    themeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const theme = this.value;
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('app-theme', theme);
+            
+            if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.body.classList.toggle('dark-mode', prefersDark);
+                console.log('🎨 Theme set to auto (system preference)');
+            } else {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+                console.log('🎨 Theme changed to:', theme);
+            }
+        });
+    });
+});
+
+function savePreferences() {
+    const theme = document.querySelector('input[name="theme"]:checked').value;
+    const language = document.querySelector('select').value;
+    const compactView = document.getElementById('compactView').checked;
+    const emailNotif = document.getElementById('emailNotif').checked;
+    const pushNotif = document.getElementById('pushNotif').checked;
+    const scheduleNotif = document.getElementById('scheduleNotif').checked;
+    const newsNotif = document.getElementById('newsNotif').checked;
+    
+    // Save to localStorage
+    localStorage.setItem('user-preferences', JSON.stringify({
+        theme,
+        language,
+        compactView,
+        emailNotif,
+        pushNotif,
+        scheduleNotif,
+        newsNotif
+    }));
+    
+    // Show success message
+    alert('✅ Preferences saved successfully!');
+    console.log('💾 All preferences saved');
+}
+
+function resetPreferences() {
+    if (confirm('Are you sure you want to discard all changes?')) {
+        location.reload();
+    }
+}
+</script>
 {% endblock %}
