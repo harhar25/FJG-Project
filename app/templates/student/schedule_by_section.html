@@ -16,27 +16,39 @@
 <!-- Filters -->
 <div class="premium-card mb-4">
     <div class="card-body">
-        <div class="row g-3 align-items-end">
-            <div class="col-md-6">
-                <label class="form-label fw-600 mb-2">
-                    <i class="fas fa-book-open me-2"></i>Select Course
-                </label>
-                <select class="form-select form-select-modern" id="courseFilter" onchange="filterSchedule()">
-                    <option value="">All Courses</option>
-                    {% for course in courses %}
-                    <option value="{{ course.id }}" {% if selected_course_id == course.id %}selected{% endif %}>
-                        {{ course.course_code }} - {{ course.course_name }} (Section {{ course.section }})
-                    </option>
-                    {% endfor %}
-                </select>
+        <form method="GET" id="filterForm">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label fw-600 mb-2">
+                        <i class="fas fa-book-open me-2"></i>Select Course
+                    </label>
+                    <select class="form-select form-select-modern" id="courseFilter" name="course_id">
+                        <option value="">All Courses</option>
+                        {% for course in courses %}
+                        <option value="{{ course.id }}" {% if selected_course_id == course.id %}selected{% endif %}>
+                            {{ course.course_code }} - {{ course.course_name }} (Section {{ course.section }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-600 mb-2">
+                        <i class="fas fa-calendar me-2"></i>Week Starting
+                    </label>
+                    <input type="date" class="form-control form-control-modern" id="weekFilter" name="week_start" value="{{ week_start }}">
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="form-label fw-600 mb-2">
-                    <i class="fas fa-calendar me-2"></i>Week Starting
-                </label>
-                <input type="date" class="form-control form-control-modern" id="weekFilter" value="{{ week_start }}" onchange="filterSchedule()">
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Apply Filter
+                    </button>
+                    <a href="{{ url_for('student.schedule_by_section') }}" class="btn btn-secondary">
+                        <i class="fas fa-redo me-2"></i>Reset
+                    </a>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -168,30 +180,6 @@
 </style>
 
 <script>
-function filterSchedule() {
-    console.log('filterSchedule() called');
-    const courseFilter = document.getElementById('courseFilter');
-    const weekFilter = document.getElementById('weekFilter');
-    
-    if (!courseFilter) {
-        console.error('courseFilter element not found');
-        return;
-    }
-    
-    const courseId = courseFilter.value;
-    const weekStart = weekFilter.value;
-    
-    console.log('Current values:', { courseId, weekStart });
-    
-    const params = new URLSearchParams();
-    if (courseId) params.append('course_id', courseId);
-    if (weekStart) params.append('week_start', weekStart);
-    const url = "{{ url_for('student.schedule_by_section') }}" + (params.toString() ? '?' + params.toString() : '');
-    console.log('Navigating to:', url);
-    window.location.href = url;
-}
-
-// Ensure function is globally accessible
-window.filterSchedule = filterSchedule;
+console.log('Schedule by Section page loaded');
 </script>
 {% endblock %}
