@@ -22,9 +22,9 @@
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUarbnLYV7BL0n8/4ePLpQBHXQnbc5PkaseX8L2iSTvao585z/z" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6usKICT5enwQhdARiW3xQ52k5+ALBmP4lAR4DvMiZVWises+mpg69nPGEQrsPg==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' fill='%236366f1'>⚗</text></svg>">
@@ -1945,7 +1945,7 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4DrDynFVt3oCG6QaO8-GyBtvScMOrScpm+V8ev7yHnzV8zzVfrSew3ClgFO" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     
     <script>
         // Sidebar Collapse Functionality
@@ -2488,69 +2488,72 @@
             let currentPage = 2; // Start at page 2 (active dot)
             const totalPages = dotLinks.length;
 
-            // Handle dot click
-            dotLinks.forEach((dot, index) => {
-                dot.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    currentPage = index + 1;
-                    updatePagination();
-                    console.log('✅ Navigating to page:', currentPage);
-                });
-            });
-
-            // Handle prev button
-            if (prevBtn) {
-                prevBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                        currentPage--;
+            // Only run pagination if there are dots
+            if (totalPages > 0) {
+                // Handle dot click
+                dotLinks.forEach((dot, index) => {
+                    dot.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        currentPage = index + 1;
                         updatePagination();
-                        console.log('⬅️ Previous page - now at page:', currentPage);
-                    }
+                        console.log('✅ Navigating to page:', currentPage);
+                    });
                 });
-            }
 
-            // Handle next button
-            if (nextBtn) {
-                nextBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        updatePagination();
-                        console.log('➡️ Next page - now at page:', currentPage);
+                // Handle prev button
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (currentPage > 1) {
+                            currentPage--;
+                            updatePagination();
+                            console.log('⬅️ Previous page - now at page:', currentPage);
+                        }
+                    });
+                }
+
+                // Handle next button
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            updatePagination();
+                            console.log('➡️ Next page - now at page:', currentPage);
+                        }
+                    });
+                }
+
+                // Update pagination state
+                function updatePagination() {
+                    // Remove active from all dots
+                    dotLinks.forEach(dot => dot.parentElement.classList.remove('active'));
+                    
+                    // Set active dot
+                    if (dotLinks[currentPage - 1]) {
+                        dotLinks[currentPage - 1].parentElement.classList.add('active');
                     }
-                });
+
+                    // Update prev button state
+                    const prevItem = document.querySelector('.pagination .page-nav.disabled').parentElement;
+                    if (currentPage === 1) {
+                        prevItem.classList.add('disabled');
+                    } else {
+                        prevItem.classList.remove('disabled');
+                    }
+
+                    // Update next button state
+                    const nextItem = nextBtn.parentElement;
+                    if (currentPage === totalPages) {
+                        nextItem.classList.add('disabled');
+                    } else {
+                        nextItem.classList.remove('disabled');
+                    }
+                }
+
+                // Initialize pagination state
+                updatePagination();
             }
-
-            // Update pagination state
-            function updatePagination() {
-                // Remove active from all dots
-                dotLinks.forEach(dot => dot.parentElement.classList.remove('active'));
-                
-                // Set active dot
-                if (dotLinks[currentPage - 1]) {
-                    dotLinks[currentPage - 1].parentElement.classList.add('active');
-                }
-
-                // Update prev button state
-                const prevItem = document.querySelector('.pagination .page-nav.disabled').parentElement;
-                if (currentPage === 1) {
-                    prevItem.classList.add('disabled');
-                } else {
-                    prevItem.classList.remove('disabled');
-                }
-
-                // Update next button state
-                const nextItem = nextBtn.parentElement;
-                if (currentPage === totalPages) {
-                    nextItem.classList.add('disabled');
-                } else {
-                    nextItem.classList.remove('disabled');
-                }
-            }
-
-            // Initialize pagination state
-            updatePagination();
 
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
