@@ -2035,20 +2035,26 @@
             const sidebarNavLinks = document.querySelectorAll('.sidebar-nav .nav-link');
             const navRoutes = {
                 'Dashboard': { icon: 'fa-tachometer-alt', action: 'navigate' },
-                'Laboratories': { icon: 'fa-flask-vial', action: 'loadLaboratories' },
-                'Instructors': { icon: 'fa-chalkboard-user', action: 'loadInstructors' },
-                'Approvals': { icon: 'fa-check-circle', action: 'loadApprovals' },
-                'Analytics': { icon: 'fa-chart-bar', action: 'loadAnalytics' },
-                'Reports': { icon: 'fa-chart-bar', action: 'loadReports' },
-                'Statistics': { icon: 'fa-chart-line', action: 'loadStatistics' },
+                'Laboratories': { icon: 'fa-flask-vial', action: 'navigate' },
+                'Instructors': { icon: 'fa-chalkboard-user', action: 'navigate' },
+                'Approvals': { icon: 'fa-check-circle', action: 'navigate' },
+                'Analytics': { icon: 'fa-chart-bar', action: 'navigate' },
+                'Reports': { icon: 'fa-chart-bar', action: 'navigate' },
+                'Statistics': { icon: 'fa-chart-line', action: 'navigate' },
                 'Schedule by Lab': { icon: 'fa-calendar', action: 'navigate' },
+                'Schedule by Instructor': { icon: 'fa-calendar', action: 'navigate' },
+                'Schedule by Section': { icon: 'fa-calendar', action: 'navigate' },
+                'Schedule': { icon: 'fa-calendar', action: 'navigate' },
                 'By Instructor': { icon: 'fa-user-tie', action: 'navigate' },
                 'By Course': { icon: 'fa-book', action: 'navigate' },
+                'New Request': { icon: 'fa-plus', action: 'navigate' },
+                'My Requests': { icon: 'fa-list', action: 'navigate' },
                 'Profile Settings': { icon: 'fa-user', action: 'navigate' },
                 'Preferences': { icon: 'fa-cog', action: 'navigate' },
                 'Logout': { icon: 'fa-sign-out-alt', action: 'navigate' },
                 'Notifications': { icon: 'fa-bell', action: 'navigate' },
-                'Messages': { icon: 'fa-envelope', action: 'navigate' }
+                'Messages': { icon: 'fa-envelope', action: 'navigate' },
+                'New Message': { icon: 'fa-pen', action: 'navigate' }
             };
 
             sidebarNavLinks.forEach(link => {

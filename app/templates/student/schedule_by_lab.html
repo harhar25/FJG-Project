@@ -8,10 +8,10 @@
     <div>
         <h1><i class="fas fa-flask-vial me-2"></i>Schedule by Lab Room</h1>
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
+            <!-- ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
                 <li class="breadcrumb-item active">Schedule</li>
-            </ol>
+            </ol -->
         </nav>
     </div>
 </div>
@@ -26,7 +26,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label"><strong>Select Lab Room</strong></label>
-                    <select class="form-select form-select-lg" id="labFilter" name="lab_id">
+                    <select class="form-select" id="labFilter" name="lab_id">
                         <option value="">📚 All Labs</option>
                         {% for lab in labs %}
                         <option value="{{ lab.id }}" {% if selected_lab_id == lab.id %}selected{% endif %}>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label"><strong>Week Starting</strong></label>
-                    <input type="date" class="form-control form-control-lg" id="weekFilter" name="week_start" value="{{ week_start }}">
+                    <input type="date" class="form-control" id="weekFilter" name="week_start" value="{{ week_start }}">
                 </div>
             </div>
             <div class="mt-3">
