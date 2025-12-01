@@ -2602,15 +2602,8 @@
                 });
             });
             
-            // ===== DROPDOWN FIX: Ensure onchange events fire properly =====
-            const allSelects = document.querySelectorAll('select[onchange]');
-            allSelects.forEach(select => {
-                select.addEventListener('change', function(e) {
-                    if (this.onchange) {
-                        this.onchange.call(this);
-                    }
-                });
-            });
+            // ===== DROPDOWN FIX: Simplified event handling =====
+            // Just let the native onchange handlers work - don't interfere
             
             // Log that page is ready
             console.log('✅ Page loaded and all interactive elements initialized');

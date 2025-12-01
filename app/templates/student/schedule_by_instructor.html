@@ -171,28 +171,8 @@ function filterSchedule() {
     if (instructorId) params.append('instructor_id', instructorId);
     if (weekStart) params.append('week_start', weekStart);
     const url = "{{ url_for('student.schedule_by_instructor') }}" + (params.toString() ? '?' + params.toString() : '');
-    console.log('📊 Filtering schedule:', { instructorId, weekStart, url });
+    console.log('🧑‍🏫 Filtering by instructor:', { instructorId, weekStart });
     window.location.href = url;
 }
-
-// Ensure dropdown responds to changes
-document.addEventListener('DOMContentLoaded', function() {
-    const instructorFilter = document.getElementById('instructorFilter');
-    const weekFilter = document.getElementById('weekFilter');
-    
-    if (instructorFilter) {
-        instructorFilter.addEventListener('change', function(e) {
-            console.log('✓ Instructor filter changed to:', this.value);
-            filterSchedule();
-        });
-    }
-    
-    if (weekFilter) {
-        weekFilter.addEventListener('change', function(e) {
-            console.log('✓ Week filter changed to:', this.value);
-            filterSchedule();
-        });
-    }
-});
 </script>
 {% endblock %}
