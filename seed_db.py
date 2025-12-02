@@ -32,21 +32,8 @@ def seed_database():
                 db.session.add(instr)
                 instructors.append(instr)
             
-            # Create Students
-            students = []
-            for i in range(1, 6):
-                stud = User(
-                    username=f'student{i}',
-                    email=f'student{i}@lab.com',
-                    full_name=f'Student {i}',
-                    role='Student'
-                )
-                stud.set_password('pass123')
-                db.session.add(stud)
-                students.append(stud)
-            
             db.session.commit()
-            print(f" Created 1 admin, {len(instructors)} instructors, {len(students)} students")
+            print(f" Created 1 admin, {len(instructors)} instructors")
             
             # Create Laboratories
             labs = [
@@ -84,7 +71,6 @@ def seed_database():
             print("\nTest Credentials:")
             print("  Admin:       admin / admin123")
             print("  Instructors: instructor1-3 / pass123")
-            print("  Students:    student1-5 / pass123")
             print()
             
         except Exception as e:

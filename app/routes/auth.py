@@ -55,7 +55,7 @@ def logout():
     flash('You have been logged out successfully.', 'success')
     return redirect(url_for('auth.login'))
 
-@auth_bp.route('/profile')
+@auth_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     """User profile page"""
@@ -127,17 +127,15 @@ def signup():
         
         try:
             # Map role names
-            role_map = {
-                'instructor': 'Instructor',
-                'admin': 'Administrator'
-            }
-            
+            # Assign role, ensuring 'admin' or 'Administrator' becomes 'Administrator'
+            assigned_role = 'Administrator' if role.lower() == 'admin' else 'Instructor'
+
             # Create new user
             user = User(
                 username=username,
                 email=email,
                 full_name=full_name,
-                role=role_map.get(role, 'Instructor'),
+                role=assigned_role,
                 is_active=True
             )
             user.set_password(password)
@@ -248,6 +246,7 @@ def setup_2fa():
 
     return render_template('auth/setup_2fa.html', qr_code=qr_code)
 
+
 @auth_bp.route('/verify-2fa', methods=['GET', 'POST'])
 def verify_2fa():
     """Handle 2FA verification"""
@@ -275,3 +274,4 @@ def verify_2fa():
             flash('Invalid 2FA token.', 'error')
 
     return render_template('auth/verify_2fa.html')
+

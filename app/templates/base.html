@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src * 'unsafe-inline'; style-src * 'unsafe-inline'; img-src * data: https:; font-src *; connect-src *">
     <meta name="description" content="Enterprise-grade IT Laboratory Utilization Schedule Management System">
     <meta name="keywords" content="laboratory, schedule, IT lab, reservation, management">
     <meta name="theme-color" content="#6366f1">
@@ -1441,160 +1440,110 @@
 
             <!-- Role-Based Navigation -->
             {% if current_user.is_authenticated %}
+
                 {% if current_user.role == 'Administrator' %}
                 <!-- Administrator Navigation -->
-                <div class="nav-section d-none d-lg-block">
+                <div class="nav-section">
                     <h6 class="nav-section-title">Administration</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('admin.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>
-                            Dashboard
+                            <i class="fas fa-tachometer-alt me-3"></i>Dashboard
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin.manage_labs') }}" data-tooltip="Labs">
-                            <i class="fas fa-flask-vial me-3"></i>
-                            Laboratories
+                        <a class="nav-link" href="{{ url_for('admin.manage_labs') }}" data-tooltip="Laboratories">
+                            <i class="fas fa-flask-vial me-2"></i>Laboratories
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin.manage_courses') }}" data-tooltip="Courses">
+                            <i class="fas fa-book me-2"></i>Courses
                         </a>
                         <a class="nav-link" href="{{ url_for('admin.manage_instructors') }}" data-tooltip="Instructors">
-                            <i class="fas fa-chalkboard-user me-3"></i>
-                            Instructors
+                            <i class="fas fa-chalkboard-user me-2"></i>Instructors
                         </a>
                         <a class="nav-link" href="{{ url_for('admin.approve_requests') }}" data-tooltip="Approvals">
-                            <i class="fas fa-check-circle me-3"></i>
-                            Approvals
+                            <i class="fas fa-check-circle me-3"></i>Approvals
                         </a>
                         <a class="nav-link" href="{{ url_for('admin.view_schedule') }}" data-tooltip="Schedule">
-                            <i class="fas fa-calendar me-3"></i>
-                            Schedule
+                            <i class="fas fa-calendar me-3"></i>Schedule
                         </a>
                     </nav>
                 </div>
-
                 <div class="nav-section">
                     <h6 class="nav-section-title">Analytics</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('admin.reports') }}" data-tooltip="Reports">
-                            <i class="fas fa-chart-bar me-3"></i>
-                            Reports
+                            <i class="fas fa-chart-bar me-3"></i>Reports
                         </a>
                     </nav>
                 </div>
-
                 <div class="nav-section">
                     <h6 class="nav-section-title">Communications</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('admin.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>
-                            Notifications
+                            <i class="fas fa-bell me-3"></i>Notifications
                         </a>
                         <a class="nav-link" href="{{ url_for('auth.messages') }}" data-tooltip="Messages">
-                            <i class="fas fa-envelope me-3"></i>
-                            Messages
-                        </a>
-                    </nav>
-                </div>
-
-                <!-- Mobile Admin Navigation -->
-                <div class="nav-section d-lg-none">
-                    <h6 class="nav-section-title">Quick Menu</h6>
-                    <nav class="nav flex-column sidebar-nav">
-                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.approve_requests') }}" data-tooltip="Approvals">
-                            <i class="fas fa-check-circle me-3"></i>
-                            Approvals
+                            <i class="fas fa-envelope me-3"></i>Messages
                         </a>
                     </nav>
                 </div>
 
                 {% elif current_user.role == 'Instructor' %}
                 <!-- Instructor Navigation -->
-                <div class="nav-section d-none d-lg-block">
+                <div class="nav-section">
                     <h6 class="nav-section-title">Teaching</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('instructor.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>
-                            Dashboard
+                            <i class="fas fa-tachometer-alt me-3"></i>Dashboard
                         </a>
-                        <a class="nav-link" href="{{ url_for('instructor.submit_request') }}" data-tooltip="New Request">
-                            <i class="fas fa-plus-circle me-3"></i>
-                            New Request
+                        <a class="nav-link" href="{{ url_for('instructor.submit_request') }}" data-tooltip="Make Request">
+                            <i class="fas fa-edit me-3"></i>Make Request
                         </a>
                         <a class="nav-link" href="{{ url_for('instructor.my_requests') }}" data-tooltip="My Requests">
-                            <i class="fas fa-list me-3"></i>
-                            My Requests
+                            <i class="fas fa-paper-plane me-3"></i>My Requests
                         </a>
-                        <a class="nav-link" href="{{ url_for('instructor.view_schedule') }}" data-tooltip="Schedule">
-                            <i class="fas fa-calendar me-3"></i>
-                            Schedule
+                        <a class="nav-link" href="{{ url_for('instructor.view_schedule') }}" data-tooltip="View Schedule">
+                            <i class="fas fa-calendar-alt me-3"></i>View Schedule
                         </a>
                     </nav>
                 </div>
-
                 <div class="nav-section">
                     <h6 class="nav-section-title">Communications</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('instructor.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>
-                            Notifications
+                            <i class="fas fa-bell me-3"></i>Notifications
                         </a>
                         <a class="nav-link" href="{{ url_for('auth.messages') }}" data-tooltip="Messages">
-                            <i class="fas fa-envelope me-3"></i>
-                            Messages
-                        </a>
-                    </nav>
-                </div>
-
-                <!-- Mobile Instructor Navigation -->
-                <div class="nav-section d-lg-none">
-                    <h6 class="nav-section-title">Quick Menu</h6>
-                    <nav class="nav flex-column sidebar-nav">
-                        <a class="nav-link" href="{{ url_for('instructor.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="{{ url_for('instructor.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>
-                            Notifications
+                            <i class="fas fa-envelope me-3"></i>Messages
                         </a>
                     </nav>
                 </div>
 
                 {% else %}
                 <!-- Student Navigation -->
-                <div class="nav-section d-none d-lg-block">
+                <div class="nav-section">
                     <h6 class="nav-section-title">Learning</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('student.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>
-                            Dashboard
+                            <i class="fas fa-tachometer-alt me-3"></i>Dashboard
                         </a>
                         <a class="nav-link" href="{{ url_for('student.schedule_by_lab') }}" data-tooltip="By Lab">
-                            <i class="fas fa-flask-vial me-3"></i>
-                            Schedule by Lab
+                            <i class="fas fa-flask-vial me-3"></i>Schedule by Lab
                         </a>
                         <a class="nav-link" href="{{ url_for('student.schedule_by_instructor') }}" data-tooltip="By Instructor">
-                            <i class="fas fa-chalkboard-user me-3"></i>
-                            By Instructor
+                            <i class="fas fa-chalkboard-user me-3"></i>By Instructor
                         </a>
                         <a class="nav-link" href="{{ url_for('student.schedule_by_section') }}" data-tooltip="By Course">
-                            <i class="fas fa-book me-3"></i>
-                            By Course
+                            <i class="fas fa-book me-3"></i>By Course
                         </a>
                     </nav>
                 </div>
-
                 <div class="nav-section">
                     <h6 class="nav-section-title">Communications</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('student.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>
-                            Notifications
+                            <i class="fas fa-bell me-3"></i>Notifications
                         </a>
                         <a class="nav-link" href="{{ url_for('auth.messages') }}" data-tooltip="Messages">
-                            <i class="fas fa-envelope me-3"></i>
-                            Messages
+                            <i class="fas fa-envelope me-3"></i>Messages
                         </a>
                     </nav>
                 </div>
@@ -1963,19 +1912,9 @@
     {% endif %}
     
     <!-- Enhanced Footer -->
-    <footer class="py-4 border-top mt-auto">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <p class="mb-0 text-muted">
-                        <strong><i class="fas fa-flask-vial me-2"></i>LabSchedule</strong>
-                    </p>
-                    <small class="text-muted">Enterprise Laboratory Management System © 2025</small>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <small class="text-muted">
-                        <i class="fas fa-code me-1"></i>v2.1.0 | 
-                        <i class="fas fa-shield-alt me-1"></i>Secure | 
+    <footer class="footer mt-auto py-3 bg-dark text-white text-center">
+        <div class="container">
+            <span>Enterprise Laboratory Management System 2025</span>
                         <i class="fas fa-rocket me-1"></i>Premium
                     </small>
                 </div>
@@ -1986,7 +1925,8 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     
-    <script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
     // Enhanced Sidebar and Page Functionality
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Initializing enhanced application functionality...');
@@ -2747,6 +2687,14 @@
         }
 
         function highlightSearchResults(query) {
+            // Auto-dismiss flash messages
+            setTimeout(function() {
+                let flashAlerts = document.querySelectorAll('.alert-dismissible');
+                flashAlerts.forEach(function(alert) {
+                    new bootstrap.Alert(alert).close();
+                });
+            }, 2000);
+
             // Implement search highlighting logic here
             const tables = document.querySelectorAll('.premium-table');
             tables.forEach(table => {
@@ -2860,7 +2808,6 @@
         
         console.log('✅ Enhanced application initialized successfully');
         console.log('✨ All interactive elements are now functional');
-        showNotification('System ready! All features are enabled.', 'success');
     });
 </script>
 </body>

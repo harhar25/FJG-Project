@@ -5,7 +5,7 @@ from sqlalchemy import and_, or_
 from app import db
 from app.models import (
     Laboratory, Course, LabSchedule, 
-    ReservationRequest, Notification
+    ReservationRequest, Notification, UserRole, UserRole
 )
 
 instructor_bp = Blueprint('instructor', __name__, url_prefix='/instructor')
@@ -177,3 +177,37 @@ def notifications():
     db.session.commit()
     
     return render_template('instructor/notifications.html', notifications=notifications)
+
+@instructor_bp.route('/profile', methods=['GET', 'POST'])
+@login_required
+@instructor_required
+def profile():
+    """Instructor profile page"""
+    if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        username = request.form.get('username')
+        email = request.form.get('email')
+
+        # Validate
+        if not all([full_name, username, email]):
+            flash('All fields are required.', 'error')
+            return redirect(url_for('instructor.profile'))
+
+        # Check for uniqueness
+        if User.query.filter(User.id != current_user.id, User.username == username).first():
+            flash('Username already exists.', 'error')
+            return redirect(url_for('instructor.profile'))
+        
+        if User.query.filter(User.id != current_user.id, User.email == email).first():
+            flash('Email already exists.', 'error')
+            return redirect(url_for('instructor.profile'))
+
+        current_user.full_name = full_name
+        current_user.username = username
+        current_user.email = email
+        db.session.commit()
+
+        flash('Profile updated successfully.', 'success')
+        return redirect(url_for('instructor.profile'))
+
+    return render_template('auth/edit_profile.html')

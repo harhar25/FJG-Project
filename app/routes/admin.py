@@ -4,8 +4,7 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, and_, or_
 from app import db
 from app.models import (
-    User, Laboratory, Course, LabSchedule, 
-    ReservationRequest, Notification, LabUsageReport, UserRole
+    User, Laboratory, LabSchedule, ReservationRequest, Notification, LabUsageReport, UserRole, Course
 )
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -25,15 +24,27 @@ def admin_required(f):
 @login_required
 @admin_required
 def dashboard():
+    # Admin dashboard
     """Admin dashboard with quick stats"""
     total_labs = Laboratory.query.filter_by(is_active=True).count()
     total_sessions = LabSchedule.query.count()
     pending_requests = ReservationRequest.query.filter_by(status='Pending').count()
-    
+
+    # Chart data: Reservation requests in the last 7 days
+    today = datetime.now(timezone.utc).date()
+    last_7_days = [today - timedelta(days=i) for i in range(7)]
+    chart_data = []
+    for day in reversed(last_7_days):
+        count = ReservationRequest.query.filter(
+            func.date(ReservationRequest.created_at) == day
+        ).count()
+        chart_data.append({'date': day.strftime('%a, %b %d'), 'count': count})
+
     return render_template('admin/dashboard.html',
                          total_labs=total_labs,
                          total_sessions=total_sessions,
-                         pending_requests=pending_requests)
+                         pending_requests=pending_requests,
+                         chart_data=chart_data)
 
 @admin_bp.route('/manage-labs', methods=['GET', 'POST'])
 @login_required
@@ -300,6 +311,34 @@ def approve_requests():
     
     requests = ReservationRequest.query.filter_by(status='Pending').paginate(page=page, per_page=15)
     return render_template('admin/approve_requests.html', requests=requests)
+
+@admin_bp.route('/manage-courses', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def manage_courses():
+    """Manage courses"""
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'add':
+            course_code = request.form.get('course_code')
+            course_name = request.form.get('course_name')
+            if course_code and course_name:
+                new_course = Course(course_code=course_code, course_name=course_name)
+                db.session.add(new_course)
+                db.session.commit()
+                flash('Course added successfully.', 'success')
+        elif action == 'delete':
+            course_id = request.form.get('course_id')
+            course = Course.query.get(course_id)
+            if course:
+                db.session.delete(course)
+                db.session.commit()
+                flash('Course deleted successfully.', 'success')
+        return redirect(url_for('admin.manage_courses'))
+
+    page = request.args.get('page', 1, type=int)
+    courses = Course.query.paginate(page=page, per_page=10)
+    return render_template('admin/manage_courses.html', courses=courses)
 
 @admin_bp.route('/reports')
 @login_required

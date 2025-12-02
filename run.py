@@ -49,6 +49,7 @@ def internal_error(error):
     db.session.rollback()
     return render_template('errors/500.html'), 500
 
+
 @app.route('/')
 def index():
     """Root route - redirect to login or dashboard"""
