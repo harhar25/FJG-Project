@@ -245,7 +245,8 @@ def view_schedule():
                          week_start=week_start,
                          week_end=week_end,
                          selected_lab_id=lab_id,
-                         timedelta=timedelta)
+                         timedelta=timedelta,
+                         datetime=datetime)
 
 @admin_bp.route('/approve-requests', methods=['GET', 'POST'])
 @login_required

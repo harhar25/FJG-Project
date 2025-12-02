@@ -4,8 +4,8 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import and_, or_
 from app import db
 from app.models import (
-    Laboratory, Course, LabSchedule, 
-    ReservationRequest, Notification, UserRole, UserRole
+    User, Laboratory, Course, LabSchedule, 
+    ReservationRequest, Notification, UserRole
 )
 
 instructor_bp = Blueprint('instructor', __name__, url_prefix='/instructor')
@@ -144,7 +144,8 @@ def view_schedule():
                          schedules=schedules,
                          labs=labs,
                          week_start=week_start,
-                         timedelta=timedelta)
+                         timedelta=timedelta,
+                         datetime=datetime)
 
 @instructor_bp.route('/my-requests')
 @login_required

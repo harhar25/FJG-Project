@@ -90,7 +90,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ url_for('auth.profile') }}">
                         <div class="mb-3">
                             <label for="fullName" class="form-label fw-600">Full Name</label>
                             <input type="text" class="form-control" id="fullName" value="{{ current_user.full_name }}" placeholder="Enter your full name">
@@ -147,22 +147,6 @@
                 </div>
             </div>
 
-            <!-- Security -->
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-shield-alt me-2" style="color: #6366f1;"></i>Security
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <a href="#" class="btn btn-outline-primary btn-sm w-100 mb-2">
-                        <i class="fas fa-key me-2"></i>Change Password
-                    </a>
-                    <a href="#" class="btn btn-outline-primary btn-sm w-100">
-                        <i class="fas fa-lock me-2"></i>Two-Factor Authentication
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 </div>
