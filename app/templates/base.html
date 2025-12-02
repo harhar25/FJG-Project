@@ -2151,7 +2151,8 @@
             });
             
             // Add highlight to active section
-            const activeSection = document.querySelector(`.nav-section-title:contains("${sectionType}")`)?.closest('.nav-section');
+            const activeSectionTitle = Array.from(document.querySelectorAll('.nav-section-title')).find(el => el.textContent.toLowerCase().includes(sectionType.toLowerCase()));
+            const activeSection = activeSectionTitle?.closest('.nav-section');
             if (activeSection) {
                 activeSection.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
                 activeSection.style.transition = 'background-color 0.3s ease';

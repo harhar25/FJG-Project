@@ -411,7 +411,7 @@
             <!-- Left Side - Brand Story -->
             <div class="signup-brand">
                 <h2>Join Us Today</h2>
-                <p>Create your account and gain access to our comprehensive IT Laboratory Utilization Schedule System.</p>
+                <p>Create your account and gain access to our comprehensive IT Laboratory Schedule System.</p>
                 <ul class="features-list">
                     <li>
                         <i class="fas fa-check-circle"></i>
@@ -453,6 +453,22 @@
                                 required
                             >
                             <div class="error-message">Please enter your full name</div>
+                        </div>
+
+                        <!-- Username -->
+                        <div class="form-group">
+                            <label for="username">
+                                <i class="fas fa-at me-2" style="color: #667eea;"></i>Username
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="username" 
+                                name="username"
+                                placeholder="johndoe"
+                                required
+                            >
+                            <div class="error-message">Please enter a username</div>
                         </div>
 
                         <!-- Email -->
@@ -514,8 +530,6 @@
                                 <i class="fas fa-user-tag me-2" style="color: #667eea;"></i>I am a
                             </label>
                             <select class="form-control" id="role" name="role" required>
-                                <option value="">Select your role</option>
-                                <option value="student">Student</option>
                                 <option value="instructor">Instructor/Faculty</option>
                                 <option value="admin">Administrator</option>
                             </select>

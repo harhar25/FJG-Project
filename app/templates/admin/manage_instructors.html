@@ -104,19 +104,19 @@
                             </td>
                             <td>
                                 {% if instructor.is_active %}
-                                <span class="badge bg-success"><i class="fas fa-check me-1"></i>Active</span>
+                                <span class="badge bg-success status-badge"><i class="fas fa-check me-1"></i>Active</span>
                                 {% else %}
-                                <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Inactive</span>
+                                <span class="badge bg-danger status-badge"><i class="fas fa-times me-1"></i>Inactive</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <form method="POST" action="{{ url_for('admin.manage_instructors') }}" style="display:inline;">
-                                    <input type="hidden" name="action" value="deactivate">
-                                    <input type="hidden" name="user_id" value="{{ instructor.id }}">
-                                    <button type="submit" class="btn btn-action {% if instructor.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}" title="{% if instructor.is_active %}Deactivate{% else %}Activate{% endif %}">
-                                        <i class="fas fa-{% if instructor.is_active %}ban{% else %}check{% endif %}"></i>
-                                    </button>
-                                </form>
+                                <a href="{{ url_for('admin.edit_instructor', user_id=instructor.id) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                {% if instructor.is_active %}
+                                    <a href="{{ url_for('admin.deactivate_instructor', user_id=instructor.id) }}" class="btn btn-sm btn-outline-warning" title="Deactivate"><i class="fas fa-ban"></i></a>
+                                {% else %}
+                                    <a href="{{ url_for('admin.activate_instructor', user_id=instructor.id) }}" class="btn btn-sm btn-outline-success" title="Activate"><i class="fas fa-check-circle"></i></a>
+                                {% endif %}
+                                <a href="{{ url_for('admin.delete_instructor', user_id=instructor.id) }}" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this instructor? This action cannot be undone.');"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -171,7 +171,7 @@
 </nav>
 {% endif %}
 <!-- Add Instructor Modal -->
-<div class="modal fade" id="addInstructorModal" tabindex="-1">
+<div class="modal fade" id="addInstructorModal" tabindex="-1" style="z-index: 1056;">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="POST" action="{{ url_for('admin.manage_instructors') }}">
@@ -222,8 +222,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const rows = Array.from(tbody.querySelectorAll('tr'))
             .filter(r => !r.querySelector('td[colspan]') && r.style.display !== 'none');
         document.getElementById('totalInstructors').textContent = rows.length;
-        const active = rows.filter(r => r.querySelector('.badge-success')).length;
-        const inactive = rows.filter(r => r.querySelector('.badge-danger')).length;
+        const active = rows.filter(r => r.querySelector('.bg-success')).length;
+        const inactive = rows.filter(r => r.querySelector('.bg-danger')).length;
         document.getElementById('activeInstructors').textContent = active;
         document.getElementById('inactiveInstructors').textContent = inactive;
     }
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.filterStatus = function(status) {
         tbody.querySelectorAll('tr').forEach(row => {
             if (row.querySelector('td[colspan]')) return;
-            const isActive = !!row.querySelector('.badge-success');
+            const isActive = !!row.querySelector('.bg-success');
             if (status === 'all') {
                 row.style.display = '';
             } else if (status === 'active') {

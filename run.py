@@ -21,13 +21,22 @@ def make_shell_context():
 def before_request():
     """Update last login time on every request"""
     from flask_login import current_user
-    from datetime import datetime
+    from datetime import datetime, timezone
     if current_user.is_authenticated:
         try:
-            current_user.last_login = datetime.utcnow()
+            current_user.last_login = datetime.now(timezone.utc)
             db.session.commit()
         except:
             pass
+
+    # Auto-delete past schedules
+    try:
+        today = datetime.now(timezone.utc).date()
+        LabSchedule.query.filter(LabSchedule.scheduled_date < today).delete()
+        db.session.commit()
+    except:
+        db.session.rollback()
+        pass
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -49,8 +58,6 @@ def index():
             return redirect(url_for('admin.dashboard'))
         elif current_user.role == 'Instructor':
             return redirect(url_for('instructor.dashboard'))
-        else:
-            return redirect(url_for('student.dashboard'))
     # Not authenticated - go to login page
     return redirect(url_for('auth.login'))
 

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, and_, or_
 from app import db
 from app.models import (
@@ -143,7 +143,7 @@ def view_schedule():
     if week_start:
         week_start = datetime.strptime(week_start, '%Y-%m-%d').date()
     else:
-        today = datetime.utcnow().date()
+        today = datetime.now(timezone.utc).date()
         week_start = today - timedelta(days=today.weekday())
     
     week_end = week_start + timedelta(days=7)
@@ -185,7 +185,7 @@ def approve_requests():
         if action == 'approve':
             reservation_request.status = 'Approved'
             reservation_request.approved_by = current_user.id
-            reservation_request.approval_date = datetime.utcnow()
+            reservation_request.approval_date = datetime.now(timezone.utc)
             
             # Create schedule entry
             schedule = LabSchedule(
@@ -214,7 +214,7 @@ def approve_requests():
         elif action == 'decline':
             reservation_request.status = 'Declined'
             reservation_request.approved_by = current_user.id
-            reservation_request.approval_date = datetime.utcnow()
+            reservation_request.approval_date = datetime.now(timezone.utc)
             
             # Create notification
             notification = Notification(
@@ -245,7 +245,7 @@ def reports():
     if month:
         report_date = datetime.strptime(month, '%Y-%m').date()
     else:
-        report_date = datetime.utcnow().date().replace(day=1)
+        report_date = datetime.now(timezone.utc).date().replace(day=1)
     
     month_start = report_date
     month_end = (month_start + timedelta(days=32)).replace(day=1)
@@ -295,3 +295,58 @@ def notifications():
     notifications = Notification.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=20)
     
     return render_template('admin/notifications.html', notifications=notifications)
+
+@admin_bp.route('/instructor/<int:user_id>/activate', methods=['GET'])
+@login_required
+@admin_required
+def activate_instructor(user_id):
+    """Activate an instructor account"""
+    user = User.query.get_or_404(user_id)
+    user.is_active = True
+    db.session.commit()
+    flash(f'Instructor {user.username} has been activated.', 'success')
+    return redirect(url_for('admin.manage_instructors'))
+
+@admin_bp.route('/instructor/<int:user_id>/deactivate', methods=['GET'])
+@login_required
+@admin_required
+def deactivate_instructor(user_id):
+    """Deactivate an instructor account"""
+    user = User.query.get_or_404(user_id)
+    user.is_active = False
+    db.session.commit()
+    flash(f'Instructor {user.username} has been deactivated.', 'warning')
+    return redirect(url_for('admin.manage_instructors'))
+
+@admin_bp.route('/instructor/<int:user_id>/delete', methods=['GET'])
+@login_required
+@admin_required
+def delete_instructor(user_id):
+    """Delete an instructor account"""
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'Instructor {user.username} has been deleted.', 'danger')
+    return redirect(url_for('admin.manage_instructors'))
+
+@admin_bp.route('/instructor/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_instructor(user_id):
+    """Edit an instructor's details (placeholder)"""
+    # NOTE: This is a placeholder. A form and template would be needed for a full implementation.
+    flash('The edit instructor feature is not yet fully implemented.', 'info')
+    return redirect(url_for('admin.manage_instructors'))
+
+@login_required
+@admin_required
+def schedule_history():
+    """View past schedules"""
+    page = request.args.get('page', 1, type=int)
+    today = datetime.now(timezone.utc).date()
+    
+    schedules = LabSchedule.query.filter(
+        LabSchedule.scheduled_date < today
+    ).order_by(LabSchedule.scheduled_date.desc()).paginate(page=page, per_page=15)
+    
+    return render_template('admin/schedule_history.html', schedules=schedules)

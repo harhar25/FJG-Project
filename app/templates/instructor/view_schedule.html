@@ -53,29 +53,60 @@
             {% set current_date = (week_start + timedelta(days=i)) %}
             {% set day_schedules = schedules | selectattr('scheduled_date', 'equalto', current_date) | list %}
             {% if day_schedules %}
-                {% for schedule in day_schedules %}
-                <div class="session-item">
-                    <div class="session-time">
-                        <i class="fas fa-clock text-primary me-2"></i>
-                        <strong>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</strong>
-                    </div>
-                    <div class="session-lab">
-                        <i class="fas fa-flask-vial me-2"></i>
-                        {{ schedule.laboratory.lab_code }}
-                    </div>
-                    {% if schedule.course %}
-                    <div class="session-course">
-                        <i class="fas fa-book me-2"></i>
-                        {{ schedule.course.course_code }}
-                    </div>
-                    {% endif %}
-                    <div class="d-flex align-items-center justify-content-between mt-2">
-                        <span class="badge bg-{% if schedule.status == 'Available' %}success{% elif schedule.status == 'Reserved' %}info{% elif schedule.status == 'Maintenance' %}danger{% else %}warning{% endif %}">
-                            {{ schedule.status }}
-                        </span>
-                    </div>
-                </div>
-                {% endfor %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Lab</th>
+                            <th>Course</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in day_schedules %}
+                        <tr>
+                            <td>
+                                <i class="fas fa-clock text-primary me-2"></i>
+                                <strong>{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</strong>
+                            </td>
+                            <td>
+                                <i class="fas fa-flask-vial me-2"></i>
+                                {{ schedule.laboratory.lab_code }}
+                            </td>
+                            {% if schedule.course %}
+                            <td>
+                                <i class="fas fa-book me-2"></i>
+                                {{ schedule.course.course_code }}
+                            </td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
+                            <td>{{ schedule.start_time.strftime('%I:%M %p') }}</td>
+                            <td>{{ schedule.end_time.strftime('%I:%M %p') }}</td>
+                            <td>
+                                {% set start = datetime.strptime(schedule.start_time.strftime('%H:%M'), '%H:%M') %}
+                                {% set end = datetime.strptime(schedule.end_time.strftime('%H:%M'), '%H:%M') %}
+                                {% set duration = end - start %}
+                                {{ duration }}
+                            </td>
+                            <td>
+                                <span class="badge bg-{% if schedule.status == 'Available' %}success{% elif schedule.status == 'Reserved' %}info{% elif schedule.status == 'Maintenance' %}danger{% else %}warning{% endif %}">
+                                    {{ schedule.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% set start = datetime.strptime(schedule.start_time.strftime('%H:%M'), '%H:%M') %}
+                                {% set end = datetime.strptime(schedule.end_time.strftime('%H:%M'), '%H:%M') %}
+                                {% set duration = end - start %}
+                                {{ duration }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
             <div class="text-center text-muted py-4">
                 <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i>

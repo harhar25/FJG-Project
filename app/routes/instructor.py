@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import and_, or_
 from app import db
 from app.models import (
@@ -26,7 +26,7 @@ def instructor_required(f):
 @instructor_required
 def dashboard():
     """Instructor dashboard"""
-    today = datetime.utcnow().date()
+    today = datetime.now(timezone.utc).date()
     week_end = today + timedelta(days=7)
     
     # Get upcoming sessions
@@ -126,7 +126,7 @@ def view_schedule():
     if week_start_str:
         week_start = datetime.strptime(week_start_str, '%Y-%m-%d').date()
     else:
-        today = datetime.utcnow().date()
+        today = datetime.now(timezone.utc).date()
         week_start = today - timedelta(days=today.weekday())
     
     week_end = week_start + timedelta(days=7)

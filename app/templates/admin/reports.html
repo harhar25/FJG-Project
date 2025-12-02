@@ -22,7 +22,7 @@
         <div class="row align-items-end">
             <div class="col-md-6">
                 <label for="reportMonth" class="form-label"><strong>Select Month</strong></label>
-                <input type="month" id="reportMonth" class="form-control form-control-lg" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()" style="max-width: 300px; position: relative; z-index: 6; cursor: pointer;">
+                                <input type="month" id="reportMonth" class="form-control form-control-lg" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()" style="max-width: 300px; position: relative; z-index: 1050; cursor: pointer;">
             </div>
             <div class="col-md-6 text-end">
                 <button class="btn-modern btn-modern-secondary" onclick="downloadReport()">
