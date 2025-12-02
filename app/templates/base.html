@@ -442,7 +442,6 @@
             min-height: calc(100vh - var(--navbar-height));
             transition: var(--transition);
             position: relative;
-            z-index: 1;
         }
 
         .main-content.sidebar-collapsed {
@@ -808,6 +807,12 @@
             }
         }
 
+        @media (min-width: 993px) {
+            .mobile-nav-overlay {
+                display: none !important;
+            }
+        }
+
         @media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -1047,12 +1052,12 @@
 
         /* Modal backdrop layer */
         .modal-backdrop {
-            z-index: 1040 !important;
+            z-index: 1050 !important; /* Ensures backdrop is below modal */
         }
 
         /* Modal layer */
         .modal {
-            z-index: 1050 !important;
+            z-index: 1060 !important; /* Ensures modal is above backdrop */
         }
 
         /* Date/time picker layer - highest */
@@ -1065,14 +1070,6 @@
             border-radius: 16px;
             border: none;
             overflow: hidden;
-        }
-
-        .modal {
-            z-index: 1060; /* Higher than the backdrop */
-        }
-
-        .modal-backdrop {
-            z-index: 1050; /* Lower than the modal */
         }
 
         .modal-header {
@@ -1624,325 +1621,17 @@
                 <strong>Page not found</strong> - Please select a valid page from the navigation menu.
             </div>
             {% endblock %}
-            
-            <!-- ===== FILTER MODAL (Moved inside main-content to avoid sidebar overlap) ===== -->
-            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0 shadow-lg">
-                        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none;">
-                            <h5 class="modal-title" id="filterModalLabel">
-                                <i class="fas fa-filter me-2"></i>Filter Instructors
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body p-4">
-                            <form id="filterForm">
-                                <div class="mb-3">
-                                    <label for="filterDepartment" class="form-label fw-600">Department</label>
-                                    <select class="form-select" id="filterDepartment">
-                                        <option value="">All Departments</option>
-                                        <option value="Computer Science">Computer Science</option>
-                                        <option value="Information Technology">Information Technology</option>
-                                        <option value="Software Engineering">Software Engineering</option>
-                                        <option value="Data Science">Data Science</option>
-                                        <option value="Cybersecurity">Cybersecurity</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="filterStatus" class="form-label fw-600">Status</label>
-                                    <select class="form-select" id="filterStatus">
-                                        <option value="">All Statuses</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                        <option value="Pending">Pending Approval</option>
-                                        <option value="On Leave">On Leave</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="filterSpecialization" class="form-label fw-600">Specialization</label>
-                                    <input type="text" class="form-control" id="filterSpecialization" placeholder="Filter by specialization...">
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer p-4 border-top">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times me-2"></i>Clear
-                            </button>
-                            <button type="button" class="btn btn-premium" id="applyFilterBtn">
-                                <i class="fas fa-check me-2"></i>Apply Filters
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </main>
 
     </div>
-    
-    <!-- ===== ADD INSTRUCTOR MODAL ===== -->
-    <!-- Only visible and accessible to administrators -->
-    {% if current_user.is_authenticated and current_user.role == 'Administrator' %}
-    <div class="modal fade" id="addInstructorModal" tabindex="-1" aria-labelledby="addInstructorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none;">
-                    <h5 class="modal-title" id="addInstructorModalLabel">
-                        <i class="fas fa-plus-circle me-2"></i>Add New Instructor
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="addInstructorForm">
-                        <!-- Personal Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-user-circle me-2" style="color: #6366f1;"></i>Personal Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="instructorFirstName" class="form-label fw-600">First Name</label>
-                                    <input type="text" class="form-control" id="instructorFirstName" placeholder="Enter first name" required>
-                                    <small class="text-muted">Required field</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="instructorLastName" class="form-label fw-600">Last Name</label>
-                                    <input type="text" class="form-control" id="instructorLastName" placeholder="Enter last name" required>
-                                    <small class="text-muted">Required field</small>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Contact Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-envelope me-2" style="color: #6366f1;"></i>Contact Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="instructorEmail" class="form-label fw-600">Email Address</label>
-                                    <input type="email" class="form-control" id="instructorEmail" placeholder="example@university.edu" required>
-                                    <small class="text-muted">Must be a valid email</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="instructorPhone" class="form-label fw-600">Phone Number</label>
-                                    <input type="tel" class="form-control" id="instructorPhone" placeholder="+1 (555) 123-4567">
-                                    <small class="text-muted">Optional - Include country code</small>
-                                </div>
-                            </div>
-                        </div>
+    <!-- MODALS ARE PLACED HERE, OUTSIDE OF THE MAIN CONTENT FLOW -->
+    {% block modals %}{% endblock %}
 
-                        <!-- Professional Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-briefcase me-2" style="color: #6366f1;"></i>Professional Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="instructorDepartment" class="form-label fw-600">Department</label>
-                                    <select class="form-select" id="instructorDepartment" required>
-                                        <option value="">Select a department</option>
-                                        <option value="Computer Science">Computer Science</option>
-                                        <option value="Information Technology">Information Technology</option>
-                                        <option value="Software Engineering">Software Engineering</option>
-                                        <option value="Data Science">Data Science</option>
-                                        <option value="Cybersecurity">Cybersecurity</option>
-                                        <option value="Network Administration">Network Administration</option>
-                                        <option value="Database Management">Database Management</option>
-                                        <option value="Web Development">Web Development</option>
-                                    </select>
-                                    <small class="text-muted">Required field</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="instructorSpecialization" class="form-label fw-600">Specialization</label>
-                                    <input type="text" class="form-control" id="instructorSpecialization" placeholder="e.g., Artificial Intelligence, Cloud Computing">
-                                    <small class="text-muted">Optional - Area of expertise</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Additional Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-file-alt me-2" style="color: #6366f1;"></i>Additional Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label for="instructorBio" class="form-label fw-600">Biography</label>
-                                    <textarea class="form-control" id="instructorBio" rows="3" placeholder="Brief biography or professional background..."></textarea>
-                                    <small class="text-muted">Optional - Max 500 characters</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="instructorStatus" class="form-label fw-600">Status</label>
-                                    <select class="form-select" id="instructorStatus" required>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                        <option value="Pending">Pending Approval</option>
-                                        <option value="On Leave">On Leave</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="instructorOffice" class="form-label fw-600">Office Location</label>
-                                    <input type="text" class="form-control" id="instructorOffice" placeholder="e.g., Building A, Room 201">
-                                    <small class="text-muted">Optional</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Form Validation Alert -->
-                        <div id="formValidationAlert" class="alert alert-danger border-0 rounded-3 d-none mb-3" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <span id="validationMessage"></span>
-                        </div>
-
-                        <!-- Form Success Alert -->
-                        <div id="formSuccessAlert" class="alert alert-success border-0 rounded-3 d-none mb-3" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>
-                            Instructor has been successfully added!
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer p-4 border-top">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Cancel
-                    </button>
-                    <button type="button" class="btn btn-premium" id="submitInstructorForm">
-                        <i class="fas fa-save me-2"></i>Add Instructor
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- ===== EDIT INSTRUCTOR MODAL ===== -->
-    <!-- Only visible and accessible to administrators -->
-    {% if current_user.is_authenticated and current_user.role == 'Administrator' %}
-    <div class="modal fade" id="editInstructorModal" tabindex="-1" aria-labelledby="editInstructorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none;">
-                    <h5 class="modal-title" id="editInstructorModalLabel">
-                        <i class="fas fa-edit me-2"></i>Edit Instructor
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="editInstructorForm">
-                        <input type="hidden" id="editInstructorId">
-                        
-                        <!-- Personal Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-user-circle me-2" style="color: #3b82f6;"></i>Personal Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="editInstructorFirstName" class="form-label fw-600">First Name</label>
-                                    <input type="text" class="form-control" id="editInstructorFirstName" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editInstructorLastName" class="form-label fw-600">Last Name</label>
-                                    <input type="text" class="form-control" id="editInstructorLastName" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Contact Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-envelope me-2" style="color: #3b82f6;"></i>Contact Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="editInstructorEmail" class="form-label fw-600">Email Address</label>
-                                    <input type="email" class="form-control" id="editInstructorEmail" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editInstructorPhone" class="form-label fw-600">Phone Number</label>
-                                    <input type="tel" class="form-control" id="editInstructorPhone">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Professional Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-briefcase me-2" style="color: #3b82f6;"></i>Professional Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="editInstructorDepartment" class="form-label fw-600">Department</label>
-                                    <select class="form-select" id="editInstructorDepartment" required>
-                                        <option value="Computer Science">Computer Science</option>
-                                        <option value="Information Technology">Information Technology</option>
-                                        <option value="Software Engineering">Software Engineering</option>
-                                        <option value="Data Science">Data Science</option>
-                                        <option value="Cybersecurity">Cybersecurity</option>
-                                        <option value="Network Administration">Network Administration</option>
-                                        <option value="Database Management">Database Management</option>
-                                        <option value="Web Development">Web Development</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editInstructorSpecialization" class="form-label fw-600">Specialization</label>
-                                    <input type="text" class="form-control" id="editInstructorSpecialization">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Additional Information Section -->
-                        <div class="mb-4">
-                            <h6 class="mb-3 fw-bold text-dark">
-                                <i class="fas fa-file-alt me-2" style="color: #3b82f6;"></i>Additional Information
-                            </h6>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label for="editInstructorBio" class="form-label fw-600">Biography</label>
-                                    <textarea class="form-control" id="editInstructorBio" rows="3"></textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editInstructorStatus" class="form-label fw-600">Status</label>
-                                    <select class="form-select" id="editInstructorStatus" required>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                        <option value="Pending">Pending Approval</option>
-                                        <option value="On Leave">On Leave</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editInstructorOffice" class="form-label fw-600">Office Location</label>
-                                    <input type="text" class="form-control" id="editInstructorOffice">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Form Validation Alert -->
-                        <div id="editFormValidationAlert" class="alert alert-danger border-0 rounded-3 d-none mb-3" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <span id="editValidationMessage"></span>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer p-4 border-top">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Cancel
-                    </button>
-                    <button type="button" class="btn btn-primary" id="submitEditInstructorForm">
-                        <i class="fas fa-save me-2"></i>Save Changes
-                    </button>
-                </div>
-            </div>
-    </div>
-    {% endif %}
-    
     <!-- Enhanced Footer -->
     <footer class="footer mt-auto py-3 bg-dark text-white text-center">
         <div class="container">
             <span>Enterprise Laboratory Management System 2025</span>
-                        <i class="fas fa-rocket me-1"></i>Premium
-                    </small>
-                </div>
-            </div>
         </div>
     </footer>
 

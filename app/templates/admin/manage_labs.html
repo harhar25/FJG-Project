@@ -174,6 +174,77 @@
 </nav>
 {% endif %}
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('labsTable');
+    const tbody = document.getElementById('labsTbody');
+    const searchInput = document.getElementById('labSearch');
+
+    function updateStats() {
+        const visibleRows = Array.from(tbody.querySelectorAll('tr'))
+            .filter(r => !r.querySelector('td[colspan]') && r.style.display !== 'none');
+        document.getElementById('totalLabs').textContent = visibleRows.length;
+
+        let totalCapacity = 0;
+        const locations = new Set();
+        visibleRows.forEach(row => {
+            const capacity = parseInt(row.cells[2].innerText) || 0;
+            totalCapacity += capacity;
+            const location = row.cells[3].innerText.trim();
+            if (location) locations.add(location);
+        });
+        const avgCapacity = visibleRows.length > 0 ? Math.round(totalCapacity / visibleRows.length) : 0;
+        document.getElementById('avgCapacity').textContent = avgCapacity;
+        document.getElementById('totalLocations').textContent = locations.size;
+    }
+
+    // Live search
+    if (searchInput && table) {
+        const onSearch = () => {
+            const filter = searchInput.value.toLowerCase();
+            tbody.querySelectorAll('tr').forEach(row => {
+                if (row.querySelector('td[colspan]')) return;
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+            updateStats();
+        };
+        searchInput.addEventListener('input', onSearch);
+    }
+
+    // Sorting
+    window.sortLabs = function(by) {
+        const rows = Array.from(tbody.querySelectorAll('tr'))
+            .filter(r => !r.querySelector('td[colspan]'));
+
+        let getKey;
+        if (by === 'name') {
+            getKey = (row) => row.cells[1].innerText.trim().toLowerCase();
+        } else if (by === 'capacity') {
+            getKey = (row) => parseInt(row.cells[2].innerText) || 0;
+        } else {
+            return;
+        }
+
+        const isNumeric = by === 'capacity';
+        rows.sort((a, b) => {
+            const ka = getKey(a);
+            const kb = getKey(b);
+            if (isNumeric) return ka - kb;
+            return ka.localeCompare(kb);
+        });
+
+        rows.forEach(r => tbody.appendChild(r));
+        updateStats();
+    }
+
+    // Initial stats
+    updateStats();
+});
+</script>
+{% endblock %}
+
+{% block modals %}
 <!-- Add Lab Modal -->
 <div class="modal fade" id="addLabModal" tabindex="-1">
     <div class="modal-dialog">
@@ -272,74 +343,4 @@
     </div>
 </div>
 {% endfor %}
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const table = document.getElementById('labsTable');
-    const tbody = document.getElementById('labsTbody');
-    const searchInput = document.getElementById('labSearch');
-
-    function updateStats() {
-        const visibleRows = Array.from(tbody.querySelectorAll('tr'))
-            .filter(r => !r.querySelector('td[colspan]') && r.style.display !== 'none');
-        document.getElementById('totalLabs').textContent = visibleRows.length;
-
-        let totalCapacity = 0;
-        const locations = new Set();
-        visibleRows.forEach(row => {
-            const capacity = parseInt(row.cells[2].innerText) || 0;
-            totalCapacity += capacity;
-            const location = row.cells[3].innerText.trim();
-            if (location) locations.add(location);
-        });
-        const avgCapacity = visibleRows.length > 0 ? Math.round(totalCapacity / visibleRows.length) : 0;
-        document.getElementById('avgCapacity').textContent = avgCapacity;
-        document.getElementById('totalLocations').textContent = locations.size;
-    }
-
-    // Live search
-    if (searchInput && table) {
-        const onSearch = () => {
-            const filter = searchInput.value.toLowerCase();
-            tbody.querySelectorAll('tr').forEach(row => {
-                if (row.querySelector('td[colspan]')) return;
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            });
-            updateStats();
-        };
-        searchInput.addEventListener('input', onSearch);
-    }
-
-    // Sorting
-    window.sortLabs = function(by) {
-        const rows = Array.from(tbody.querySelectorAll('tr'))
-            .filter(r => !r.querySelector('td[colspan]'));
-
-        let getKey;
-        if (by === 'name') {
-            getKey = (row) => row.cells[1].innerText.trim().toLowerCase();
-        } else if (by === 'capacity') {
-            getKey = (row) => parseInt(row.cells[2].innerText) || 0;
-        } else {
-            return;
-        }
-
-        const isNumeric = by === 'capacity';
-        rows.sort((a, b) => {
-            const ka = getKey(a);
-            const kb = getKey(b);
-            if (isNumeric) return ka - kb;
-            return ka.localeCompare(kb);
-        });
-
-        rows.forEach(r => tbody.appendChild(r));
-        updateStats();
-    }
-
-    // Initial stats
-    updateStats();
-});
-</script>
-
 {% endblock %}
