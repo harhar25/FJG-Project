@@ -132,6 +132,73 @@ def manage_instructors():
     instructors = User.query.filter_by(role='Instructor').paginate(page=page, per_page=10)
     return render_template('admin/manage_instructors.html', instructors=instructors)
 
+# New route for viewing instructor details
+@admin_bp.route('/instructor/<int:user_id>', methods=['GET'])
+@login_required
+@admin_required
+def view_instructor(user_id):
+    """View instructor details"""
+    instructor = User.query.get_or_404(user_id)
+    return render_template('admin/instructor_details.html', instructor=instructor)
+
+# Updated routes to use POST method
+@admin_bp.route('/instructor/<int:user_id>/activate', methods=['POST'])
+@login_required
+@admin_required
+def activate_instructor(user_id):
+    """Activate an instructor account"""
+    user = User.query.get_or_404(user_id)
+    user.is_active = True
+    db.session.commit()
+    flash(f'Instructor {user.username} has been activated.', 'success')
+    return redirect(url_for('admin.view_instructor', user_id=user_id))
+
+@admin_bp.route('/instructor/<int:user_id>/deactivate', methods=['POST'])
+@login_required
+@admin_required
+def deactivate_instructor(user_id):
+    """Deactivate an instructor account"""
+    user = User.query.get_or_404(user_id)
+    user.is_active = False
+    db.session.commit()
+    flash(f'Instructor {user.username} has been deactivated.', 'warning')
+    return redirect(url_for('admin.view_instructor', user_id=user_id))
+
+@admin_bp.route('/instructor/<int:user_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_instructor(user_id):
+    """Delete an instructor account"""
+    user = User.query.get_or_404(user_id)
+    username = user.username
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'Instructor {username} has been deleted.', 'success')
+    return redirect(url_for('admin.manage_instructors'))
+
+@admin_bp.route('/instructor/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_instructor(user_id):
+    """Edit an instructor's details"""
+    user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        user.username = request.form.get('username')
+        user.email = request.form.get('email')
+        user.full_name = request.form.get('full_name')
+        
+        # Only update password if provided
+        new_password = request.form.get('password')
+        if new_password:
+            user.set_password(new_password)
+        
+        db.session.commit()
+        flash('Instructor updated successfully.', 'success')
+        return redirect(url_for('admin.view_instructor', user_id=user_id))
+    
+    return render_template('admin/edit_instructor.html', instructor=user)
+
 @admin_bp.route('/view-schedule')
 @login_required
 @admin_required
@@ -296,48 +363,7 @@ def notifications():
     
     return render_template('admin/notifications.html', notifications=notifications)
 
-@admin_bp.route('/instructor/<int:user_id>/activate', methods=['GET'])
-@login_required
-@admin_required
-def activate_instructor(user_id):
-    """Activate an instructor account"""
-    user = User.query.get_or_404(user_id)
-    user.is_active = True
-    db.session.commit()
-    flash(f'Instructor {user.username} has been activated.', 'success')
-    return redirect(url_for('admin.manage_instructors'))
-
-@admin_bp.route('/instructor/<int:user_id>/deactivate', methods=['GET'])
-@login_required
-@admin_required
-def deactivate_instructor(user_id):
-    """Deactivate an instructor account"""
-    user = User.query.get_or_404(user_id)
-    user.is_active = False
-    db.session.commit()
-    flash(f'Instructor {user.username} has been deactivated.', 'warning')
-    return redirect(url_for('admin.manage_instructors'))
-
-@admin_bp.route('/instructor/<int:user_id>/delete', methods=['GET'])
-@login_required
-@admin_required
-def delete_instructor(user_id):
-    """Delete an instructor account"""
-    user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
-    flash(f'Instructor {user.username} has been deleted.', 'danger')
-    return redirect(url_for('admin.manage_instructors'))
-
-@admin_bp.route('/instructor/<int:user_id>/edit', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def edit_instructor(user_id):
-    """Edit an instructor's details (placeholder)"""
-    # NOTE: This is a placeholder. A form and template would be needed for a full implementation.
-    flash('The edit instructor feature is not yet fully implemented.', 'info')
-    return redirect(url_for('admin.manage_instructors'))
-
+@admin_bp.route('/schedule-history')
 @login_required
 @admin_required
 def schedule_history():

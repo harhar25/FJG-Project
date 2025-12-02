@@ -25,7 +25,7 @@
                                 <input type="month" id="reportMonth" class="form-control form-control-lg" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()" style="max-width: 300px; position: relative; z-index: 1050; cursor: pointer;">
             </div>
             <div class="col-md-6 text-end">
-                <button class="btn-modern btn-modern-secondary" onclick="downloadReport()">
+                <button class="btn-modern btn-modern-secondary" id="downloadReportBtn">
                     <i class="fas fa-download me-2"></i>Download Report
                 </button>
             </div>
@@ -135,6 +135,7 @@ function downloadReport() {
 
 // Set progress bar widths after page load
 document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('downloadReportBtn').addEventListener('click', downloadReport);
     const rates = [{% for stat in labs_stats %}{{ stat.utilization_rate }},{% endfor %}];
     const labs = [{% for stat in labs_stats %}'{{ stat.lab.id }}',{% endfor %}];
     rates.forEach((rate, index) => {
