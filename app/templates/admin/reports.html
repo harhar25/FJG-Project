@@ -22,7 +22,7 @@
         <div class="row align-items-end">
             <div class="col-md-6">
                 <label for="reportMonth" class="form-label"><strong>Select Month</strong></label>
-                <input type="month" id="reportMonth" class="form-control form-control-lg" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()" style="max-width: 300px;">
+                <input type="month" id="reportMonth" class="form-control form-control-lg" value="{{ report_month.strftime('%Y-%m') }}" onchange="filterReport()" style="max-width: 300px; position: relative; z-index: 6; cursor: pointer;">
             </div>
             <div class="col-md-6 text-end">
                 <button class="btn-modern btn-modern-secondary" onclick="downloadReport()">
@@ -109,8 +109,28 @@ function filterReport() {
 }
 
 function downloadReport() {
-    alert('Download report feature coming soon!');
-    // Implement PDF/CSV download functionality here
+    try {
+        const headers = ['Lab Code','Lab Name','Sessions','Total Hours','Utilization Rate'];
+        const rows = [
+            {% for stat in labs_stats %}
+            ['{{ stat.lab.lab_code }}','{{ stat.lab.lab_name }}','{{ stat.sessions }}','{{ stat.total_hours }}','{{ stat.utilization_rate }}%'],
+            {% endfor %}
+        ];
+        const csv = [headers.join(','), ...rows.map(r => r.map(v => '"' + String(v).replace('"','""') + '"').join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const month = document.getElementById('reportMonth')?.value || '{{ report_month.strftime("%Y-%m") }}';
+        a.download = `lab-report-${month}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('Download error', err);
+        alert('Unable to download report.');
+    }
 }
 
 // Set progress bar widths after page load

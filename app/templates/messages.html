@@ -27,7 +27,7 @@
                         <h5 class="mb-0 fw-bold">
                             <i class="fas fa-inbox me-2" style="color: #6366f1;"></i>Inbox
                         </h5>
-                        <button class="btn btn-sm btn-primary">
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#newMessageModal">
                             <i class="fas fa-plus me-2"></i>New Message
                         </button>
                     </div>
@@ -45,5 +45,75 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- New Message Modal -->
+<div class="modal fade" id="newMessageModal" tabindex="-1" aria-labelledby="newMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newMessageModalLabel"><i class="fas fa-paper-plane me-2"></i>New Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newMessageForm">
+                    <div class="mb-3">
+                        <label for="recipient" class="form-label">Recipient</label>
+                        <input type="text" class="form-control" id="recipient" placeholder="Enter recipient's username or email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject" placeholder="Enter message subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="messageBody" class="form-label">Message</label>
+                        <textarea class="form-control" id="messageBody" rows="5" placeholder="Write your message here..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="sendMessage()">Send Message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function sendMessage() {
+    const recipient = document.getElementById('recipient').value;
+    const subject = document.getElementById('subject').value;
+    const body = document.getElementById('messageBody').value;
+    const modal = bootstrap.Modal.getInstance(document.getElementById('newMessageModal'));
+
+    if (!recipient || !subject || !body) {
+        alert('Please fill out all fields.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/send-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ recipient, subject, body }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert(result.message);
+            modal.hide();
+            document.getElementById('newMessageForm').reset();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+        alert('An unexpected error occurred. Please try again.');
+    }
+}
+</script>
 </div>
 {% endblock %}

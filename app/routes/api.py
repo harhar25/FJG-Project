@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from datetime import datetime
 from app import db
-from app.models import Notification, LabSchedule, Laboratory
+from app.models import User, Notification, LabSchedule, Laboratory
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -81,3 +81,33 @@ def get_labs():
         'capacity': lab.capacity,
         'location': lab.location
     } for lab in labs])
+
+@api_bp.route('/send-message', methods=['POST'])
+@login_required
+def send_message():
+    """Send a message to another user"""
+    data = request.get_json()
+    recipient_identifier = data.get('recipient')
+    subject = data.get('subject')
+    body = data.get('body')
+
+    if not all([recipient_identifier, subject, body]):
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    recipient = User.query.filter(
+        (User.username == recipient_identifier) | (User.email == recipient_identifier)
+    ).first()
+
+    if not recipient:
+        return jsonify({'error': 'Recipient not found'}), 404
+
+    notification = Notification(
+        user_id=recipient.id,
+        title=subject,
+        message=f'Message from {current_user.full_name}: {body}',
+        notification_type='message'
+    )
+    db.session.add(notification)
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Message sent successfully'})

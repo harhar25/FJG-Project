@@ -25,7 +25,7 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label"><strong>Select Lab Room</strong></label>
-                <select class="form-select form-select-lg" id="labFilter" onchange="filterSchedule()">
+                                <select class="form-select form-select-lg" id="labFilter" onchange="filterSchedule()" style="position: relative; z-index: 5;">
                     <option value="">📚 All Labs</option>
                     {% for lab in labs %}
                     <option value="{{ lab.id }}" {% if selected_lab_id == lab.id %}selected{% endif %}>

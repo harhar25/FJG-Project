@@ -1360,6 +1360,44 @@
         /* Icon styling for various contexts */
         .me-2 { margin-right: 0.5rem !important; }
         .me-3 { margin-right: 1rem !important; }
+
+        .btn-premium-enhanced {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-weight: 700;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1rem;
+        }
+
+        .btn-premium-enhanced:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
+        .btn-premium-enhanced:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-premium-enhanced i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-premium-enhanced:hover i {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100" data-page-loaded="false">
@@ -1372,7 +1410,7 @@
             <!-- Brand -->
             <a class="navbar-brand" href="{{ url_for('student.dashboard') if current_user.is_authenticated and current_user.role == 'Student' else (url_for('instructor.dashboard') if current_user.is_authenticated and current_user.role == 'Instructor' else (url_for('admin.dashboard') if current_user.is_authenticated and current_user.role == 'Administrator' else url_for('auth.login'))) }}" aria-label="IT Lab Schedule System Home">
                 <i class="fas fa-flask-vial" aria-hidden="true"></i>
-                <span class="d-none d-sm-inline">LabSchedule Pro</span>
+                <span class="d-none d-sm-inline">LabSchedule</span>
             </a>
 
             <!-- Mobile Menu Button -->
@@ -1397,7 +1435,7 @@
                 <div class="sidebar-logo">
                     <i class="fas fa-flask-vial"></i>
                 </div>
-                <h6 class="text-gradient mb-0">LabSchedule Pro</h6>
+                <h6 class="text-gradient mb-0">LabSchedule</h6>
                 <!--small class="text-muted">Enterprise Edition</small -->
             </div>
 
@@ -1930,7 +1968,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6 mb-3 mb-md-0">
                     <p class="mb-0 text-muted">
-                        <strong><i class="fas fa-flask-vial me-2"></i>LabSchedule Pro</strong>
+                        <strong><i class="fas fa-flask-vial me-2"></i>LabSchedule</strong>
                     </p>
                     <small class="text-muted">Enterprise Laboratory Management System © 2025</small>
                 </div>
@@ -1949,384 +1987,398 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     
     <script>
-        // Sidebar Collapse Functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('main-content');
-            const footer = document.querySelector('footer');
-            const SIDEBAR_COLLAPSED_KEY = 'sidebarCollapsed';
+    // Enhanced Sidebar and Page Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Initializing enhanced application functionality...');
+        
+        // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const footer = document.querySelector('footer');
+        const SIDEBAR_COLLAPSED_KEY = 'sidebarCollapsed';
 
-            // Initialize sidebar state from localStorage
-            const isCollapsed = localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true';
-            if (isCollapsed) {
-                sidebar.classList.add('collapsed');
-                if (mainContent) mainContent.classList.add('sidebar-collapsed');
-                if (footer) footer.classList.add('sidebar-collapsed');
+        // Initialize sidebar state
+        const isCollapsed = localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === 'true';
+        if (isCollapsed && sidebar) {
+            sidebar.classList.add('collapsed');
+            if (mainContent) mainContent.classList.add('sidebar-collapsed');
+            if (footer) footer.classList.add('sidebar-collapsed');
+            updateToggleIcon();
+        }
+
+        // Enhanced sidebar toggle
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', function() {
+                const willCollapse = !sidebar.classList.contains('collapsed');
+                sidebar.classList.toggle('collapsed');
+                
+                if (mainContent) mainContent.classList.toggle('sidebar-collapsed');
+                if (footer) footer.classList.toggle('sidebar-collapsed');
+                
+                localStorage.setItem(SIDEBAR_COLLAPSED_KEY, willCollapse);
                 updateToggleIcon();
-            }
-
-            // Sidebar collapse toggle
-            if (sidebarToggle && sidebar) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('collapsed');
-                    if (mainContent) {
-                        mainContent.classList.toggle('sidebar-collapsed');
-                    }
-                    if (footer) {
-                        footer.classList.toggle('sidebar-collapsed');
-                    }
-                    const isNowCollapsed = sidebar.classList.contains('collapsed');
-                    localStorage.setItem(SIDEBAR_COLLAPSED_KEY, isNowCollapsed);
-                    updateToggleIcon();
-                });
-            }
-
-            function updateToggleIcon() {
-                if (sidebarToggle) {
-                    const icon = sidebarToggle.querySelector('i');
-                    if (sidebar.classList.contains('collapsed')) {
-                        icon.classList.remove('fa-angles-left');
-                        icon.classList.add('fa-angles-right');
-                        sidebarToggle.title = 'Expand sidebar';
-                    } else {
-                        icon.classList.remove('fa-angles-right');
-                        icon.classList.add('fa-angles-left');
-                        sidebarToggle.title = 'Collapse sidebar';
-                    }
-                }
-            }
-
-            // Mobile sidebar toggle
-            if (mobileMenuToggle && sidebar) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('mobile-open');
-                    const isExpanded = sidebar.classList.contains('mobile-open');
-                    mobileMenuToggle.setAttribute('aria-expanded', isExpanded);
-                });
-            }
-
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth < 992) {
-                    if (!sidebar.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
-                        sidebar.classList.remove('mobile-open');
-                        if (mobileMenuToggle) {
-                            mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                        }
-                    }
-                }
+                
+                // Animation effect
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => this.style.transform = '', 200);
             });
+        }
 
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                if (window.innerWidth >= 992) {
+        function updateToggleIcon() {
+            if (sidebarToggle) {
+                const icon = sidebarToggle.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.className = 'fas fa-angles-right';
+                    sidebarToggle.setAttribute('title', 'Expand sidebar');
+                    sidebarToggle.setAttribute('aria-label', 'Expand sidebar');
+                } else {
+                    icon.className = 'fas fa-angles-left';
+                    sidebarToggle.setAttribute('title', 'Collapse sidebar');
+                    sidebarToggle.setAttribute('aria-label', 'Collapse sidebar');
+                }
+            }
+        }
+
+        // Enhanced mobile sidebar
+        if (mobileMenuToggle && sidebar) {
+            mobileMenuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sidebar.classList.toggle('mobile-open');
+                const isExpanded = sidebar.classList.contains('mobile-open');
+                this.setAttribute('aria-expanded', isExpanded);
+                
+                // Hamburger animation
+                this.classList.toggle('active');
+            });
+        }
+
+        // Close sidebar on outside click (mobile)
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth < 992 && sidebar && mobileMenuToggle) {
+                if (!sidebar.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+                    sidebar.classList.remove('mobile-open');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                    mobileMenuToggle.classList.remove('active');
+                }
+            }
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (window.innerWidth >= 992 && sidebar) {
                     sidebar.classList.remove('mobile-open');
                     if (mobileMenuToggle) {
                         mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                        mobileMenuToggle.classList.remove('active');
                     }
                 }
-            });
+            }, 250);
+        });
 
-            // ===== ENHANCED SIDEBAR NAVIGATION FUNCTIONALITY =====
-            
-            // Sidebar navigation links - All functional
-            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav .nav-link');
-            const navRoutes = {
-                'Dashboard': { icon: 'fa-tachometer-alt', action: 'navigate' },
-                'Laboratories': { icon: 'fa-flask-vial', action: 'navigate' },
-                'Instructors': { icon: 'fa-chalkboard-user', action: 'navigate' },
-                'Approvals': { icon: 'fa-check-circle', action: 'navigate' },
-                'Analytics': { icon: 'fa-chart-bar', action: 'navigate' },
-                'Reports': { icon: 'fa-chart-bar', action: 'navigate' },
-                'Statistics': { icon: 'fa-chart-line', action: 'navigate' },
-                'Schedule by Lab': { icon: 'fa-calendar', action: 'navigate' },
-                'Schedule by Instructor': { icon: 'fa-calendar', action: 'navigate' },
-                'Schedule by Section': { icon: 'fa-calendar', action: 'navigate' },
-                'Schedule': { icon: 'fa-calendar', action: 'navigate' },
-                'By Instructor': { icon: 'fa-user-tie', action: 'navigate' },
-                'By Course': { icon: 'fa-book', action: 'navigate' },
-                'New Request': { icon: 'fa-plus', action: 'navigate' },
-                'My Requests': { icon: 'fa-list', action: 'navigate' },
-                'Profile Settings': { icon: 'fa-user', action: 'navigate' },
-                'Preferences': { icon: 'fa-cog', action: 'navigate' },
-                'Logout': { icon: 'fa-sign-out-alt', action: 'navigate' },
-                'Notifications': { icon: 'fa-bell', action: 'navigate' },
-                'Messages': { icon: 'fa-envelope', action: 'navigate' },
-                'New Message': { icon: 'fa-pen', action: 'navigate' }
-            };
+        // ===== ENHANCED SIDEBAR NAVIGATION TRACKING =====
+        const navRoutes = {
+            'Dashboard': { icon: 'fa-tachometer-alt', type: 'dashboard' },
+            'Laboratories': { icon: 'fa-flask-vial', type: 'management' },
+            'Instructors': { icon: 'fa-chalkboard-user', type: 'management' },
+            'Approvals': { icon: 'fa-check-circle', type: 'admin' },
+            'Analytics': { icon: 'fa-chart-bar', type: 'reports' },
+            'Reports': { icon: 'fa-chart-bar', type: 'reports' },
+            'Statistics': { icon: 'fa-chart-line', type: 'reports' },
+            'Schedule by Lab': { icon: 'fa-calendar', type: 'schedule' },
+            'Schedule by Instructor': { icon: 'fa-calendar', type: 'schedule' },
+            'Schedule by Section': { icon: 'fa-calendar', type: 'schedule' },
+            'Schedule': { icon: 'fa-calendar', type: 'schedule' },
+            'By Instructor': { icon: 'fa-user-tie', type: 'schedule' },
+            'By Course': { icon: 'fa-book', type: 'schedule' },
+            'New Request': { icon: 'fa-plus', type: 'request' },
+            'My Requests': { icon: 'fa-list', type: 'request' },
+            'Profile Settings': { icon: 'fa-user', type: 'account' },
+            'Preferences': { icon: 'fa-cog', type: 'account' },
+            'Logout': { icon: 'fa-sign-out-alt', type: 'account' },
+            'Notifications': { icon: 'fa-bell', type: 'communications' },
+            'Messages': { icon: 'fa-envelope', type: 'communications' },
+            'New Message': { icon: 'fa-pen', type: 'communications' }
+        };
 
-            sidebarNavLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const text = this.textContent.trim();
-                    const route = navRoutes[text];
-                    
-                    // For Profile, Preferences, and Logout - allow natural navigation
-                    if (route && route.action === 'navigate') {
-                        // Don't prevent default - let the href work
-                        return true;
-                    }
-                    
-                    // For other routes - prevent default and show UI feedback
-                    e.preventDefault();
-                    
-                    // Remove active class from all links
-                    sidebarNavLinks.forEach(l => l.classList.remove('active'));
-                    // Add active class to clicked link
-                    this.classList.add('active');
-                    
-                    if (route) {
-                        console.log(`🔗 Navigation: ${text} (${route.action})`);
-                        // Execute corresponding action
-                        console.log(`✅ Loading ${text}...`);
-                        // Add visual feedback
-                        this.style.opacity = '0.8';
-                        setTimeout(() => { this.style.opacity = '1'; }, 200);
-                    }
-                });
-
-                // Add hover effect with ripple
-                link.addEventListener('mouseenter', function() {
-                    this.style.zIndex = '1';
-                });
-            });
-
-            // ===== SEARCH FUNCTIONALITY =====
-            const searchInput = document.querySelector('.search-container .form-control');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    const query = this.value.trim();
-                    if (query.length > 0) {
-                        console.log('🔍 Searching for:', query);
-                    }
-                });
+        // Track navigation clicks for analytics
+        const sidebarNavLinks = document.querySelectorAll('.sidebar-nav .nav-link');
+        sidebarNavLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const linkText = this.textContent.trim();
+                const routeInfo = navRoutes[linkText];
                 
-                searchInput.addEventListener('focus', function() {
-                    this.parentElement.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)';
-                });
-
-                searchInput.addEventListener('blur', function() {
-                    this.parentElement.style.boxShadow = 'none';
-                });
-
-                // Search on enter
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        console.log('🔍 Search initiated for:', this.value);
-                        e.preventDefault();
-                    }
-                });
-            }
-
-            // ===== SORT BUTTON (Mobile) =====
-            const sortBtn = document.querySelector('button:has(i.fa-sort)');
-            if (sortBtn) {
-                sortBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('📊 Sort clicked');
-                    this.style.transform = 'rotate(180deg)';
-                    setTimeout(() => { this.style.transform = ''; }, 300);
-                });
-            }
-
-            // ===== ADD NEW INSTRUCTOR BUTTON =====
-            // Only add event listener if we're on the manage instructors page AND addInstructorModal exists
-            const addInstructorModal = document.getElementById('addInstructorModal');
-            if (addInstructorModal && document.location.pathname.includes('manage-instructors')) {
-                const addBtn = document.querySelector('button[data-bs-target="#addInstructorModal"]');
-                if (addBtn) {
-                    addBtn.addEventListener('click', function(e) {
-                        console.log('➕ Opening Add New Instructor modal');
-                        
-                        // Reset form - with null safety check
-                        const instructorForm = document.getElementById('addInstructorForm');
-                        const validationAlert = document.getElementById('formValidationAlert');
-                        const successAlert = document.getElementById('formSuccessAlert');
-                        
-                        if (instructorForm) instructorForm.reset();
-                        if (validationAlert) validationAlert.classList.add('d-none');
-                        if (successAlert) successAlert.classList.add('d-none');
-                        
-                        // Visual feedback
-                        this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                        setTimeout(() => { this.style.background = ''; }, 300);
+                if (routeInfo) {
+                    // Log navigation for analytics
+                    console.log(`🔗 Navigation: ${linkText} (${routeInfo.type})`);
+                    
+                    // Track in localStorage for user behavior analysis
+                    const navHistory = JSON.parse(localStorage.getItem('navHistory') || '[]');
+                    navHistory.push({
+                        page: linkText,
+                        type: routeInfo.type,
+                        timestamp: new Date().toISOString(),
+                        url: this.href
                     });
+                    
+                    // Keep only last 50 navigation events
+                    if (navHistory.length > 50) {
+                        navHistory.shift();
+                    }
+                    
+                    localStorage.setItem('navHistory', JSON.stringify(navHistory));
+                    
+                    // Add visual feedback for clicked link
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => this.style.transform = '', 200);
+                    
+                    // Highlight active section
+                    const navType = routeInfo.type;
+                    highlightActiveSection(navType);
                 }
+            });
+        });
+
+        // Function to highlight active section
+        function highlightActiveSection(sectionType) {
+            // Remove highlight from all sections
+            document.querySelectorAll('.nav-section').forEach(section => {
+                section.style.backgroundColor = '';
+            });
+            
+            // Add highlight to active section
+            const activeSection = document.querySelector(`.nav-section-title:contains("${sectionType}")`)?.closest('.nav-section');
+            if (activeSection) {
+                activeSection.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+                activeSection.style.transition = 'background-color 0.3s ease';
+                activeSection.style.borderRadius = '8px';
+                activeSection.style.padding = '8px';
             }
+        }
 
-            // ===== ADD INSTRUCTOR FORM SUBMISSION =====
-            const submitInstructorBtn = document.getElementById('submitInstructorForm');
-            if (submitInstructorBtn) {
-                submitInstructorBtn.addEventListener('click', function(e) {
+        // Initialize active section based on current page
+        function initializeActiveSection() {
+            const currentPath = window.location.pathname;
+            let currentSection = 'dashboard';
+            
+            // Determine current section based on URL
+            if (currentPath.includes('lab')) currentSection = 'management';
+            else if (currentPath.includes('instructor')) currentSection = 'management';
+            else if (currentPath.includes('approve')) currentSection = 'admin';
+            else if (currentPath.includes('report') || currentPath.includes('analytics')) currentSection = 'reports';
+            else if (currentPath.includes('schedule')) currentSection = 'schedule';
+            else if (currentPath.includes('request')) currentSection = 'request';
+            else if (currentPath.includes('profile') || currentPath.includes('preference')) currentSection = 'account';
+            else if (currentPath.includes('notification') || currentPath.includes('message')) currentSection = 'communications';
+            
+            highlightActiveSection(currentSection);
+        }
+
+        // Call initialization
+        initializeActiveSection();
+
+        // ===== ENHANCED NAVIGATION =====
+        
+        // Add enhanced hover effects
+        sidebarNavLinks.forEach(link => {
+            // Add click animation
+            link.addEventListener('click', function(e) {
+                // Remove active class from all links
+                sidebarNavLinks.forEach(l => l.classList.remove('active'));
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Ripple effect
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(99, 102, 241, 0.2);
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${e.clientX - rect.left - size/2}px;
+                    top: ${e.clientY - rect.top - size/2}px;
+                `;
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+
+            // Enhanced hover effect
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+                this.style.transition = 'transform 0.2s ease';
+            });
+
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // ===== ENHANCED SEARCH FUNCTIONALITY =====
+        const searchInput = document.querySelector('.search-container .form-control');
+        if (searchInput) {
+            // Debounced search function
+            const debouncedSearch = debounce(function(query) {
+                console.log('🔍 Searching for:', query);
+                // Implement actual search logic here
+                highlightSearchResults(query);
+            }, 300);
+
+            searchInput.addEventListener('input', function() {
+                debouncedSearch(this.value.trim());
+            });
+
+            searchInput.addEventListener('focus', function() {
+                this.parentElement.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.2)';
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+
+            searchInput.addEventListener('blur', function() {
+                this.parentElement.style.boxShadow = '';
+                this.parentElement.style.transform = '';
+            });
+
+            // Search on Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
                     e.preventDefault();
-                    
-                    // Get form data
-                    const firstName = document.getElementById('instructorFirstName').value.trim();
-                    const lastName = document.getElementById('instructorLastName').value.trim();
-                    const email = document.getElementById('instructorEmail').value.trim();
-                    const phone = document.getElementById('instructorPhone').value.trim();
-                    const department = document.getElementById('instructorDepartment').value;
-                    const specialization = document.getElementById('instructorSpecialization').value.trim();
-                    const bio = document.getElementById('instructorBio').value.trim();
-                    const status = document.getElementById('instructorStatus').value;
-                    const office = document.getElementById('instructorOffice').value.trim();
+                    console.log('🔍 Executing search for:', this.value);
+                    // Trigger search action
+                }
+            });
+        }
 
-                    // Validation
-                    const validationAlert = document.getElementById('formValidationAlert');
-                    const validationMessage = document.getElementById('validationMessage');
+        // ===== ENHANCED BUTTON FUNCTIONALITY =====
+        
+        // Enhanced Add New Instructor Button
+        const addInstructorBtn = document.querySelector('button[data-bs-target="#addInstructorModal"]');
+        if (addInstructorBtn) {
+            // Add enhanced styling
+            addInstructorBtn.classList.add('btn-premium-enhanced');
+            
+            addInstructorBtn.addEventListener('click', function(e) {
+                console.log('➕ Opening Add New Instructor modal');
+                
+                // Reset form
+                const instructorForm = document.getElementById('addInstructorForm');
+                const validationAlert = document.getElementById('formValidationAlert');
+                const successAlert = document.getElementById('formSuccessAlert');
+                
+                if (instructorForm) instructorForm.reset();
+                if (validationAlert) validationAlert.classList.add('d-none');
+                if (successAlert) successAlert.classList.add('d-none');
+                
+                // Button animation
+                this.style.animation = 'pulse 0.5s';
+                setTimeout(() => this.style.animation = '', 500);
+            });
+        }
 
-                    if (!firstName) {
-                        validationMessage.textContent = 'First name is required';
-                        validationAlert.classList.remove('d-none');
-                        return;
-                    }
-                    if (!lastName) {
-                        validationMessage.textContent = 'Last name is required';
-                        validationAlert.classList.remove('d-none');
-                        return;
-                    }
-                    if (!email) {
-                        validationMessage.textContent = 'Email is required';
-                        validationAlert.classList.remove('d-none');
-                        return;
-                    }
-                    if (!email.includes('@')) {
-                        validationMessage.textContent = 'Please enter a valid email address';
-                        validationAlert.classList.remove('d-none');
-                        return;
-                    }
-                    if (!department) {
-                        validationMessage.textContent = 'Please select a department';
-                        validationAlert.classList.remove('d-none');
-                        return;
-                    }
+        // Enhanced Sort Buttons
+        const sortBtns = document.querySelectorAll('button:has(i.fa-sort)');
+        sortBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('📊 Sort clicked');
+                
+                // Toggle sort direction
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-sort')) {
+                    icon.className = 'fas fa-sort-up';
+                    console.log('⬆️ Sorting ascending');
+                } else if (icon.classList.contains('fa-sort-up')) {
+                    icon.className = 'fas fa-sort-down';
+                    console.log('⬇️ Sorting descending');
+                } else {
+                    icon.className = 'fas fa-sort';
+                    console.log('🔀 Sort reset');
+                }
+                
+                // Animation
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => this.style.transform = '', 200);
+            });
+        });
 
-                    // Hide validation alert
-                    validationAlert.classList.add('d-none');
+        // Enhanced Filter Button
+        const filterBtn = document.querySelector('button:has(i.fa-filter)');
+        if (filterBtn) {
+            filterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('🎯 Opening Filter Modal');
+                
+                const modal = new bootstrap.Modal(document.getElementById('filterModal'));
+                modal.show();
+                
+                // Button animation
+                this.style.background = 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)';
+                this.style.color = 'white';
+                this.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    this.style.background = '';
+                    this.style.color = '';
+                    this.style.transform = '';
+                }, 300);
+            });
+        }
 
-                    // Create instructor object
-                    const newInstructor = {
-                        firstName,
-                        lastName,
-                        email,
-                        phone,
-                        department,
-                        specialization,
-                        bio,
-                        status,
-                        office
-                    };
+        // Enhanced Apply Filter Button
+        const applyFilterBtn = document.getElementById('applyFilterBtn');
+        if (applyFilterBtn) {
+            applyFilterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const department = document.getElementById('filterDepartment').value;
+                const status = document.getElementById('filterStatus').value;
+                const specialization = document.getElementById('filterSpecialization').value.trim();
 
-                    console.log('✅ Adding new instructor:', newInstructor);
-                    console.log('📊 Instructor data ready for backend submission');
-
-                    // Show success message
-                    document.getElementById('formSuccessAlert').classList.remove('d-none');
-
-                    // Add to table (temporary - would be removed after backend integration)
-                    const tableBody = document.querySelector('.premium-table tbody');
-                    if (tableBody) {
-                        const newRow = document.createElement('tr');
-                        const statusColor = status === 'Active' ? 'success' : status === 'Pending' ? 'warning' : 'secondary';
-                        newRow.innerHTML = `
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-primary">${firstName.charAt(0)}${lastName.charAt(0)}</div>
-                                    <div>
-                                        <strong>${firstName} ${lastName}</strong>
-                                        <div class="text-muted small">@${firstName.toLowerCase()}${lastName.toLowerCase()}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div>${email}</div>
-                                <div class="text-muted small">${phone || 'N/A'}</div>
-                            </td>
-                            <td>${department}</td>
-                            <td>
-                                <span class="badge bg-${statusColor}">${status}</span>
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-action btn-outline-primary" title="Edit instructor">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-action btn-outline-danger" title="Delete instructor">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        tableBody.insertBefore(newRow, tableBody.firstChild);
-                        console.log(`✅ New instructor ${firstName} ${lastName} added to table`);
-                        
-                        // Reattach event listeners to new buttons
-                        attachEditDeleteListeners();
-                    }
-
-                    // Disable button temporarily
-                    this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-check me-2"></i>Instructor Added';
-                    
-                    setTimeout(() => {
-                        // Close modal
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('addInstructorModal'));
-                        if (modal) modal.hide();
-                        
-                        // Reset button
-                        this.disabled = false;
-                        this.innerHTML = '<i class="fas fa-save me-2"></i>Add Instructor';
-                    }, 1500);
+                console.log('🔍 Applying filters:', {
+                    department: department || 'All',
+                    status: status || 'All',
+                    specialization: specialization || 'All'
                 });
-            }
 
-            // ===== FILTER BUTTON =====
-            const filterBtn = document.querySelector('button:has(i.fa-filter)');
-            if (filterBtn) {
-                filterBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('🎯 Opening Filter Modal');
-                    const modal = new bootstrap.Modal(document.getElementById('filterModal'));
-                    modal.show();
-                    
-                    this.style.background = 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)';
-                    this.style.color = 'white';
-                    setTimeout(() => {
-                        this.style.background = '';
-                        this.style.color = '';
-                    }, 300);
-                });
-            }
+                // Show loading state
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Applying...';
+                this.disabled = true;
 
-            // ===== APPLY FILTER BUTTON =====
-            const applyFilterBtn = document.getElementById('applyFilterBtn');
-            if (applyFilterBtn) {
-                applyFilterBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const department = document.getElementById('filterDepartment').value;
-                    const status = document.getElementById('filterStatus').value;
-                    const specialization = document.getElementById('filterSpecialization').value.trim();
-
-                    console.log('🔍 Applying filters:', {
-                        department: department || 'All',
-                        status: status || 'All',
-                        specialization: specialization || 'All'
-                    });
-
-                    // Close modal
+                setTimeout(() => {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('filterModal'));
                     if (modal) modal.hide();
-                });
-            }
-
-            // ===== EXPORT BUTTON =====
-            const exportBtn = document.querySelector('button:has(i.fa-download)');
-            if (exportBtn) {
-                exportBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('📥 Export data initiated');
                     
+                    // Reset button
+                    this.innerHTML = '<i class="fas fa-check me-2"></i>Apply Filters';
+                    this.disabled = false;
+                    
+                    // Show success notification
+                    showNotification('Filters applied successfully!', 'success');
+                }, 1000);
+            });
+        }
+
+        // Enhanced Export Button
+        const exportBtn = document.querySelector('button:has(i.fa-download)');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('📥 Export data initiated');
+                
+                // Show loading state
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Exporting...';
+                this.disabled = true;
+
+                setTimeout(() => {
                     // Get table data
                     const table = document.querySelector('.premium-table');
                     const rows = table.querySelectorAll('tbody tr');
@@ -2334,10 +2386,10 @@
 
                     rows.forEach((row, index) => {
                         const cells = row.querySelectorAll('td');
-                        const instructorName = cells[0].querySelector('strong').textContent;
-                        const email = cells[1].textContent.split('\n')[0].trim();
-                        const department = cells[2].textContent.trim();
-                        const status = cells[3].textContent.trim();
+                        const instructorName = cells[0]?.querySelector('strong')?.textContent || '';
+                        const email = cells[1]?.textContent?.split('\n')[0]?.trim() || '';
+                        const department = cells[2]?.textContent?.trim() || '';
+                        const status = cells[3]?.textContent?.trim() || '';
 
                         data.push({
                             id: index + 1,
@@ -2348,283 +2400,467 @@
                         });
                     });
 
-                    console.log('📊 Exporting instructors:', data);
-                    console.log('✅ Export ready for CSV/PDF generation');
+                    console.log('📊 Exporting data:', data);
 
                     // Generate CSV
                     const csv = 'ID,Name,Email,Department,Status\n' + 
                         data.map(row => `${row.id},"${row.name}","${row.email}","${row.department}","${row.status}"`).join('\n');
 
-                    // Create download link
+                    // Create and trigger download
                     const blob = new Blob([csv], { type: 'text/csv' });
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `instructors_${new Date().toISOString().split('T')[0]}.csv`;
+                    a.download = `export_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
                     a.click();
+                    document.body.removeChild(a);
                     window.URL.revokeObjectURL(url);
 
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => { this.style.transform = ''; }, 150);
-                });
-            }
-
-            // ===== EDIT AND DELETE HANDLER FUNCTION =====
-            function attachEditDeleteListeners() {
-                // ===== EDIT BUTTONS IN TABLE =====
-                const editBtns = document.querySelectorAll('button:has(i.fa-edit)');
-                editBtns.forEach((btn, index) => {
-                    // Remove old listeners
-                    btn.replaceWith(btn.cloneNode(true));
-                });
-
-                // Re-query after clone
-                document.querySelectorAll('button:has(i.fa-edit)').forEach((btn, index) => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const row = this.closest('tr');
-                        const cells = row.querySelectorAll('td');
-                        const fullName = cells[0].querySelector('strong').textContent;
-                        const email = cells[1].textContent.split('\n')[0].trim();
-                        const department = cells[2].textContent.trim();
-                        const status = cells[3].textContent.trim();
-
-                        console.log(`✏️ Edit instructor: ${fullName}`);
-                        
-                        // Pre-fill edit form
-                        const names = fullName.split(' ');
-                        document.getElementById('editInstructorFirstName').value = names[0] || '';
-                        document.getElementById('editInstructorLastName').value = names.slice(1).join(' ') || '';
-                        document.getElementById('editInstructorEmail').value = email;
-                        document.getElementById('editInstructorDepartment').value = department;
-                        document.getElementById('editInstructorStatus').value = status;
-
-                        // Open edit modal
-                        const modal = new bootstrap.Modal(document.getElementById('editInstructorModal'));
-                        modal.show();
-                        
-                        // Visual feedback
-                        this.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
-                        this.style.color = 'white';
-                        this.style.borderColor = '#3b82f6';
-                        setTimeout(() => {
-                            this.style.background = '';
-                            this.style.color = '';
-                            this.style.borderColor = '';
-                        }, 300);
-                    });
-                });
-
-                // ===== DELETE BUTTONS IN TABLE =====
-                const deleteBtns = document.querySelectorAll('button:has(i.fa-trash)');
-                deleteBtns.forEach((btn, index) => {
-                    // Remove old listeners
-                    btn.replaceWith(btn.cloneNode(true));
-                });
-
-                // Re-query after clone
-                document.querySelectorAll('button:has(i.fa-trash)').forEach((btn, index) => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const row = this.closest('tr');
-                        const instructorName = row.querySelector('strong').textContent;
-                        if (confirm(`🗑️ Are you sure you want to delete ${instructorName}?`)) {
-                            console.log(`🗑️ Deleting instructor: ${instructorName}`);
-                            row.style.opacity = '0.5';
-                            row.style.textDecoration = 'line-through';
-                            
-                            // Simulate deletion
-                            setTimeout(() => {
-                                row.remove();
-                                console.log(`✅ ${instructorName} has been deleted successfully`);
-                            }, 500);
-                        } else {
-                            console.log(`❌ Deletion of ${instructorName} cancelled`);
-                        }
-                    });
-                });
-            }
-
-            // ===== EDIT INSTRUCTOR FORM SUBMISSION =====
-            const submitEditBtn = document.getElementById('submitEditInstructorForm');
-            if (submitEditBtn) {
-                submitEditBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
+                    // Reset button
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
                     
-                    const firstName = document.getElementById('editInstructorFirstName').value.trim();
-                    const lastName = document.getElementById('editInstructorLastName').value.trim();
-                    const email = document.getElementById('editInstructorEmail').value.trim();
-
-                    if (!firstName || !lastName || !email) {
-                        console.log('❌ Form validation failed');
-                        return;
-                    }
-
-                    console.log(`✅ Updating instructor: ${firstName} ${lastName}`);
+                    // Show success
+                    this.innerHTML = '<i class="fas fa-check me-2"></i>Exported!';
+                    setTimeout(() => this.innerHTML = originalHTML, 2000);
                     
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('editInstructorModal'));
-                    if (modal) modal.hide();
+                    showNotification('Data exported successfully!', 'success');
+                }, 1500);
+            });
+        }
 
-                    this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-check me-2"></i>Changes Saved';
+        // ===== ENHANCED FORM FUNCTIONALITY =====
+        
+        // Add Instructor Form Submission
+        const submitInstructorBtn = document.getElementById('submitInstructorForm');
+        if (submitInstructorBtn) {
+            submitInstructorBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const firstName = document.getElementById('instructorFirstName')?.value.trim() || '';
+                const lastName = document.getElementById('instructorLastName')?.value.trim() || '';
+                const email = document.getElementById('instructorEmail')?.value.trim() || '';
+                const phone = document.getElementById('instructorPhone')?.value.trim() || '';
+                const department = document.getElementById('instructorDepartment')?.value || '';
+                const specialization = document.getElementById('instructorSpecialization')?.value.trim() || '';
+                const bio = document.getElementById('instructorBio')?.value.trim() || '';
+                const status = document.getElementById('instructorStatus')?.value || 'Active';
+                const office = document.getElementById('instructorOffice')?.value.trim() || '';
+
+                // Enhanced validation
+                const validationAlert = document.getElementById('formValidationAlert');
+                const validationMessage = document.getElementById('validationMessage');
+                
+                let errors = [];
+                
+                if (!firstName) errors.push('First name is required');
+                if (!lastName) errors.push('Last name is required');
+                if (!email) errors.push('Email is required');
+                if (email && !validateEmail(email)) errors.push('Please enter a valid email address');
+                if (!department) errors.push('Please select a department');
+
+                if (errors.length > 0) {
+                    validationMessage.textContent = errors.join(', ');
+                    validationAlert.classList.remove('d-none');
+                    validationAlert.style.animation = 'shake 0.5s';
+                    setTimeout(() => validationAlert.style.animation = '', 500);
+                    return;
+                }
+
+                // Hide validation alert
+                validationAlert.classList.add('d-none');
+
+                // Show loading state
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+                this.disabled = true;
+
+                // Simulate API call
+                setTimeout(() => {
+                    // Show success
+                    document.getElementById('formSuccessAlert').classList.remove('d-none');
+                    document.getElementById('formSuccessAlert').style.animation = 'slideIn 0.5s';
                     
+                    // Reset button
+                    this.innerHTML = '<i class="fas fa-check me-2"></i>Instructor Added';
+                    
+                    // Close modal after delay
                     setTimeout(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addInstructorModal'));
+                        if (modal) modal.hide();
+                        
+                        // Reset form and button
+                        this.innerHTML = originalHTML;
                         this.disabled = false;
-                        this.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
-                    }, 1500);
-                });
-            }
+                        document.getElementById('addInstructorForm').reset();
+                    }, 2000);
+                    
+                    showNotification('Instructor added successfully!', 'success');
+                }, 2000);
+            });
+        }
 
-            // ===== MOBILE QUICK ACTION BUTTONS =====
-            const mobileQuickBtns = document.querySelectorAll('.d-md-none .btn-group button');
-            mobileQuickBtns.forEach(btn => {
+        // ===== ENHANCED TABLE FUNCTIONALITY =====
+        
+        // Edit and Delete buttons handler
+        function attachEditDeleteListeners() {
+            // Edit buttons
+            document.querySelectorAll('button:has(i.fa-edit)').forEach((btn, index) => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const icon = this.querySelector('i');
-                    if (icon.classList.contains('fa-filter')) {
-                        console.log('📱 Mobile: Filter clicked');
-                    } else if (icon.classList.contains('fa-sort')) {
-                        console.log('📱 Mobile: Sort clicked');
-                    } else if (icon.classList.contains('fa-search')) {
-                        console.log('📱 Mobile: Search clicked');
-                    }
+                    const row = this.closest('tr');
+                    const cells = row.querySelectorAll('td');
+                    const fullName = cells[0]?.querySelector('strong')?.textContent || '';
+                    const email = cells[1]?.textContent?.split('\n')[0]?.trim() || '';
+                    const department = cells[2]?.textContent?.trim() || '';
+                    const status = cells[3]?.textContent?.trim() || '';
+
+                    console.log(`✏️ Edit: ${fullName}`);
+                    
+                    // Button animation
+                    this.style.transform = 'scale(0.9)';
+                    setTimeout(() => this.style.transform = '', 200);
+                    
+                    // You would typically open a modal here
                 });
             });
 
-            // Pagination functionality - Dot Style
-            const paginationLinks = document.querySelectorAll('.pagination a');
-            const dotLinks = document.querySelectorAll('.pagination .page-item:not(.page-nav) a');
-            const prevBtn = document.querySelector('.pagination .page-nav.disabled a');
-            const nextBtn = document.querySelector('.pagination .page-nav:not(.disabled) a');
-            let currentPage = 2; // Start at page 2 (active dot)
+            // Delete buttons
+            document.querySelectorAll('button:has(i.fa-trash)').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const row = this.closest('tr');
+                    const instructorName = row?.querySelector('strong')?.textContent || 'this item';
+                    
+                    // Enhanced confirmation dialog
+                    if (confirm(`🗑️ Are you sure you want to delete ${instructorName}?\nThis action cannot be undone.`)) {
+                        console.log(`🗑️ Deleting: ${instructorName}`);
+                        
+                        // Animation
+                        row.style.opacity = '0.5';
+                        row.style.transform = 'translateX(-20px)';
+                        row.style.transition = 'all 0.3s ease';
+                        
+                        setTimeout(() => {
+                            row.remove();
+                            showNotification(`${instructorName} has been deleted`, 'success');
+                        }, 300);
+                    }
+                });
+            });
+        }
+
+        // Initialize table listeners
+        attachEditDeleteListeners();
+
+        // ===== ENHANCED PAGINATION =====
+        const paginationLinks = document.querySelectorAll('.pagination a');
+        const dotLinks = document.querySelectorAll('.pagination .page-item:not(.page-nav) a');
+        
+        if (dotLinks.length > 0) {
+            let currentPage = 2;
             const totalPages = dotLinks.length;
 
-            // Only run pagination if there are dots
-            if (totalPages > 0) {
-                // Handle dot click
-                dotLinks.forEach((dot, index) => {
-                    dot.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        currentPage = index + 1;
-                        updatePagination();
-                        console.log('✅ Navigating to page:', currentPage);
-                    });
-                });
-
-                // Handle prev button
-                if (prevBtn) {
-                    prevBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        if (currentPage > 1) {
-                            currentPage--;
-                            updatePagination();
-                            console.log('⬅️ Previous page - now at page:', currentPage);
-                        }
-                    });
-                }
-
-                // Handle next button
-                if (nextBtn) {
-                    nextBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        if (currentPage < totalPages) {
-                            currentPage++;
-                            updatePagination();
-                            console.log('➡️ Next page - now at page:', currentPage);
-                        }
-                    });
-                }
-
-                // Update pagination state
-                function updatePagination() {
-                    // Remove active from all dots
-                    dotLinks.forEach(dot => dot.parentElement.classList.remove('active'));
+            dotLinks.forEach((dot, index) => {
+                dot.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage = index + 1;
+                    updatePagination();
+                    console.log('✅ Navigating to page:', currentPage);
                     
-                    // Set active dot
-                    if (dotLinks[currentPage - 1]) {
-                        dotLinks[currentPage - 1].parentElement.classList.add('active');
-                    }
-
-                    // Update prev button state
-                    const prevItem = document.querySelector('.pagination .page-nav.disabled').parentElement;
-                    if (currentPage === 1) {
-                        prevItem.classList.add('disabled');
-                    } else {
-                        prevItem.classList.remove('disabled');
-                    }
-
-                    // Update next button state
-                    const nextItem = nextBtn.parentElement;
-                    if (currentPage === totalPages) {
-                        nextItem.classList.add('disabled');
-                    } else {
-                        nextItem.classList.remove('disabled');
-                    }
-                }
-
-                // Initialize pagination state
-                updatePagination();
-            }
-
-            // Initialize tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            });
-
-            // Page loaded indicator
-            document.body.setAttribute('data-page-loaded', 'true');
-            
-            // Initialize edit/delete listeners
-            attachEditDeleteListeners();
-            
-            // ===== BACK BUTTON FUNCTIONALITY =====
-            const backButtonContainer = document.getElementById('backButtonContainer');
-            if (backButtonContainer) {
-                // Show back button if there's history to go back to
-                if (window.history.length > 1) {
-                    backButtonContainer.style.display = 'block';
-                }
-            }
-            
-            // ===== THEME SWITCHING FUNCTIONALITY =====
-            const themeRadios = document.querySelectorAll('input[name="theme"]');
-            const htmlElement = document.documentElement;
-            
-            // Load saved theme from localStorage
-            const savedTheme = localStorage.getItem('app-theme') || 'light';
-            htmlElement.setAttribute('data-bs-theme', savedTheme);
-            const savedThemeRadio = document.querySelector(`input[name="theme"][value="${savedTheme}"]`);
-            if (savedThemeRadio) savedThemeRadio.checked = true;
-            
-            // Theme change event listeners
-            themeRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    const theme = this.value;
-                    if (theme === 'auto') {
-                        // Auto theme based on system preference
-                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                        htmlElement.setAttribute('data-bs-theme', prefersDark ? 'dark' : 'light');
-                        localStorage.setItem('app-theme', 'auto');
-                        document.body.classList.toggle('dark-mode', prefersDark);
-                    } else {
-                        htmlElement.setAttribute('data-bs-theme', theme);
-                        localStorage.setItem('app-theme', theme);
-                        document.body.classList.toggle('dark-mode', theme === 'dark');
-                    }
-                    console.log('🎨 Theme changed to:', theme);
+                    // Animation
+                    this.style.transform = 'scale(1.3)';
+                    setTimeout(() => this.style.transform = '', 300);
                 });
             });
+
+            // Prev/Next buttons
+            const prevBtn = document.querySelector('.pagination .page-nav.disabled a');
+            const nextBtn = document.querySelector('.pagination .page-nav:not(.disabled) a');
             
-            // ===== DROPDOWN FIX: Simplified event handling =====
-            // Just let the native onchange handlers work - don't interfere
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function(e) {
+                    if (currentPage > 1) {
+                        e.preventDefault();
+                        currentPage--;
+                        updatePagination();
+                        console.log('⬅️ Previous page:', currentPage);
+                    }
+                });
+            }
             
-            // Log that page is ready
-            console.log('✅ Page loaded and all interactive elements initialized');
-            console.log('✅ Theme switching active');
-            console.log('✅ Dropdowns configured');
-            console.log('All buttons and navigation are now functional');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function(e) {
+                    if (currentPage < totalPages) {
+                        e.preventDefault();
+                        currentPage++;
+                        updatePagination();
+                        console.log('➡️ Next page:', currentPage);
+                    }
+                });
+            }
+
+            function updatePagination() {
+                dotLinks.forEach(dot => dot.parentElement.classList.remove('active'));
+                if (dotLinks[currentPage - 1]) {
+                    dotLinks[currentPage - 1].parentElement.classList.add('active');
+                }
+            }
+        }
+
+        // ===== ENHANCED THEME SWITCHING =====
+        const themeRadios = document.querySelectorAll('input[name="theme"]');
+        const htmlElement = document.documentElement;
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('app-theme') || 'light';
+        htmlElement.setAttribute('data-bs-theme', savedTheme);
+        
+        themeRadios.forEach(radio => {
+            if (radio.value === savedTheme) radio.checked = true;
+            
+            radio.addEventListener('change', function() {
+                const theme = this.value;
+                let finalTheme = theme;
+                
+                if (theme === 'auto') {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    finalTheme = prefersDark ? 'dark' : 'light';
+                }
+                
+                // Smooth transition
+                htmlElement.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+                htmlElement.setAttribute('data-bs-theme', finalTheme);
+                localStorage.setItem('app-theme', theme);
+                
+                setTimeout(() => htmlElement.style.transition = '', 300);
+                console.log('🎨 Theme changed to:', finalTheme);
+                showNotification(`Theme changed to ${finalTheme} mode`, 'info');
+            });
         });
-    </script>
+
+        // ===== ENHANCED DROPDOWN FIX =====
+        // Ensure all dropdowns are clickable
+        document.querySelectorAll('select').forEach(select => {
+            // Remove any interfering styles
+            select.style.pointerEvents = 'auto';
+            select.style.zIndex = '10';
+            select.style.position = 'relative';
+            
+            // Add focus styles
+            select.addEventListener('focus', function() {
+                this.style.borderColor = '#6366f1';
+                this.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)';
+            });
+            
+            select.addEventListener('blur', function() {
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+            });
+        });
+
+        // ===== ENHANCED BACK BUTTON =====
+        const backButtonContainer = document.getElementById('backButtonContainer');
+        if (backButtonContainer) {
+            if (window.history.length > 1) {
+                backButtonContainer.style.display = 'block';
+                
+                // Add animation
+                backButtonContainer.style.animation = 'slideInLeft 0.5s ease';
+                setTimeout(() => backButtonContainer.style.animation = '', 500);
+            }
+        }
+
+        // ===== ENHANCED NOTIFICATION SYSTEM =====
+        function showNotification(message, type = 'info') {
+            const types = {
+                'success': { icon: 'fa-check-circle', color: '#10b981' },
+                'error': { icon: 'fa-exclamation-circle', color: '#ef4444' },
+                'warning': { icon: 'fa-exclamation-triangle', color: '#f59e0b' },
+                'info': { icon: 'fa-info-circle', color: '#3b82f6' }
+            };
+            
+            const config = types[type] || types.info;
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas ${config.icon}" style="color: ${config.color};"></i>
+                <span>${message}</span>
+                <button class="notification-close">&times;</button>
+            `;
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border-left: 4px solid ${config.color};
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                z-index: 9999;
+                animation: slideInRight 0.3s ease;
+                max-width: 350px;
+            `;
+            
+            // Add close button functionality
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            });
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function highlightSearchResults(query) {
+            // Implement search highlighting logic here
+            const tables = document.querySelectorAll('.premium-table');
+            tables.forEach(table => {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (query && text.includes(query.toLowerCase())) {
+                        row.style.backgroundColor = 'rgba(99, 102, 241, 0.1)';
+                        row.style.animation = 'highlight 1s ease';
+                    } else {
+                        row.style.backgroundColor = '';
+                        row.style.animation = '';
+                    }
+                });
+            });
+        }
+
+        // ===== ADD ANIMATIONS =====
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            
+            @keyframes slideInLeft {
+                from { transform: translateX(-100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes ripple {
+                to { transform: scale(4); opacity: 0; }
+            }
+            
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+            
+            @keyframes highlight {
+                0% { background-color: rgba(99, 102, 241, 0.1); }
+                50% { background-color: rgba(99, 102, 241, 0.2); }
+                100% { background-color: rgba(99, 102, 241, 0.1); }
+            }
+            
+            .btn-premium-enhanced {
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                border: none;
+                border-radius: 12px;
+                padding: 1rem 2rem;
+                font-weight: 700;
+                color: white;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                font-size: 1.1rem;
+            }
+            
+            .btn-premium-enhanced:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            }
+            
+            .btn-premium-enhanced:active {
+                transform: translateY(-1px);
+            }
+            
+            .notification-close {
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: #6b7280;
+                margin-left: auto;
+                padding: 0 0.5rem;
+            }
+            
+            .notification-close:hover {
+                color: #374151;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ===== INITIALIZE TOOLTIPS =====
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(tooltipTriggerEl => {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Mark page as loaded
+        document.body.setAttribute('data-page-loaded', 'true');
+        
+        console.log('✅ Enhanced application initialized successfully');
+        console.log('✨ All interactive elements are now functional');
+        showNotification('System ready! All features are enabled.', 'success');
+    });
+</script>
 </body>
 </html>

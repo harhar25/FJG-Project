@@ -83,7 +83,7 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table premium-table">
+                        <table class="table premium-table" id="instructorsTable">
                 <thead>
                     <tr>
                         <th>Username</th>
@@ -93,7 +93,7 @@
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                                <tbody id="instructorsTbody">
                     {% if instructors.items %}
                         {% for instructor in instructors.items %}
                         <tr>
@@ -215,21 +215,51 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Update stats
-    const allRows = document.querySelectorAll('table tbody tr:not(:has(td[colspan]))');
-    document.getElementById('totalInstructors').textContent = allRows.length;
-    
-    const activeRows = document.querySelectorAll('table tbody tr:has(.badge-success)');
-    document.getElementById('activeInstructors').textContent = activeRows.length;
-    
-    const inactiveRows = document.querySelectorAll('table tbody tr:has(.badge-danger)');
-    document.getElementById('inactiveInstructors').textContent = inactiveRows.length;
-});
+    const tbody = document.getElementById('instructorsTbody');
+    const searchInput = document.getElementById('instructorSearch');
 
-function filterStatus(status) {
-    // Placeholder for filtering logic
-    alert('Filter by ' + status + ' feature coming soon!');
-}
+    function updateStats() {
+        const rows = Array.from(tbody.querySelectorAll('tr'))
+            .filter(r => !r.querySelector('td[colspan]') && r.style.display !== 'none');
+        document.getElementById('totalInstructors').textContent = rows.length;
+        const active = rows.filter(r => r.querySelector('.badge-success')).length;
+        const inactive = rows.filter(r => r.querySelector('.badge-danger')).length;
+        document.getElementById('activeInstructors').textContent = active;
+        document.getElementById('inactiveInstructors').textContent = inactive;
+    }
+
+    // Live search
+    if (searchInput) {
+        const onSearch = () => {
+            const term = searchInput.value.toLowerCase();
+            tbody.querySelectorAll('tr').forEach(row => {
+                if (row.querySelector('td[colspan]')) return;
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+            updateStats();
+        };
+        searchInput.addEventListener('input', onSearch);
+    }
+
+    window.filterStatus = function(status) {
+        tbody.querySelectorAll('tr').forEach(row => {
+            if (row.querySelector('td[colspan]')) return;
+            const isActive = !!row.querySelector('.badge-success');
+            if (status === 'all') {
+                row.style.display = '';
+            } else if (status === 'active') {
+                row.style.display = isActive ? '' : 'none';
+            } else if (status === 'inactive') {
+                row.style.display = isActive ? 'none' : '';
+            }
+        });
+        updateStats();
+    }
+
+    // Initial stats
+    updateStats();
+});
 </script>
 
 {% endblock %}
