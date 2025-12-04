@@ -5,14 +5,19 @@
 {% block content %}
 <!-- Content Header -->
 <div class="content-header">
-    <div>
-        <h1><i class="fas fa-list me-2"></i>My Reservation Requests</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                <li class="breadcrumb-item active">My Requests</li>
-            </ol>
-        </nav>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1><i class="fas fa-list me-2"></i>My Reservation Requests</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('instructor.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">My Requests</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ url_for('instructor.schedule_history') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-history me-2"></i>Schedule History
+        </a>
     </div>
 </div>
 

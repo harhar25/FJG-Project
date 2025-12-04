@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Schedule History - IT Lab Schedule System{% endblock %}
+
+{% block content %}
+<!-- Content Header -->
+<div class="content-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1><i class="fas fa-history me-2"></i>Schedule History</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('instructor.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Schedule History</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ url_for('instructor.my_requests') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-list me-2"></i>Back to My Requests
+        </a>
+    </div>
+</div>
+
+<!-- History Table -->
+{% if schedules.items %}
+<div class="premium-card">
+    <div class="card-header">
+        <h3><i class="fas fa-calendar-alt"></i>Past Schedules</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table premium-table">
+                <thead>
+                    <tr>
+                        <th>Schedule ID</th>
+                        <th>Lab Room</th>
+                        <th>Course</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules.items %}
+                    <tr>
+                        <td><span class="badge bg-secondary">#{{ schedule.id }}</span></td>
+                        <td>
+                            <i class="fas fa-flask text-primary me-1"></i>{{ schedule.lab.lab_code }} - {{ schedule.lab.lab_name }}
+                        </td>
+                        <td><strong>{{ schedule.course.course_code }}</strong></td>
+                        <td>
+                            <strong>{{ schedule.scheduled_date.strftime('%m/%d/%Y') }}</strong><br>
+                            <small class="text-muted">{{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }}</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">Completed</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if schedules.pages > 1 %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if schedules.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('instructor.schedule_history', page=schedules.prev_num) }}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in schedules.iter_pages() %}
+            {% if page_num %}
+                {% if page_num == schedules.page %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('instructor.schedule_history', page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if schedules.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('instructor.schedule_history', page=schedules.next_num) }}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% else %}
+<div class="premium-card">
+    <div class="card-body text-center py-5">
+        <i class="fas fa-inbox fa-4x mb-3" style="color: #9ca3af; opacity: 0.5;"></i>
+        <h4>No Schedule History</h4>
+        <p class="text-muted mb-0">You have no past schedules.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

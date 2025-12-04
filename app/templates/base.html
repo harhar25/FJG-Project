@@ -1342,18 +1342,176 @@
         }
 
         footer i {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        footer.sidebar-collapsed {
-            margin-left: var(--sidebar-collapsed-width);
-        }
+            .premium-table tbody td {
+                font-size: 0.95rem;
+            }
 
-        @media (max-width: 992px) {
+            /* ===== ENHANCED STAT CARDS ===== */
+            .stat-card {
+                position: relative;
+                overflow: hidden;
+                background: white;
+            }
+
+            .stat-card::after {
+                content: '';
+                position: absolute;
+                bottom: -50%;
+                right: -50%;
+                width: 200px;
+                height: 200px;
+                background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+                border-radius: 50%;
+                transition: var(--transition);
+                pointer-events: none; /* Make it non-interactive */
+            }
+
+            .stat-card:hover::after {
+                bottom: -25%;
+                right: -25%;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+            }
+
+            /* ===== ENHANCED INPUT STYLING ===== */
+            .search-container .form-control {
+                border: 2px solid #e5e7eb;
+                transition: var(--transition);
+            }
+
+            .search-container .form-control:focus {
+                border-color: #6366f1;
+                background: white;
+            }
+
+            .search-container .form-control::placeholder {
+                color: #cbd5e1;
+            }
+
+            /* ===== ENHANCED CARD STYLING ===== */
+            .premium-card {
+                overflow: hidden;
+            }
+
+            .premium-card:hover {
+                box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+            }
+
+            .card-body {
+                position: relative;
+            }
+
+            .card-body::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 0;
+                background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(139, 92, 246, 0.02) 100%);
+                transition: height 0.3s ease;
+                pointer-events: none; /* Make it non-interactive */
+            }
+
+            .premium-card:hover .card-body::before {
+                height: 100%;
+            }
+
+            /* ===== ENHANCED NAVIGATION ITEMS ===== */
+            .nav-link {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .nav-link::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                width: 3px;
+                height: 0;
+                background: #6366f1;
+                transform: translateY(-50%);
+                transition: height 0.3s ease;
+            }
+
+            .sidebar-nav .nav-link:hover::before {
+                height: 70%;
+            }
+
+            .sidebar-nav .nav-link.active::before {
+                height: 100%;
+            }
+
+            /* ===== ENHANCED SCROLLBAR STYLING ===== */
+            ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                border-radius: 10px;
+                transition: background 0.3s ease;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            }
+
+            /* ===== ENHANCED FOCUS STATES ===== */
+            *:focus-visible {
+                outline: 2px solid #6366f1;
+                outline-offset: 2px;
+            }
+
+            .btn:focus-visible,
+            .form-control:focus-visible,
+            .form-select:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            }
+
+            /* ===== ENHANCED ANIMATIONS ===== */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .premium-card,
+            .stat-card {
+                animation: fadeIn 0.4s ease-out;
+            }
+
+            /* ===== ENHANCED BREADCRUMB ===== */
+            .breadcrumb-item + .breadcrumb-item::before {
+                color: #cbd5e1;
+            }
+
+            /* Footer Styles */
             footer {
-                margin-left: 0;
+                background: linear-gradient(135deg, #1e293b 0%, #374151 100%);
+                color: #9ca3af;
+                padding: 2rem 0;
+                margin-top: auto;
+                margin-left: var(--sidebar-width);
+                transition: var(--transition);
+                border-top: 2px solid rgba(99, 102, 241, 0.1);
             }
         }
 
@@ -1476,9 +1634,13 @@
                             <i class="fas fa-flask-vial me-3"></i>
                             Laboratories
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin.manage_instructors') }}" data-tooltip="Instructors">
-                            <i class="fas fa-chalkboard-user me-3"></i>
-                            Instructors
+                        <a href="{{ url_for('admin.manage_instructors') }}" class="nav-link {% if 'manage-instructors' in request.path %}active{% endif %}" data-tooltip="Instructors">
+                            <i class="fas fa-chalkboard-teacher me-3"></i>
+                            Manage Instructors
+                        </a>
+                        <a href="{{ url_for('admin.manage_courses') }}" class="nav-link {% if 'manage-courses' in request.path %}active{% endif %}" data-tooltip="Courses">
+                            <i class="fas fa-book me-3"></i>
+                            Manage Courses
                         </a>
                         <a class="nav-link" href="{{ url_for('admin.approve_requests') }}" data-tooltip="Approvals">
                             <i class="fas fa-check-circle me-3"></i>

@@ -90,22 +90,44 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('auth.profile') }}">
-                        <div class="mb-3">
-                            <label for="fullName" class="form-label fw-600">Full Name</label>
-                            <input type="text" class="form-control" id="fullName" value="{{ current_user.full_name }}" placeholder="Enter your full name">
+                    {% if pending_update %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Your profile update request is pending approval.
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label fw-600">Email Address</label>
-                            <input type="email" class="form-control" id="email" value="{{ current_user.email }}" placeholder="Enter your email">
-                        </div>
-                        <div class="text-end">
-                            <button type="button" class="btn btn-outline-secondary me-2">Cancel</button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Save Changes
-                            </button>
-                        </div>
-                    </form>
+                        <form>
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label fw-600">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" value="{{ pending_update.new_full_name }}" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-600">Email Address</label>
+                                <input type="email" class="form-control" id="email" value="{{ pending_update.new_email }}" disabled>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary" disabled>
+                                    <i class="fas fa-save me-2"></i>Pending Approval
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <form method="POST" action="{{ url_for('auth.profile') }}">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label fw-600">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" name="full_name" value="{{ current_user.full_name }}" placeholder="Enter your full name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-600">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" placeholder="Enter your email">
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-outline-secondary me-2">Cancel</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -163,3 +163,22 @@ class LabUsageReport(db.Model):
     
     def __repr__(self):
         return f'<LabUsageReport {self.lab_id}>'
+
+class ProfileUpdate(db.Model):
+    """Model for pending profile updates"""
+    __tablename__ = 'profile_updates'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    new_full_name = db.Column(db.String(120))
+    new_email = db.Column(db.String(120))
+    status = db.Column(db.String(20), default='Pending')  # Pending, Approved, Declined
+    requested_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    reviewed_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    reviewed_at = db.Column(db.DateTime)
+    
+    user = db.relationship('User', foreign_keys=[user_id])
+    reviewer = db.relationship('User', foreign_keys=[reviewed_by])
+    
+    def __repr__(self):
+        return f'<ProfileUpdate {self.id} for User {self.user_id}>'

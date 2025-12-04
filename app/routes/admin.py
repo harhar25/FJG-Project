@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, Response
+import io
+import csv
 from flask_login import login_required, current_user
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, and_, or_
 from app import db
 from app.models import (
-    User, Laboratory, LabSchedule, ReservationRequest, Notification, LabUsageReport, UserRole, Course
+    User, Laboratory, LabSchedule, ReservationRequest, Notification, LabUsageReport, UserRole, Course, ProfileUpdate
 )
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -99,6 +101,24 @@ def manage_labs():
     
     labs = Laboratory.query.paginate(page=page, per_page=10)
     return render_template('admin/manage_labs.html', labs=labs)
+
+@admin_bp.route('/edit-lab/<int:lab_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_lab(lab_id):
+    """Edit a laboratory's details"""
+    lab = Laboratory.query.get_or_404(lab_id)
+    
+    if request.method == 'POST':
+        lab.lab_name = request.form.get('lab_name')
+        lab.capacity = request.form.get('capacity', type=int)
+        lab.location = request.form.get('location')
+        lab.equipment = request.form.get('equipment')
+        db.session.commit()
+        flash('Laboratory updated successfully.', 'success')
+        return redirect(url_for('admin.manage_labs'))
+    
+    return render_template('admin/edit_lab.html', lab=lab)
 
 @admin_bp.route('/manage-instructors', methods=['GET', 'POST'])
 @login_required
@@ -340,35 +360,64 @@ def approve_requests():
         return redirect(url_for('admin.approve_requests'))
     
     requests = ReservationRequest.query.filter_by(status='Pending').paginate(page=page, per_page=15)
-    return render_template('admin/approve_requests.html', requests=requests)
+    profile_updates = ProfileUpdate.query.filter_by(status='Pending').all()
+    return render_template('admin/approve_requests.html', requests=requests, profile_updates=profile_updates)
 
 @admin_bp.route('/manage-courses', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def manage_courses():
     """Manage courses"""
-    if request.method == 'POST':
-        action = request.form.get('action')
+    from app.forms import CourseForm
+    
+    form = CourseForm()
+    
+    if form.validate_on_submit():
+        action = form.action.data or request.form.get('action')
+        
         if action == 'add':
-            course_code = request.form.get('course_code')
-            course_name = request.form.get('course_name')
-            if course_code and course_name:
-                new_course = Course(course_code=course_code, course_name=course_name)
+            # Check if course with this code already exists
+            existing_course = Course.query.filter_by(course_code=form.course_code.data).first()
+            if existing_course:
+                flash('A course with this code already exists.', 'error')
+            else:
+                new_course = Course(
+                    course_code=form.course_code.data.strip(),
+                    course_name=form.course_name.data.strip()
+                )
                 db.session.add(new_course)
                 db.session.commit()
-                flash('Course added successfully.', 'success')
+                flash('Course added successfully!', 'success')
+                return redirect(url_for('admin.manage_courses'))
+                
         elif action == 'delete':
             course_id = request.form.get('course_id')
-            course = Course.query.get(course_id)
-            if course:
-                db.session.delete(course)
-                db.session.commit()
-                flash('Course deleted successfully.', 'success')
-        return redirect(url_for('admin.manage_courses'))
-
+            if course_id:
+                course = Course.query.get(course_id)
+                if course:
+                    # Check if course is in use before deleting
+                    from sqlalchemy import text
+                    in_use = db.session.execute(
+                        text('SELECT 1 FROM lab_schedule WHERE course_id = :course_id LIMIT 1'),
+                        {'course_id': course_id}
+                    ).fetchone()
+                    
+                    if in_use:
+                        flash('Cannot delete course: It is being used in existing schedules.', 'error')
+                    else:
+                        db.session.delete(course)
+                        db.session.commit()
+                        flash('Course deleted successfully!', 'success')
+                return redirect(url_for('admin.manage_courses'))
+    
+    # Handle GET request or invalid form
     page = request.args.get('page', 1, type=int)
-    courses = Course.query.paginate(page=page, per_page=10)
-    return render_template('admin/manage_courses.html', courses=courses)
+    courses = Course.query.order_by(Course.course_code).paginate(page=page, per_page=10, error_out=False)
+    
+    return render_template('admin/manage_courses.html', 
+                         title='Manage Courses',
+                         courses=courses,
+                         form=form)
 
 @admin_bp.route('/reports')
 @login_required
@@ -445,3 +494,100 @@ def schedule_history():
     ).order_by(LabSchedule.scheduled_date.desc()).paginate(page=page, per_page=15)
     
     return render_template('admin/schedule_history.html', schedules=schedules)
+
+@admin_bp.route('/approve-profiles', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def approve_profiles():
+    """Approve or decline profile update requests"""
+    if request.method == 'POST':
+        update_id = request.form.get('update_id', type=int)
+        action = request.form.get('action')
+        
+        update_request = ProfileUpdate.query.get_or_404(update_id)
+        
+        if action == 'approve':
+            user = User.query.get(update_request.user_id)
+            user.full_name = update_request.new_full_name
+            user.email = update_request.new_email
+            update_request.status = 'Approved'
+            update_request.reviewed_by = current_user.id
+            update_request.reviewed_at = datetime.now(timezone.utc)
+            db.session.commit()
+            flash('Profile update approved.', 'success')
+        
+        elif action == 'decline':
+            update_request.status = 'Declined'
+            update_request.reviewed_by = current_user.id
+            update_request.reviewed_at = datetime.now(timezone.utc)
+            db.session.commit()
+            flash('Profile update declined.', 'success')
+        
+        return redirect(url_for('admin.approve_profiles'))
+    
+    updates = ProfileUpdate.query.filter_by(status='Pending').order_by(ProfileUpdate.requested_at.desc()).all()
+    return render_template('admin/approve_profiles.html', updates=updates)
+
+@admin_bp.route('/download-instructors-report')
+@login_required
+@admin_required
+def download_instructors_report():
+    """Download a CSV report of all instructors"""
+    instructors = User.query.filter_by(role='Instructor').all()
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow(['ID', 'Username', 'Full Name', 'Email', 'Status', 'Created At', 'Last Login'])
+    
+    # Write data
+    for instructor in instructors:
+        writer.writerow([
+            instructor.id,
+            instructor.username,
+            instructor.full_name,
+            instructor.email,
+            'Active' if instructor.is_active else 'Inactive',
+            instructor.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            instructor.last_login.strftime('%Y-%m-%d %H:%M:%S') if instructor.last_login else 'N/A'
+        ])
+    
+    output.seek(0)
+    
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=instructors_report.csv"}
+    )
+
+@admin_bp.route('/edit-profile', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_profile():
+    """Admin edit profile page"""
+    if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
+        username = request.form.get('username')
+
+        if not all([full_name, email, username]):
+            flash('All fields are required.', 'error')
+            return redirect(url_for('admin.edit_profile'))
+
+        if User.query.filter(User.id != current_user.id, User.email == email).first():
+            flash('That email address is already in use.', 'error')
+            return redirect(url_for('admin.edit_profile'))
+        
+        if User.query.filter(User.id != current_user.id, User.username == username).first():
+            flash('That username is already in use.', 'error')
+            return redirect(url_for('admin.edit_profile'))
+
+        current_user.full_name = full_name
+        current_user.email = email
+        current_user.username = username
+        db.session.commit()
+        flash('Your profile has been updated successfully.', 'success')
+        return redirect(url_for('admin.edit_profile'))
+
+    return render_template('auth/edit_profile.html')

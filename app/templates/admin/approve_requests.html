@@ -153,6 +153,60 @@
 </div>
 {% endif %}
 
+<!-- Profile Updates Table -->
+{% if profile_updates %}
+<div class="premium-card mt-4">
+    <div class="card-header">
+        <h3><i class="fas fa-user-edit"></i> Pending Profile Updates</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table premium-table">
+                <thead>
+                    <tr>
+                        <th>Instructor</th>
+                        <th>Current Email</th>
+                        <th>New Full Name</th>
+                        <th>New Email</th>
+                        <th>Requested At</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in profile_updates %}
+                    <tr>
+                        <td><strong>{{ update.user.full_name }}</strong></td>
+                        <td>{{ update.user.email }}</td>
+                        <td>{{ update.new_full_name }}</td>
+                        <td>{{ update.new_email }}</td>
+                        <td>{{ update.requested_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td class="text-center">
+                            <div class="d-flex gap-2 justify-content-center">
+                                <form method="POST" action="{{ url_for('admin.approve_profiles') }}" style="display:inline;">
+                                    <input type="hidden" name="update_id" value="{{ update.id }}">
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit" class="btn btn-action btn-outline-success" title="Approve Update">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('admin.approve_profiles') }}" style="display:inline;">
+                                    <input type="hidden" name="update_id" value="{{ update.id }}">
+                                    <input type="hidden" name="action" value="decline">
+                                    <button type="submit" class="btn btn-action btn-outline-danger" onclick="return confirm('Decline this update?')" title="Decline Update">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const pendingRows = document.querySelectorAll('table tbody tr');

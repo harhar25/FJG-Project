@@ -110,9 +110,9 @@
                                 </small>
                             </td>
                             <td class="text-center">
-                                <button class="btn btn-action btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editLabModal{{ lab.id }}" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
+                                <a href="{{ url_for('admin.edit_lab', lab_id=lab.id) }}" class="btn btn-action btn-outline-primary" title="Edit">
+                                    <i class="fas fa-edit"></i> 
+                                </a>
                                 <form method="POST" action="{{ url_for('admin.manage_labs') }}" style="display:inline;">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="lab_id" value="{{ lab.id }}">
@@ -293,54 +293,4 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
-<!-- Edit Lab Modals (dynamic) -->
-{% for lab in labs.items %}
-<div class="modal fade" id="editLabModal{{ lab.id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="{{ url_for('admin.manage_labs') }}">
-                <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Laboratory</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" style="padding: 2rem;">
-                    <input type="hidden" name="action" value="edit">
-                    <input type="hidden" name="lab_id" value="{{ lab.id }}">
-                    
-                    <div class="mb-3">
-                        <label for="lab_name_{{ lab.id }}" class="form-label"><strong>Lab Name</strong></label>
-                        <input type="text" class="form-control form-control-lg" id="lab_name_{{ lab.id }}" name="lab_name" value="{{ lab.lab_name }}" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label"><strong>Lab Code (Read-only)</strong></label>
-                        <input type="text" class="form-control form-control-lg" value="{{ lab.lab_code }}" disabled style="background-color: #f3f4f6;">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="capacity_{{ lab.id }}" class="form-label"><strong>Capacity</strong></label>
-                        <input type="number" class="form-control form-control-lg" id="capacity_{{ lab.id }}" name="capacity" value="{{ lab.capacity }}">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="location_{{ lab.id }}" class="form-label"><strong>Location</strong></label>
-                        <input type="text" class="form-control form-control-lg" id="location_{{ lab.id }}" name="location" value="{{ lab.location or '' }}">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="equipment_{{ lab.id }}" class="form-label"><strong>Equipment</strong></label>
-                        <textarea class="form-control form-control-lg" id="equipment_{{ lab.id }}" name="equipment" rows="3">{{ lab.equipment or '' }}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-top: 1px solid #e5e7eb; padding: 1.5rem;">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-modern btn-modern-success">
-                        <i class="fas fa-save me-2"></i>Update Laboratory
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-{% endfor %}
 {% endblock %}

@@ -7,7 +7,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timezone
 from app import db
-from app.models import User, UserRole
+from app.models import User, UserRole, ProfileUpdate
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -58,8 +58,41 @@ def logout():
 @auth_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    """User profile page"""
-    return render_template('profile.html', user=current_user)
+    """User profile page with edit functionality"""
+    if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        email = request.form.get('email')
+
+        if not all([full_name, email]):
+            flash('Full name and email are required.', 'error')
+            return redirect(url_for('auth.profile'))
+
+        # Check for email uniqueness
+        if User.query.filter(User.id != current_user.id, User.email == email).first():
+            flash('That email address is already in use.', 'error')
+            return redirect(url_for('auth.profile'))
+
+        if current_user.role == 'Instructor':
+            # Create a pending update request for instructors
+            update_request = ProfileUpdate(
+                user_id=current_user.id,
+                new_full_name=full_name,
+                new_email=email,
+                status='Pending'
+            )
+            db.session.add(update_request)
+            db.session.commit()
+            flash('Your profile update request has been submitted for approval.', 'info')
+        else:  # For Admin and other roles
+            current_user.full_name = full_name
+            current_user.email = email
+            db.session.commit()
+            flash('Your profile has been updated successfully.', 'success')
+        
+        return redirect(url_for('auth.profile'))
+
+    pending_update = ProfileUpdate.query.filter_by(user_id=current_user.id, status='Pending').first()
+    return render_template('profile.html', user=current_user, pending_update=pending_update)
 
 @auth_bp.route('/preferences')
 @login_required

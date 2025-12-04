@@ -5,7 +5,7 @@ from sqlalchemy import and_, or_
 from app import db
 from app.models import (
     User, Laboratory, Course, LabSchedule, 
-    ReservationRequest, Notification, UserRole
+    ReservationRequest, Notification, UserRole, ProfileUpdate
 )
 
 instructor_bp = Blueprint('instructor', __name__, url_prefix='/instructor')
@@ -38,9 +38,10 @@ def dashboard():
     ).order_by(LabSchedule.scheduled_date).all()
     
     # Get pending requests
-    pending_requests = ReservationRequest.query.filter_by(
-        instructor_id=current_user.id,
-        status='Pending'
+    pending_requests = ReservationRequest.query.filter(
+        ReservationRequest.instructor_id == current_user.id,
+        ReservationRequest.status == 'Pending',
+        ReservationRequest.requested_date >= today
     ).count()
     
     # Get unread notifications
@@ -153,9 +154,11 @@ def view_schedule():
 def my_requests():
     """View my reservation requests"""
     page = request.args.get('page', 1, type=int)
-    
-    requests = ReservationRequest.query.filter_by(
-        instructor_id=current_user.id
+    today = datetime.now(timezone.utc).date()
+
+    requests = ReservationRequest.query.filter(
+        ReservationRequest.instructor_id == current_user.id,
+        ReservationRequest.requested_date >= today
     ).order_by(ReservationRequest.created_at.desc()).paginate(page=page, per_page=10)
     
     return render_template('instructor/my_requests.html', requests=requests)
@@ -179,36 +182,25 @@ def notifications():
     
     return render_template('instructor/notifications.html', notifications=notifications)
 
-@instructor_bp.route('/profile', methods=['GET', 'POST'])
+@instructor_bp.route('/profile')
 @login_required
 @instructor_required
 def profile():
     """Instructor profile page"""
-    if request.method == 'POST':
-        full_name = request.form.get('full_name')
-        username = request.form.get('username')
-        email = request.form.get('email')
+    pending_update = ProfileUpdate.query.filter_by(user_id=current_user.id, status='Pending').first()
+    return render_template('instructor/profile.html', user=current_user, pending_update=pending_update)
 
-        # Validate
-        if not all([full_name, username, email]):
-            flash('All fields are required.', 'error')
-            return redirect(url_for('instructor.profile'))
-
-        # Check for uniqueness
-        if User.query.filter(User.id != current_user.id, User.username == username).first():
-            flash('Username already exists.', 'error')
-            return redirect(url_for('instructor.profile'))
-        
-        if User.query.filter(User.id != current_user.id, User.email == email).first():
-            flash('Email already exists.', 'error')
-            return redirect(url_for('instructor.profile'))
-
-        current_user.full_name = full_name
-        current_user.username = username
-        current_user.email = email
-        db.session.commit()
-
-        flash('Profile updated successfully.', 'success')
-        return redirect(url_for('instructor.profile'))
-
-    return render_template('auth/edit_profile.html')
+@instructor_bp.route('/schedule-history')
+@login_required
+@instructor_required
+def schedule_history():
+    """View past schedules for the instructor"""
+    page = request.args.get('page', 1, type=int)
+    today = datetime.now(timezone.utc).date()
+    
+    schedules = LabSchedule.query.filter(
+        LabSchedule.created_by == current_user.id,
+        LabSchedule.scheduled_date < today
+    ).order_by(LabSchedule.scheduled_date.desc()).paginate(page=page, per_page=15)
+    
+    return render_template('instructor/schedule_history.html', schedules=schedules)
