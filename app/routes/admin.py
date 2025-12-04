@@ -368,56 +368,28 @@ def approve_requests():
 @admin_required
 def manage_courses():
     """Manage courses"""
-    from app.forms import CourseForm
-    
-    form = CourseForm()
-    
-    if form.validate_on_submit():
-        action = form.action.data or request.form.get('action')
-        
+    if request.method == 'POST':
+        action = request.form.get('action')
         if action == 'add':
-            # Check if course with this code already exists
-            existing_course = Course.query.filter_by(course_code=form.course_code.data).first()
-            if existing_course:
-                flash('A course with this code already exists.', 'error')
-            else:
-                new_course = Course(
-                    course_code=form.course_code.data.strip(),
-                    course_name=form.course_name.data.strip()
-                )
+            course_code = request.form.get('course_code')
+            course_name = request.form.get('course_name')
+            if course_code and course_name:
+                new_course = Course(course_code=course_code, course_name=course_name)
                 db.session.add(new_course)
                 db.session.commit()
-                flash('Course added successfully!', 'success')
-                return redirect(url_for('admin.manage_courses'))
-                
+                flash('Course added successfully.', 'success')
         elif action == 'delete':
             course_id = request.form.get('course_id')
-            if course_id:
-                course = Course.query.get(course_id)
-                if course:
-                    # Check if course is in use before deleting
-                    from sqlalchemy import text
-                    in_use = db.session.execute(
-                        text('SELECT 1 FROM lab_schedule WHERE course_id = :course_id LIMIT 1'),
-                        {'course_id': course_id}
-                    ).fetchone()
-                    
-                    if in_use:
-                        flash('Cannot delete course: It is being used in existing schedules.', 'error')
-                    else:
-                        db.session.delete(course)
-                        db.session.commit()
-                        flash('Course deleted successfully!', 'success')
-                return redirect(url_for('admin.manage_courses'))
-    
-    # Handle GET request or invalid form
+            course = Course.query.get(course_id)
+            if course:
+                db.session.delete(course)
+                db.session.commit()
+                flash('Course deleted successfully.', 'success')
+        return redirect(url_for('admin.manage_courses'))
+
     page = request.args.get('page', 1, type=int)
-    courses = Course.query.order_by(Course.course_code).paginate(page=page, per_page=10, error_out=False)
-    
-    return render_template('admin/manage_courses.html', 
-                         title='Manage Courses',
-                         courses=courses,
-                         form=form)
+    courses = Course.query.paginate(page=page, per_page=10)
+    return render_template('admin/manage_courses.html', courses=courses)
 
 @admin_bp.route('/reports')
 @login_required
