@@ -143,6 +143,35 @@ def manage_instructors():
     instructors = User.query.filter_by(role='Instructor').paginate(page=page, per_page=10)
     return render_template('admin/manage_instructors.html', instructors=instructors)
 
+@admin_bp.route('/add-instructor', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def add_instructor():
+    """Add a new instructor"""
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        full_name = request.form.get('full_name')
+        password = request.form.get('password')
+        
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists.', 'error')
+            return redirect(url_for('admin.add_instructor'))
+        
+        user = User(
+            username=username,
+            email=email,
+            full_name=full_name,
+            role='Instructor'
+        )
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Instructor added successfully.', 'success')
+        return redirect(url_for('admin.manage_instructors'))
+    
+    return render_template('admin/add_instructor.html')
+
 # New route for viewing instructor details
 @admin_bp.route('/instructor/<int:user_id>', methods=['GET'])
 @login_required

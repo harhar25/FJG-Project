@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://cdn.jsdelivr.net">
     <meta name="description" content="Enterprise-grade IT Laboratory Utilization Schedule Management System">
     <meta name="keywords" content="laboratory, schedule, IT lab, reservation, management">
     <meta name="theme-color" content="#6366f1">
@@ -57,7 +58,6 @@
             font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             line-height: 1.6;
             color: #374151;
-            overflow-x: hidden;
         }
 
         /* ===== ICON ENHANCEMENTS ===== */
@@ -250,17 +250,16 @@
         }
 
         .app-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
             min-height: calc(100vh - var(--navbar-height));
         }
 
         /* ===== BEAUTIFUL SIDEBAR ===== */
         .sidebar {
-            width: var(--sidebar-width);
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border-right: 1px solid rgba(0, 0, 0, 0.06);
             padding: 2rem 1.5rem;
-            position: fixed;
             height: calc(100vh - var(--navbar-height));
             overflow-y: auto;
             transition: var(--transition);
@@ -435,8 +434,6 @@
 
         /* ===== ENHANCED MAIN CONTENT ===== */
         .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
             padding: 2.5rem;
             background: transparent;
             min-height: calc(100vh - var(--navbar-height));
@@ -444,8 +441,8 @@
             position: relative;
         }
 
-        .main-content.sidebar-collapsed {
-            margin-left: var(--sidebar-collapsed-width);
+        .app-container.sidebar-collapsed {
+            grid-template-columns: var(--sidebar-collapsed-width) 1fr;
         }
 
         .content-header {
@@ -489,7 +486,6 @@
             box-shadow: var(--shadow-sm);
             transition: var(--transition);
             margin-bottom: 1.5rem;
-            overflow: hidden;
         }
 
         .premium-card:hover {
@@ -538,7 +534,6 @@
             transition: var(--transition);
             border: 1px solid rgba(0, 0, 0, 0.06);
             position: relative;
-            overflow: hidden;
         }
 
         .stat-card::before {
@@ -587,7 +582,6 @@
             width: 100%;
             background: white;
             border-radius: var(--border-radius);
-            overflow: hidden;
             box-shadow: var(--shadow-sm);
             border-collapse: collapse;
         }
@@ -642,26 +636,52 @@
         .avatar-warning { background: var(--warning-gradient); }
 
         /* ===== ENHANCED BUTTONS ===== */
-        .btn-premium {
-            background: var(--primary-gradient);
+        .btn-premium-enhanced {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             border: none;
-            border-radius: 10px;
-            padding: 0.875rem 1.75rem;
-            font-weight: 600;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-weight: 700;
             color: white;
-            transition: var(--transition);
-            box-shadow: var(--shadow-sm);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 10px;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1rem;
         }
 
-        .btn-premium:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            color: white;
+        .btn-premium-enhanced:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+
+        .btn-premium-enhanced i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        .btn-premium-enhanced:hover i {
+            transform: scale(1.1);
+        }
+
+        .btn-premium-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .btn-premium-enhanced:hover::before {
+            left: 100%;
         }
 
         /* Enhanced outline buttons */
@@ -689,7 +709,7 @@
         }
 
         .btn-outline-secondary:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .btn-outline-primary {
@@ -807,20 +827,14 @@
             }
         }
 
-        @media (min-width: 993px) {
-            .mobile-nav-overlay {
-                display: none !important;
-            }
-        }
-
         @media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
-                z-index: 1020;
                 height: calc(100vh - var(--navbar-height));
             }
             .sidebar.mobile-open {
                 transform: translateX(0);
+                z-index: 1020;
             }
             .sidebar.collapsed {
                 width: var(--sidebar-width);
@@ -1033,38 +1047,6 @@
             font-style: italic;
         }
 
-        /* ===== COMPREHENSIVE Z-INDEX MANAGEMENT ===== */
-        /* Base layer for main content */
-        .main-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Sidebar layer */
-        .sidebar {
-            z-index: 1000;
-        }
-
-        /* Navbar layer */
-        .navbar {
-            z-index: 1020;
-        }
-
-        /* Modal backdrop layer */
-        .modal-backdrop {
-            z-index: 1050 !important; /* Ensures backdrop is below modal */
-        }
-
-        /* Modal layer */
-        .modal {
-            z-index: 1060 !important; /* Ensures modal is above backdrop */
-        }
-
-        /* Date/time picker layer - highest */
-        .datepicker, .timepicker, .flatpickr-calendar {
-            z-index: 1100 !important;
-        }
-
         /* ===== ENHANCED MODAL STYLING ===== */
         .modal-content {
             border-radius: 16px;
@@ -1209,6 +1191,7 @@
             background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
             border-radius: 50%;
             transition: var(--transition);
+            pointer-events: none; /* Make it non-interactive */
         }
 
         .stat-card:hover::after {
@@ -1245,6 +1228,25 @@
             box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
         }
 
+        .card-body {
+            position: relative;
+        }
+
+        .card-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(139, 92, 246, 0.02) 100%);
+            transition: height 0.3s ease;
+            pointer-events: none; /* Make it non-interactive */
+        }
+
+        .premium-card:hover .card-body::before {
+            height: 100%;
+        }
 
         /* ===== ENHANCED NAVIGATION ITEMS ===== */
         .nav-link {
@@ -1461,110 +1463,160 @@
 
             <!-- Role-Based Navigation -->
             {% if current_user.is_authenticated %}
-
                 {% if current_user.role == 'Administrator' %}
                 <!-- Administrator Navigation -->
-                <div class="nav-section">
+                <div class="nav-section d-none d-lg-block">
                     <h6 class="nav-section-title">Administration</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('admin.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            Dashboard
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin.manage_labs') }}" data-tooltip="Laboratories">
-                            <i class="fas fa-flask-vial me-2"></i>Laboratories
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.manage_courses') }}" data-tooltip="Courses">
-                            <i class="fas fa-book me-2"></i>Courses
+                        <a class="nav-link" href="{{ url_for('admin.manage_labs') }}" data-tooltip="Labs">
+                            <i class="fas fa-flask-vial me-3"></i>
+                            Laboratories
                         </a>
                         <a class="nav-link" href="{{ url_for('admin.manage_instructors') }}" data-tooltip="Instructors">
-                            <i class="fas fa-chalkboard-user me-2"></i>Instructors
+                            <i class="fas fa-chalkboard-user me-3"></i>
+                            Instructors
                         </a>
                         <a class="nav-link" href="{{ url_for('admin.approve_requests') }}" data-tooltip="Approvals">
-                            <i class="fas fa-check-circle me-3"></i>Approvals
+                            <i class="fas fa-check-circle me-3"></i>
+                            Approvals
                         </a>
                         <a class="nav-link" href="{{ url_for('admin.view_schedule') }}" data-tooltip="Schedule">
-                            <i class="fas fa-calendar me-3"></i>Schedule
+                            <i class="fas fa-calendar me-3"></i>
+                            Schedule
                         </a>
                     </nav>
                 </div>
+
                 <div class="nav-section">
                     <h6 class="nav-section-title">Analytics</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('admin.reports') }}" data-tooltip="Reports">
-                            <i class="fas fa-chart-bar me-3"></i>Reports
+                            <i class="fas fa-chart-bar me-3"></i>
+                            Reports
                         </a>
                     </nav>
                 </div>
+
                 <div class="nav-section">
                     <h6 class="nav-section-title">Communications</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('admin.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>Notifications
+                            <i class="fas fa-bell me-3"></i>
+                            Notifications
                         </a>
                         <a class="nav-link" href="{{ url_for('auth.messages') }}" data-tooltip="Messages">
-                            <i class="fas fa-envelope me-3"></i>Messages
+                            <i class="fas fa-envelope me-3"></i>
+                            Messages
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Mobile Admin Navigation -->
+                <div class="nav-section d-lg-none">
+                    <h6 class="nav-section-title">Quick Menu</h6>
+                    <nav class="nav flex-column sidebar-nav">
+                        <a class="nav-link" href="{{ url_for('admin.dashboard') }}" data-tooltip="Dashboard">
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin.approve_requests') }}" data-tooltip="Approvals">
+                            <i class="fas fa-check-circle me-3"></i>
+                            Approvals
                         </a>
                     </nav>
                 </div>
 
                 {% elif current_user.role == 'Instructor' %}
                 <!-- Instructor Navigation -->
-                <div class="nav-section">
+                <div class="nav-section d-none d-lg-block">
                     <h6 class="nav-section-title">Teaching</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('instructor.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            Dashboard
                         </a>
-                        <a class="nav-link" href="{{ url_for('instructor.submit_request') }}" data-tooltip="Make Request">
-                            <i class="fas fa-edit me-3"></i>Make Request
+                        <a class="nav-link" href="{{ url_for('instructor.submit_request') }}" data-tooltip="New Request">
+                            <i class="fas fa-plus-circle me-3"></i>
+                            New Request
                         </a>
                         <a class="nav-link" href="{{ url_for('instructor.my_requests') }}" data-tooltip="My Requests">
-                            <i class="fas fa-paper-plane me-3"></i>My Requests
+                            <i class="fas fa-list me-3"></i>
+                            My Requests
                         </a>
-                        <a class="nav-link" href="{{ url_for('instructor.view_schedule') }}" data-tooltip="View Schedule">
-                            <i class="fas fa-calendar-alt me-3"></i>View Schedule
+                        <a class="nav-link" href="{{ url_for('instructor.view_schedule') }}" data-tooltip="Schedule">
+                            <i class="fas fa-calendar me-3"></i>
+                            Schedule
                         </a>
                     </nav>
                 </div>
+
                 <div class="nav-section">
                     <h6 class="nav-section-title">Communications</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('instructor.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>Notifications
+                            <i class="fas fa-bell me-3"></i>
+                            Notifications
                         </a>
                         <a class="nav-link" href="{{ url_for('auth.messages') }}" data-tooltip="Messages">
-                            <i class="fas fa-envelope me-3"></i>Messages
+                            <i class="fas fa-envelope me-3"></i>
+                            Messages
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Mobile Instructor Navigation -->
+                <div class="nav-section d-lg-none">
+                    <h6 class="nav-section-title">Quick Menu</h6>
+                    <nav class="nav flex-column sidebar-nav">
+                        <a class="nav-link" href="{{ url_for('instructor.dashboard') }}" data-tooltip="Dashboard">
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('instructor.notifications') }}" data-tooltip="Notifications">
+                            <i class="fas fa-bell me-3"></i>
+                            Notifications
                         </a>
                     </nav>
                 </div>
 
                 {% else %}
                 <!-- Student Navigation -->
-                <div class="nav-section">
+                <div class="nav-section d-none d-lg-block">
                     <h6 class="nav-section-title">Learning</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('student.dashboard') }}" data-tooltip="Dashboard">
-                            <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            Dashboard
                         </a>
                         <a class="nav-link" href="{{ url_for('student.schedule_by_lab') }}" data-tooltip="By Lab">
-                            <i class="fas fa-flask-vial me-3"></i>Schedule by Lab
+                            <i class="fas fa-flask-vial me-3"></i>
+                            Schedule by Lab
                         </a>
                         <a class="nav-link" href="{{ url_for('student.schedule_by_instructor') }}" data-tooltip="By Instructor">
-                            <i class="fas fa-chalkboard-user me-3"></i>By Instructor
+                            <i class="fas fa-chalkboard-user me-3"></i>
+                            By Instructor
                         </a>
                         <a class="nav-link" href="{{ url_for('student.schedule_by_section') }}" data-tooltip="By Course">
-                            <i class="fas fa-book me-3"></i>By Course
+                            <i class="fas fa-book me-3"></i>
+                            By Course
                         </a>
                     </nav>
                 </div>
+
                 <div class="nav-section">
                     <h6 class="nav-section-title">Communications</h6>
                     <nav class="nav flex-column sidebar-nav">
                         <a class="nav-link" href="{{ url_for('student.notifications') }}" data-tooltip="Notifications">
-                            <i class="fas fa-bell me-3"></i>Notifications
+                            <i class="fas fa-bell me-3"></i>
+                            Notifications
                         </a>
                         <a class="nav-link" href="{{ url_for('auth.messages') }}" data-tooltip="Messages">
-                            <i class="fas fa-envelope me-3"></i>Messages
+                            <i class="fas fa-envelope me-3"></i>
+                            Messages
                         </a>
                     </nav>
                 </div>
@@ -1621,25 +1673,217 @@
                 <strong>Page not found</strong> - Please select a valid page from the navigation menu.
             </div>
             {% endblock %}
+            
+            <!-- ===== FILTER MODAL (Moved inside main-content to avoid sidebar overlap) ===== -->
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border: none;">
+                            <h5 class="modal-title" id="filterModalLabel">
+                                <i class="fas fa-filter me-2"></i>Filter Instructors
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <form id="filterForm">
+                                <div class="mb-3">
+                                    <label for="filterDepartment" class="form-label fw-600">Department</label>
+                                    <select class="form-select" id="filterDepartment">
+                                        <option value="">All Departments</option>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Information Technology">Information Technology</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="Cybersecurity">Cybersecurity</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="filterStatus" class="form-label fw-600">Status</label>
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">All Statuses</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Pending">Pending Approval</option>
+                                        <option value="On Leave">On Leave</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="filterSpecialization" class="form-label fw-600">Specialization</label>
+                                    <input type="text" class="form-control" id="filterSpecialization" placeholder="Filter by specialization...">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer p-4 border-top">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-2"></i>Clear
+                            </button>
+                            <button type="button" class="btn btn-premium" id="applyFilterBtn">
+                                <i class="fas fa-check me-2"></i>Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
     </div>
+    
+    <!-- ===== EDIT INSTRUCTOR MODAL ===== -->
+    <!-- Only visible and accessible to administrators -->
+    {% if current_user.is_authenticated and current_user.role == 'Administrator' %}
+    <div class="modal fade" id="editInstructorModal" tabindex="-1" aria-labelledby="editInstructorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none;">
+                    <h5 class="modal-title" id="editInstructorModalLabel">
+                        <i class="fas fa-edit me-2"></i>Edit Instructor
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editInstructorForm">
+                        <input type="hidden" id="editInstructorId">
+                        
+                        <!-- Personal Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-user-circle me-2" style="color: #3b82f6;"></i>Personal Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editInstructorFirstName" class="form-label fw-600">First Name</label>
+                                    <input type="text" class="form-control" id="editInstructorFirstName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorLastName" class="form-label fw-600">Last Name</label>
+                                    <input type="text" class="form-control" id="editInstructorLastName" required>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- MODALS ARE PLACED HERE, OUTSIDE OF THE MAIN CONTENT FLOW -->
-    {% block modals %}{% endblock %}
+                        <!-- Contact Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-envelope me-2" style="color: #3b82f6;"></i>Contact Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editInstructorEmail" class="form-label fw-600">Email Address</label>
+                                    <input type="email" class="form-control" id="editInstructorEmail" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorPhone" class="form-label fw-600">Phone Number</label>
+                                    <input type="tel" class="form-control" id="editInstructorPhone">
+                                </div>
+                            </div>
+                        </div>
 
+                        <!-- Professional Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-briefcase me-2" style="color: #3b82f6;"></i>Professional Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="editInstructorDepartment" class="form-label fw-600">Department</label>
+                                    <select class="form-select" id="editInstructorDepartment" required>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Information Technology">Information Technology</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="Cybersecurity">Cybersecurity</option>
+                                        <option value="Network Administration">Network Administration</option>
+                                        <option value="Database Management">Database Management</option>
+                                        <option value="Web Development">Web Development</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorSpecialization" class="form-label fw-600">Specialization</label>
+                                    <input type="text" class="form-control" id="editInstructorSpecialization">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information Section -->
+                        <div class="mb-4">
+                            <h6 class="mb-3 fw-bold text-dark">
+                                <i class="fas fa-file-alt me-2" style="color: #3b82f6;"></i>Additional Information
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="editInstructorBio" class="form-label fw-600">Biography</label>
+                                    <textarea class="form-control" id="editInstructorBio" rows="3"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorStatus" class="form-label fw-600">Status</label>
+                                    <select class="form-select" id="editInstructorStatus" required>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Pending">Pending Approval</option>
+                                        <option value="On Leave">On Leave</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editInstructorOffice" class="form-label fw-600">Office Location</label>
+                                    <input type="text" class="form-control" id="editInstructorOffice">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Validation Alert -->
+                        <div id="editFormValidationAlert" class="alert alert-danger border-0 rounded-3 d-none mb-3" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span id="editValidationMessage"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer p-4 border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submitEditInstructorForm">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+    </div>
+    {% endif %}
+    
     <!-- Enhanced Footer -->
-    <footer class="footer mt-auto py-3 bg-dark text-white text-center">
-        <div class="container">
-            <span>Enterprise Laboratory Management System 2025</span>
+    <footer class="py-4 border-top mt-auto">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="mb-0 text-muted">
+                        <strong><i class="fas fa-flask-vial me-2"></i>LabSchedule</strong>
+                    </p>
+                    <small class="text-muted">Enterprise Laboratory Management System © 2025</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-muted">
+                        <i class="fas fa-code me-1"></i>v2.1.0 | 
+                        <i class="fas fa-shield-alt me-1"></i>Secure | 
+                        <i class="fas fa-rocket me-1"></i>Premium
+                    </small>
+                </div>
+            </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+    <!-- Failsafe script to remove overlay -->
+    <script>
+        setTimeout(() => {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }, 1000); // Remove after 1 second regardless of load state
+    </script>
     
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
+    <script>
     // Enhanced Sidebar and Page Functionality
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Initializing enhanced application functionality...');
@@ -1804,14 +2048,29 @@
             });
             
             // Add highlight to active section
-            const activeSectionTitle = Array.from(document.querySelectorAll('.nav-section-title')).find(el => el.textContent.toLowerCase().includes(sectionType.toLowerCase()));
-            const activeSection = activeSectionTitle?.closest('.nav-section');
-            if (activeSection) {
-                activeSection.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
-                activeSection.style.transition = 'background-color 0.3s ease';
-                activeSection.style.borderRadius = '8px';
-                activeSection.style.padding = '8px';
-            }
+            document.querySelectorAll('.nav-section-title').forEach(title => {
+                // The sectionType is a lowercase category, while the title is capitalized.
+                // We find the corresponding nav link type to match them.
+                const navLinks = title.closest('.nav-section').querySelectorAll('.nav-link');
+                let sectionHasActiveType = false;
+                navLinks.forEach(link => {
+                    const linkText = link.textContent.trim();
+                    const routeInfo = navRoutes[linkText];
+                    if (routeInfo && routeInfo.type === sectionType) {
+                        sectionHasActiveType = true;
+                    }
+                });
+
+                if (sectionHasActiveType) {
+                    const activeSection = title.closest('.nav-section');
+                    if (activeSection) {
+                        activeSection.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+                        activeSection.style.transition = 'background-color 0.3s ease';
+                        activeSection.style.borderRadius = '8px';
+                        activeSection.style.padding = '8px';
+                    }
+                }
+            });
         }
 
         // Initialize active section based on current page
@@ -1856,7 +2115,6 @@
                     background: rgba(99, 102, 241, 0.2);
                     transform: scale(0);
                     animation: ripple 0.6s linear;
-                    pointer-events: none;
                     width: ${size}px;
                     height: ${size}px;
                     left: ${e.clientX - rect.left - size/2}px;
@@ -1872,9 +2130,9 @@
                 this.style.transition = 'transform 0.2s ease';
             });
 
-            link.addEventListener('mouseleave', function() {
+            /* link.addEventListener('mouseleave', function() {
                 this.style.transform = '';
-            });
+            }); */
         });
 
         // ===== ENHANCED SEARCH FUNCTIONALITY =====
@@ -2089,8 +2347,8 @@
         // Add Instructor Form Submission
         const submitInstructorBtn = document.getElementById('submitInstructorForm');
         if (submitInstructorBtn) {
-            submitInstructorBtn.addEventListener('click', function(e) {
-                e.preventDefault();
+            submitInstructorBtn.type = 'submit';
+            submitInstructorBtn.addEventListener('submit', function(e) {
                 
                 // Get form data
                 const firstName = document.getElementById('instructorFirstName')?.value.trim() || '';
@@ -2400,14 +2658,6 @@
         }
 
         function highlightSearchResults(query) {
-            // Auto-dismiss flash messages
-            setTimeout(function() {
-                let flashAlerts = document.querySelectorAll('.alert-dismissible');
-                flashAlerts.forEach(function(alert) {
-                    new bootstrap.Alert(alert).close();
-                });
-            }, 2000);
-
             // Implement search highlighting logic here
             const tables = document.querySelectorAll('.premium-table');
             tables.forEach(table => {
@@ -2521,6 +2771,7 @@
         
         console.log('✅ Enhanced application initialized successfully');
         console.log('✨ All interactive elements are now functional');
+        showNotification('System ready! All features are enabled.', 'success');
     });
 </script>
 </body>
