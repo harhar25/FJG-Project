@@ -449,7 +449,8 @@ def manage_courses():
         return redirect(url_for('admin.manage_courses'))
 
     page = request.args.get('page', 1, type=int)
-    courses = Course.query.paginate(page=page, per_page=10)
+    # Order courses by newest first and show a larger page size to avoid items being hidden on later pages
+    courses = Course.query.order_by(Course.created_at.desc()).paginate(page=page, per_page=100)
     return render_template('admin/manage_courses.html', courses=courses)
 
 @admin_bp.route('/reports')
