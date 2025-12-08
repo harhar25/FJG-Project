@@ -87,6 +87,38 @@
 #debugBtn {
     z-index: 9999;
 }
+/* Center and responsive modal sizing for Add Lab */
+#addLabModal .modal-dialog {
+    max-width: 720px;
+    width: 100%;
+    margin: 1.75rem auto;
+}
+@media (max-width: 768px) {
+    #addLabModal .modal-dialog {
+        max-width: 95vw;
+        margin: 1rem auto;
+    }
+    #addLabModal .modal-content {
+        border-radius: 12px;
+    }
+}
+#addLabModal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+/* Make form fields adaptive */
+#addLabModal .form-control-lg {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+}
+
+/* Enhance modal footer alignment */
+#addLabModal .modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 </style>
 {% endblock %}
 
@@ -103,7 +135,7 @@
                 </ol>
             </nav>
         </div>
-        <button class="btn btn-modern btn-modern-primary" data-bs-toggle="modal" data-bs-target="#addLabModal">
+        <button class="btn-premium-enhanced" data-bs-toggle="modal" data-bs-target="#addLabModal">
             <i class="fas fa-plus me-2"></i>Add New Lab
         </button>
     </div>
@@ -336,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
 {% block modals %}
 <!-- Add Lab Modal -->
 <div class="modal fade" id="addLabModal" tabindex="-1" aria-labelledby="addLabModalLabel" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <form id="addLabForm" method="POST" action="{{ url_for('admin.manage_labs') }}">
                 <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white;">
@@ -383,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-1"></i> Cancel
                     </button>
-                    <button type="submit" class="btn-modern btn-modern-primary" id="submitLabForm">
+                    <button type="submit" class="btn-premium-enhanced" id="submitLabForm">
                         <i class="fas fa-plus me-2"></i>Add Laboratory
                     </button>
                 </div>
