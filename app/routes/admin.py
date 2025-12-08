@@ -56,46 +56,70 @@ def manage_labs():
     page = request.args.get('page', 1, type=int)
     
     if request.method == 'POST':
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         action = request.form.get('action')
         
-        if action == 'add':
-            lab_name = request.form.get('lab_name')
-            lab_code = request.form.get('lab_code')
-            capacity = request.form.get('capacity', type=int)
-            location = request.form.get('location')
-            equipment = request.form.get('equipment')
+        try:
+            if action == 'add':
+                lab_name = request.form.get('lab_name')
+                lab_code = request.form.get('lab_code')
+                capacity = request.form.get('capacity', type=int)
+                location = request.form.get('location')
+                equipment = request.form.get('equipment')
+                
+                if not all([lab_name, lab_code, capacity, location]):
+                    if is_ajax:
+                        return jsonify({'success': False, 'message': 'All fields are required.'}), 400
+                    flash('All fields are required.', 'error')
+                    return redirect(url_for('admin.manage_labs'))
+
+                if Laboratory.query.filter_by(lab_code=lab_code).first():
+                    if is_ajax:
+                        return jsonify({'success': False, 'message': 'Lab code already exists.'}), 409
+                    flash('Lab code already exists.', 'error')
+                    return redirect(url_for('admin.manage_labs'))
+                
+                lab = Laboratory(
+                    lab_name=lab_name,
+                    lab_code=lab_code,
+                    capacity=capacity,
+                    location=location,
+                    equipment=equipment
+                )
+                db.session.add(lab)
+                db.session.commit()
+
+                if is_ajax:
+                    return jsonify({'success': True, 'message': 'Laboratory added successfully.'})
+                flash('Laboratory added successfully.', 'success')
             
-            if Laboratory.query.filter_by(lab_code=lab_code).first():
-                flash('Lab code already exists.', 'error')
-                return redirect(url_for('admin.manage_labs'))
+            elif action == 'edit':
+                lab_id = request.form.get('lab_id', type=int)
+                lab = Laboratory.query.get_or_404(lab_id)
+                lab.lab_name = request.form.get('lab_name')
+                lab.capacity = request.form.get('capacity', type=int)
+                lab.location = request.form.get('location')
+                lab.equipment = request.form.get('equipment')
+                db.session.commit()
+                if is_ajax:
+                    return jsonify({'success': True, 'message': 'Laboratory updated successfully.'})
+                flash('Laboratory updated successfully.', 'success')
             
-            lab = Laboratory(
-                lab_name=lab_name,
-                lab_code=lab_code,
-                capacity=capacity,
-                location=location,
-                equipment=equipment
-            )
-            db.session.add(lab)
-            db.session.commit()
-            flash('Laboratory added successfully.', 'success')
+            elif action == 'delete':
+                lab_id = request.form.get('lab_id', type=int)
+                lab = Laboratory.query.get_or_404(lab_id)
+                lab.is_active = False
+                db.session.commit()
+                if is_ajax:
+                    return jsonify({'success': True, 'message': 'Laboratory deactivated successfully.'})
+                flash('Laboratory deactivated successfully.', 'success')
         
-        elif action == 'edit':
-            lab_id = request.form.get('lab_id', type=int)
-            lab = Laboratory.query.get_or_404(lab_id)
-            lab.lab_name = request.form.get('lab_name')
-            lab.capacity = request.form.get('capacity', type=int)
-            lab.location = request.form.get('location')
-            lab.equipment = request.form.get('equipment')
-            db.session.commit()
-            flash('Laboratory updated successfully.', 'success')
-        
-        elif action == 'delete':
-            lab_id = request.form.get('lab_id', type=int)
-            lab = Laboratory.query.get_or_404(lab_id)
-            lab.is_active = False
-            db.session.commit()
-            flash('Laboratory deactivated successfully.', 'success')
+        except Exception as e:
+            db.session.rollback()
+            error_message = str(e)
+            if is_ajax:
+                return jsonify({'success': False, 'message': f'An error occurred: {error_message}'}), 500
+            flash(f'An error occurred: {error_message}', 'error')
         
         return redirect(url_for('admin.manage_labs'))
     
@@ -369,22 +393,59 @@ def approve_requests():
 def manage_courses():
     """Manage courses"""
     if request.method == 'POST':
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         action = request.form.get('action')
-        if action == 'add':
-            course_code = request.form.get('course_code')
-            course_name = request.form.get('course_name')
-            if course_code and course_name:
-                new_course = Course(course_code=course_code, course_name=course_name)
+
+        try:
+            if action == 'add':
+                course_code = request.form.get('course_code')
+                course_name = request.form.get('course_name')
+                
+                if not all([course_code, course_name]):
+                    if is_ajax:
+                        return jsonify({'success': False, 'message': 'Course code and name are required.'}), 400
+                    flash('Course code and name are required.', 'error')
+                    return redirect(url_for('admin.manage_courses'))
+
+                if Course.query.filter_by(course_code=course_code).first():
+                    if is_ajax:
+                        return jsonify({'success': False, 'message': 'Course code already exists.'}), 409
+                    flash('Course code already exists.', 'error')
+                    return redirect(url_for('admin.manage_courses'))
+
+                new_course = Course(
+                    course_code=course_code, 
+                    course_name=course_name,
+                    section='General'  # Default section
+                )
                 db.session.add(new_course)
                 db.session.commit()
+                
+                if is_ajax:
+                    return jsonify({'success': True, 'message': 'Course added successfully.'})
                 flash('Course added successfully.', 'success')
-        elif action == 'delete':
-            course_id = request.form.get('course_id')
-            course = Course.query.get(course_id)
-            if course:
-                db.session.delete(course)
-                db.session.commit()
-                flash('Course deleted successfully.', 'success')
+
+            elif action == 'delete':
+                course_id = request.form.get('course_id')
+                course = Course.query.get(course_id)
+                if course:
+                    db.session.delete(course)
+                    db.session.commit()
+                    if is_ajax:
+                        return jsonify({'success': True, 'message': 'Course deleted successfully.'})
+                    flash('Course deleted successfully.', 'success')
+                else:
+                    if is_ajax:
+                        return jsonify({'success': False, 'message': 'Course not found.'}), 404
+                    flash('Course not found.', 'error')
+
+        except Exception as e:
+            db.session.rollback()
+            error_message = str(e)
+            if is_ajax:
+                return jsonify({'success': False, 'message': f'An error occurred: {error_message}'}), 500
+            flash(f'An error occurred: {error_message}', 'error')
+
         return redirect(url_for('admin.manage_courses'))
 
     page = request.args.get('page', 1, type=int)

@@ -1342,180 +1342,9 @@
         }
 
         footer i {
-
-            .premium-table tbody td {
-                font-size: 0.95rem;
-            }
-
-            /* ===== ENHANCED STAT CARDS ===== */
-            .stat-card {
-                position: relative;
-                overflow: hidden;
-                background: white;
-            }
-
-            .stat-card::after {
-                content: '';
-                position: absolute;
-                bottom: -50%;
-                right: -50%;
-                width: 200px;
-                height: 200px;
-                background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
-                border-radius: 50%;
-                transition: var(--transition);
-                pointer-events: none; /* Make it non-interactive */
-            }
-
-            .stat-card:hover::after {
-                bottom: -25%;
-                right: -25%;
-            }
-
-            .stat-card:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
-            }
-
-            /* ===== ENHANCED INPUT STYLING ===== */
-            .search-container .form-control {
-                border: 2px solid #e5e7eb;
-                transition: var(--transition);
-            }
-
-            .search-container .form-control:focus {
-                border-color: #6366f1;
-                background: white;
-            }
-
-            .search-container .form-control::placeholder {
-                color: #cbd5e1;
-            }
-
-            /* ===== ENHANCED CARD STYLING ===== */
-            .premium-card {
-                overflow: hidden;
-            }
-
-            .premium-card:hover {
-                box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
-            }
-
-            .card-body {
-                position: relative;
-            }
-
-            .card-body::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 0;
-                background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(139, 92, 246, 0.02) 100%);
-                transition: height 0.3s ease;
-                pointer-events: none; /* Make it non-interactive */
-            }
-
-            .premium-card:hover .card-body::before {
-                height: 100%;
-            }
-
-            /* ===== ENHANCED NAVIGATION ITEMS ===== */
-            .nav-link {
-                position: relative;
-                overflow: hidden;
-            }
-
-            .nav-link::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 50%;
-                width: 3px;
-                height: 0;
-                background: #6366f1;
-                transform: translateY(-50%);
-                transition: height 0.3s ease;
-            }
-
-            .sidebar-nav .nav-link:hover::before {
-                height: 70%;
-            }
-
-            .sidebar-nav .nav-link.active::before {
-                height: 100%;
-            }
-
-            /* ===== ENHANCED SCROLLBAR STYLING ===== */
-            ::-webkit-scrollbar {
-                width: 8px;
-                height: 8px;
-            }
-
-            ::-webkit-scrollbar-track {
-                background: #f1f5f9;
-                border-radius: 10px;
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-                border-radius: 10px;
-                transition: background 0.3s ease;
-            }
-
-            ::-webkit-scrollbar-thumb:hover {
-                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            }
-
-            /* ===== ENHANCED FOCUS STATES ===== */
-            *:focus-visible {
-                outline: 2px solid #6366f1;
-                outline-offset: 2px;
-            }
-
-            .btn:focus-visible,
-            .form-control:focus-visible,
-            .form-select:focus-visible {
-                outline: none;
-                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-            }
-
-            /* ===== ENHANCED ANIMATIONS ===== */
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .premium-card,
-            .stat-card {
-                animation: fadeIn 0.4s ease-out;
-            }
-
-            /* ===== ENHANCED BREADCRUMB ===== */
-            .breadcrumb-item + .breadcrumb-item::before {
-                color: #cbd5e1;
-            }
-
-            /* Footer Styles */
-            footer {
-                background: linear-gradient(135deg, #1e293b 0%, #374151 100%);
-                color: #9ca3af;
-                padding: 2rem 0;
-                margin-top: auto;
-                margin-left: var(--sidebar-width);
-                transition: var(--transition);
-                border-top: 2px solid rgba(99, 102, 241, 0.1);
-            }
+            margin-right: 0.5rem;
         }
 
-        /* ===== ICON FALLBACK STYLING ===== */
         .fas, .fab, .far {
             display: inline-block;
             font-family: 'Font Awesome 6 Free', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -1537,48 +1366,41 @@
             vertical-align: middle;
         }
 
+        /* Fix for modal backdrop issues */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1040;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        .modal-backdrop.fade {
+            opacity: 0;
+        }
+
+        .modal-backdrop.show {
+            opacity: 0.5;
+        }
+
+        /* Ensure proper modal stacking */
+        .modal {
+            overflow-y: auto;
+        }
+
+        /* Fix for body scroll when modal is open */
+        body.modal-open {
+            overflow: hidden;
+            padding-right: 0 !important;
+        }
+
         /* Icon styling for various contexts */
         .me-2 { margin-right: 0.5rem !important; }
         .me-3 { margin-right: 1rem !important; }
-
-        .btn-premium-enhanced {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border: none;
-            border-radius: 12px;
-            padding: 1rem 2rem;
-            font-weight: 700;
-            color: white;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            font-size: 1.1rem;
-        }
-
-        .btn-premium-enhanced:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        }
-
-        .btn-premium-enhanced:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-premium-enhanced i {
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
-        }
-
-        .btn-premium-enhanced:hover i {
-            transform: scale(1.1);
-        }
     </style>
+    {% block styles %}{% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100" data-page-loaded="false">
     <!-- Skip to main content link for accessibility -->
@@ -2008,9 +1830,12 @@
                     </button>
                 </div>
             </div>
+        </div>
     </div>
     {% endif %}
     
+    {% block modals %}{% endblock %}
+
     <!-- Enhanced Footer -->
     <footer class="py-4 border-top mt-auto">
         <div class="container-fluid">
@@ -2032,6 +1857,7 @@
         </div>
     </footer>
 
+    {% block scripts %}
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
@@ -2292,9 +2118,9 @@
                 this.style.transition = 'transform 0.2s ease';
             });
 
-            /* link.addEventListener('mouseleave', function() {
+            link.addEventListener('mouseleave', function() {
                 this.style.transform = '';
-            }); */
+            });
         });
 
         // ===== ENHANCED SEARCH FUNCTIONALITY =====
@@ -2390,9 +2216,7 @@
                 e.preventDefault();
                 console.log('🎯 Opening Filter Modal');
                 
-                const modal = new bootstrap.Modal(document.getElementById('filterModal'));
-                modal.show();
-                
+                // Use data-bs-toggle attribute instead of JavaScript
                 // Button animation
                 this.style.background = 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)';
                 this.style.color = 'white';
@@ -2427,8 +2251,13 @@
                 this.disabled = true;
 
                 setTimeout(() => {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('filterModal'));
-                    if (modal) modal.hide();
+                    // Get modal instance safely
+                    const modalElement = document.getElementById('filterModal');
+                    if (modalElement) {
+                        // Close modal by clicking close button
+                        const closeBtn = modalElement.querySelector('[data-bs-dismiss="modal"]');
+                        if (closeBtn) closeBtn.click();
+                    }
                     
                     // Reset button
                     this.innerHTML = '<i class="fas fa-check me-2"></i>Apply Filters';
@@ -2562,8 +2391,12 @@
                     
                     // Close modal after delay
                     setTimeout(() => {
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('addInstructorModal'));
-                        if (modal) modal.hide();
+                        const modalElement = document.getElementById('addInstructorModal');
+                        if (modalElement) {
+                            // Close modal by clicking close button
+                            const closeBtn = modalElement.querySelector('[data-bs-dismiss="modal"]');
+                            if (closeBtn) closeBtn.click();
+                        }
                         
                         // Reset form and button
                         this.innerHTML = originalHTML;
@@ -2596,8 +2429,6 @@
                     // Button animation
                     this.style.transform = 'scale(0.9)';
                     setTimeout(() => this.style.transform = '', 200);
-                    
-                    // You would typically open a modal here
                 });
             });
 
@@ -2922,12 +2753,6 @@
         `;
         document.head.appendChild(style);
 
-        // ===== INITIALIZE TOOLTIPS =====
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        const tooltipList = tooltipTriggerList.map(tooltipTriggerEl => {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-
         // Mark page as loaded
         document.body.setAttribute('data-page-loaded', 'true');
         
@@ -2936,5 +2761,6 @@
         showNotification('System ready! All features are enabled.', 'success');
     });
 </script>
+{% endblock %}
 </body>
 </html>
