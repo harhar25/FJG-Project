@@ -123,7 +123,8 @@ def manage_labs():
         
         return redirect(url_for('admin.manage_labs'))
     
-    labs = Laboratory.query.paginate(page=page, per_page=10)
+    # Order labs by newest first and show a larger page size to avoid items being hidden on later pages
+    labs = Laboratory.query.order_by(Laboratory.created_at.desc()).paginate(page=page, per_page=100)
     return render_template('admin/manage_labs.html', labs=labs)
 
 @admin_bp.route('/edit-lab/<int:lab_id>', methods=['GET', 'POST'])
