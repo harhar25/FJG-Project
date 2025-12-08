@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from datetime import datetime
 from app import db
-from app.models import User, Notification, LabSchedule, Laboratory
+from app.models import User, Notification, LabSchedule, Laboratory, Message
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -101,13 +101,24 @@ def send_message():
     if not recipient:
         return jsonify({'error': 'Recipient not found'}), 404
 
+    # Create and persist the message
+    message = Message(
+        sender_id=current_user.id,
+        receiver_id=recipient.id,
+        subject=subject.strip(),
+        body=body.strip()
+    )
+    db.session.add(message)
+
+    # Optional: also create a notification for the recipient
     notification = Notification(
         user_id=recipient.id,
-        title=subject,
-        message=f'Message from {current_user.full_name}: {body}',
+        title=f"New message: {subject.strip()[:180]}",
+        message=f'Message from {current_user.full_name}',
         notification_type='message'
     )
     db.session.add(notification)
+
     db.session.commit()
 
     return jsonify({'success': True, 'message': 'Message sent successfully'})

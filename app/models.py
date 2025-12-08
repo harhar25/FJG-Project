@@ -140,13 +140,31 @@ class Notification(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     message = db.Column(db.Text, nullable=False)
-    notification_type = db.Column(db.String(50))  # approval, decline, schedule_update
+    notification_type = db.Column(db.String(50))  # approval, decline, schedule_update, message
     related_request_id = db.Column(db.Integer, db.ForeignKey('reservation_requests.id'))
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), index=True)
     
     def __repr__(self):
         return f'<Notification {self.id}>'
+
+class Message(db.Model):
+    """Direct message between users"""
+    __tablename__ = 'messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    subject = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+
+    sender = db.relationship('User', foreign_keys=[sender_id])
+    receiver = db.relationship('User', foreign_keys=[receiver_id])
+
+    def __repr__(self):
+        return f'<Message {self.id} from {self.sender_id} to {self.receiver_id}>'
 
 class LabUsageReport(db.Model):
     """Lab usage report/analytics model"""

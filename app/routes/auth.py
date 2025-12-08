@@ -7,7 +7,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timezone
 from app import db
-from app.models import User, UserRole, ProfileUpdate
+from app.models import User, UserRole, ProfileUpdate, Message
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -103,10 +103,24 @@ def preferences():
 @auth_bp.route('/messages')
 @login_required
 def messages():
-    """User messages page"""
+    """User messages page with inbox/sent tabs"""
     page = request.args.get('page', 1, type=int)
-    # Placeholder for messages functionality
-    return render_template('messages.html', page=page)
+    tab = request.args.get('tab', 'inbox')
+
+    if tab == 'sent':
+        msg_query = Message.query.filter_by(sender_id=current_user.id)
+    else:
+        tab = 'inbox'
+        msg_query = Message.query.filter_by(receiver_id=current_user.id)
+
+    messages_paginated = msg_query.order_by(Message.created_at.desc()).paginate(page=page, per_page=100)
+
+    return render_template(
+        'messages.html',
+        page=page,
+        tab=tab,
+        messages=messages_paginated
+    )
 
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
