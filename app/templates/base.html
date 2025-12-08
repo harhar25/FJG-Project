@@ -247,12 +247,15 @@
             padding-top: var(--navbar-height);
             padding-bottom: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .app-container {
             display: grid;
             grid-template-columns: var(--sidebar-width) 1fr;
             min-height: calc(100vh - var(--navbar-height));
+            flex: 1 0 auto;
         }
 
         /* ===== BEAUTIFUL SIDEBAR ===== */
@@ -1332,13 +1335,26 @@
 
         /* Footer Styles */
         footer {
-            background: linear-gradient(135deg, #1e293b 0%, #374151 100%);
-            color: #9ca3af;
-            padding: 2rem 0;
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 1rem 1.25rem;
             margin-top: auto;
-            margin-left: var(--sidebar-width);
+            margin-left: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             transition: var(--transition);
-            border-top: 2px solid rgba(99, 102, 241, 0.1);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #bfdbfe;
+            text-decoration: underline;
         }
 
         footer i {
@@ -1837,20 +1853,20 @@
     {% block modals %}{% endblock %}
 
     <!-- Enhanced Footer -->
-    <footer class="py-4 border-top mt-auto">
+    <footer class="py-4 border-top mt-auto" role="contentinfo">
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-md-6 mb-3 mb-md-0">
-                    <p class="mb-0 text-muted">
-                        <strong><i class="fas fa-flask-vial me-2"></i>LabSchedule</strong>
+                    <p class="mb-0">
+                        <strong><i class="fas fa-flask-vial me-2" aria-hidden="true"></i>LabSchedule</strong>
                     </p>
-                    <small class="text-muted">Enterprise Laboratory Management System © 2025</small>
+                    <small>Enterprise Laboratory Management System © 2025</small>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <small class="text-muted">
-                        <i class="fas fa-code me-1"></i>v2.1.0 | 
-                        <i class="fas fa-shield-alt me-1"></i>Secure | 
-                        <i class="fas fa-rocket me-1"></i>Premium
+                    <small>
+                        <i class="fas fa-code me-1" aria-hidden="true"></i>v2.1.0 |
+                        <i class="fas fa-shield-alt me-1" aria-hidden="true"></i>Secure |
+                        <i class="fas fa-rocket me-1" aria-hidden="true"></i>Premium
                     </small>
                 </div>
             </div>
